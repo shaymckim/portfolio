@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shay McKim - Portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Custom Properties - Consolidated theme management */
+    :root {
+      --primary-bg: linear-gradient(to bottom,
+        hsl(0, 0%, 100%) 0%,    /* Very subtle white-to-blue start */
+        hsl(300, 75%, 95%) 25%,   /* Subtle blue tint */
+        hsl(218, 87%, 65%) 50%,    /* Light yellow-orange transition */
+        hsl(55, 83%, 58%) 75%,    /* Light orange */
+        hwb(0 7% 0%) 100%     /* Subtle red at bottom */
+      );
+      --primary-bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      --primary-text: #333;
+      --accent-bg: rgba(255, 255, 255, 0.8);
+      --secondary-bg: rgba(255, 255, 255, 0.8); /* Changed to semi-transparent */
+      --nav-text: #666;
+      --nav-hover: #333;
+      --meta-text: #888;
+      --scroll-bg: #ddd;
+      --scroll-progress: #666;
+      --transition: 0.3s ease;
+      --slide-transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+      --exit-transition: 0.8s cubic-bezier(0.6, 0, 0.4, 1);
+    }
+
+    /* Dark theme overrides */
+    [data-theme="dark"] {
+      --primary-text: #e0e0e0;
+      --accent-bg: rgba(34, 34, 34, 0.8);
+      --secondary-bg: rgba(34, 34, 34, 0.8); /* Changed to semi-transparent */
+      --nav-text: #bbb;
+      --nav-hover: #ddd;
+      --meta-text: #aaa;
+      --scroll-bg: #444;
+      --scroll-progress: #bbb;
+    }
+
+    /* Base styles and reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-snap-type: y mandatory; /* Changed from mandatory to proximity for gentler snapping */
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--primary-bg);
+      color: var(--primary-text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      transition: background var(--transition), color var(--transition);
+      cursor: none;
+    }
+
+    /* Apply dark background gradient */
+    [data-theme="dark"] body {
+      background: var(--primary-bg-dark);
+    }
+
+    .main-content {
+      opacity: 1;
+      transition: opacity 0.5s ease;
+    }
+
+    /* Header Navigation - Centered design */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(248, 249, 250, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 10;
+      transition: background var(--transition);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    [data-theme="dark"] header {
+      background: rgba(26, 26, 46, 0.95);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-center {
+      display: flex;
+      gap: 60px;
+      font-size: 14px;
+      align-items: center;
+    }
+
+    /* Navigation buttons with consistent styling */
+    .nav-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--nav-text);
+      transition: color var(--transition), transform 0.2s ease;
+      font-size: 14px;
+      font-family: inherit;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    .nav-btn:hover {
+      color: var(--nav-hover);
+      transform: translateY(-1px);
+    }
+
+    .nav-btn:focus {
+      outline: 2px solid var(--nav-text);
+      outline-offset: 2px;
+    }
+
+    /* Theme toggle button */
+    #theme-toggle {
+      background: var(--accent-bg);
+      border: 1px solid var(--nav-text);
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      transition: all var(--transition);
+    }
+
+    #theme-toggle:hover {
+      transform: scale(1.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Hero Section with typewriter animation */
+    .hero {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 120px 20px 40px;
+      scroll-snap-align: start;
+    }
+
+    .hero.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero h1 {
+      font-size: 4rem;
+      font-weight: 600;
+      color: var(--primary-text);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    /* Dynamic text styling with typewriter effect */
+    .dynamic-text,
+    .hero .subtitle,
+    .hero .welcome {
+      font-weight: 400;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .dynamic-text {
+      font-size: 1.3rem;
+      color: var(--nav-text);
+      margin-bottom: 10px;
+      animation-delay: 2.2s;
+      transition: opacity 0.3s ease;
+      min-height: 1.6em;
+      position: relative;
+    }
+
+    .dynamic-text::after {
+      content: '|';
+      color: var(--primary-text);
+      animation: blink 1s step-end infinite;
+    }
+
+    .dynamic-text.typing::after {
+      animation: blink 1s step-end infinite;
+    }
+
+    .dynamic-text.deleting::after {
+      animation: blink 0.5s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 50% { opacity: 1; }
+      51%, 100% { opacity: 0; }
+    }
+
+    .hero .subtitle {
+      font-size: 1.3rem;
+      color: var(--nav-text);
+      margin-bottom: 10px;
+      animation-delay: 2.8s;
+    }
+
+    .hero .welcome {
+      font-size: 1.1rem;
+      font-weight: 300;
+      color: var(--meta-text);
+      margin-bottom: 40px;
+      animation-delay: 3.5s;
+    }
+
+    .typewriter {
+      overflow: hidden;
+      border-right: 3px solid var(--primary-text);
+      white-space: nowrap;
+      letter-spacing: 0.05em;
+      width: 0;
+      animation: 
+          typing 2s steps(10, end) 0.5s forwards,
+          blink-caret 0.75s step-end infinite 0.5s;
+    }       
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 10ch; }
+    }
+
+    @keyframes blink-caret {
+      from, to { border-color: transparent; }
+      50% { border-color: var(--primary-text); }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Remove cursor after animation completes */
+    .typewriter.animation-complete {
+      border-right: none;
+    }
+
+    /* Skills Slider Styles */
+    .skills-slider {
+      width: 100%;
+      overflow: hidden;
+      position: relative;
+      padding: 30px 0;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.8s ease forwards;
+      animation-delay: 4.2s;
+    }
+
+    /* Fade edges for seamless look */
+    .skills-slider::before,
+    .skills-slider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 80px;
+      height: 100%;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .skills-slider::before {
+      left: 0;
+      background: linear-gradient(to right, 
+        var(--primary-bg) 0%, 
+        transparent 100%);
+    }
+
+    .skills-slider::after {
+      right: 0;
+      background: linear-gradient(to left, 
+        var(--primary-bg) 0%, 
+        transparent 100%);
+    }
+
+    [data-theme="dark"] .skills-slider::before {
+      background: linear-gradient(to right, 
+        #1a1a2e 0%, 
+        transparent 100%);
+    }
+
+    [data-theme="dark"] .skills-slider::after {
+      background: linear-gradient(to left, 
+        #1a1a2e 0%, 
+        transparent 100%);
+    }
+
+    /* Slider track */
+    .slider-track {
+      display: flex;
+      width: calc(140px * 24); /* 12 skills * 2 for seamless loop */
+      animation: scroll 25s linear infinite;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateX(0);
+      }
+      100% {
+        transform: translateX(calc(-140px * 12)); /* Move exactly half the width for seamless loop */
+      }
+    }
+
+    /* Individual skill items */
+    .skill-item {
+      min-width: 120px;
+      height: 60px;
+      margin: 0 10px;
+      background: var(--accent-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    [data-theme="dark"] .skill-item {
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .skill-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Skill text styling */
+    .skill-text {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--primary-text);
+      text-align: center;
+      line-height: 1.2;
+      transition: color var(--transition);
+    }
+
+    /* Specific brand colors for skills */
+    .react { color: #61dafb; }
+    .javascript { 
+      color: #000; 
+      background: #f7df1e; 
+      padding: 2px 6px; 
+      border-radius: 4px; 
+      font-size: 12px;
+    }
+    .python { color: #3776ab; }
+    .figma { 
+      background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .solidworks { color: #ff6600; }
+    .arduino { color: #00979d; }
+    .flutter { color: #02569b; }
+    .nodejs { color: #339933; }
+    .mongodb { color: #47a248; }
+    .aws { color: #ff9900; }
+    .matlab { color: #0076a8; }
+    .autocad { color: #e51937; }
+    .cpp { color: #00599c; }
+    .printing { color: #ff6b35; }
+    .sixsigma { color: #2c5aa0; }
+    .web { 
+      background: linear-gradient(45deg, #e34c26, #1572b6); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .planning { color: #6c757d; }
+    .embedded { color: #28a745; }
+
+    /* Custom Cursor Styles */
+    body {
+      cursor: none;
+    }
+
+    .custom-cursor {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--primary-text);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transition: all 0.1s ease;
+      mix-blend-mode: difference;
+    }
+
+    .custom-cursor.hover {
+      transform: scale(1.5);
+      background: var(--primary-text);
+      opacity: 0.8;
+    }
+
+    /* Scroll indicator */
+    .scroll-down {
+      position: absolute;
+      bottom: 40px;
+      font-size: 12px;
+      opacity: 0.6;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+      40% { transform: translateY(-10px); }
+      60% { transform: translateY(-5px); }
+    }
+
+    /* About Me Section - Simplified */
+    .about-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px; /* Reduced from 100px */
+      background: var(--secondary-bg);
+      position: relative;
+      overflow: hidden;
+      scroll-snap-align: start;
+    }
+
+    .about-container {
+      max-width: 800px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease;
+    }
+
+    .about-container.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .about-container h2 {
+      font-size: 3rem;
+      font-weight: 300;
+      margin-bottom: 40px;
+      color: var(--primary-text);
+      position: relative;
+    }
+
+    .about-container h2::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--primary-text), transparent);
+    }
+
+    .about-container p {
+      font-size: 1.2rem;
+      line-height: 1.8;
+      color: var(--meta-text);
+      margin-bottom: 30px;
+    }
+
+    /* Social Links - Fixed position */
+    .social {
+      position: fixed;
+      left: 20px;
+      bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      font-size: 18px;
+      color: var(--primary-text);
+      z-index: 5;
+    }
+
+    .social a {
+      color: inherit;
+      text-decoration: none;
+      transition: transform 0.2s ease;
+    }
+
+    .social a:hover {
+      transform: scale(1.2);
+    }
+
+    /* Project Sections Layout - Split screen design */
+    .section {
+      display: flex;
+      flex-direction: row;
+      min-height: 100vh; /* Changed from height to min-height */
+      position: relative;
+      scroll-snap-align: start;
+      scroll-snap-stop: normal; /* Allow smoother scrolling through sections */
+    }
+
+    .section-left {
+      width: 40%;
+      background: var(--accent-bg);
+      padding: 80px 40px; /* Reduced from 100px to prevent cutoff */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background var(--transition);
+      position: relative;
+      z-index: 2;
+      min-height: 100vh; /* Ensure minimum height */
+    }
+
+    .section-right {
+      width: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--secondary-bg);
+      transition: background var(--transition);
+      position: relative;
+      min-height: 100vh; /* Ensure minimum height */
+      padding: 40px 20px; /* Added padding to prevent image cutoff */
+    }
+
+    /* Core slide animation - content slides in from left */
+    .section-content {
+      transform: translateX(-100vw);
+      transition: transform var(--slide-transition);
+      will-change: transform;
+    }
+
+    .section-left.visible .section-content {
+      transform: translateX(0);
+    }
+
+    .section-left.exit-left .section-content {
+      transform: translateX(-120vw);
+      transition: transform var(--exit-transition);
+    }
+
+    /* Project content styling */
+    .project-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary-text);
+    opacity: 0.8;
+    }
+
+    .project-title {
+    font-size: 2rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+    line-height: 1.2;
+    color: var(--primary-text);
+    }
+
+    .project-meta {
+      margin-top: 0px;
+      font-size: 0.875rem;
+      color: var(--meta-text);
+      transition: color var(--transition);
+    }
+
+    .project-description {
+        margin-top: 10px;
+        font-size: 1rem;
+        color: var(--meta-text);
+        line-height: 1.6;
+    }
+
+    /* Project image placeholders */
+    .project-images {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px; /* Reduced gap */
+        justify-content: center;
+        align-items: center;
+        max-width: 100%; /* Ensure images don't overflow */
+        padding: 20px; /* Added padding for breathing room */
+    }
+
+    .project-image {
+        width: 300px; /* Reduced from 330px */
+        height: 240px; /* Reduced from 260px */
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.6s ease-out;
+    }
+    .project-image:hover {
+        transform: scale(1.15);
+        cursor: pointer;
+    }
+
+    [data-theme="dark"] .project-image {
+      background: linear-gradient(45deg, #444, #555);
+      color: #aaa;
+    }
+
+    .section.visible .project-image {
+      transform: translateY(-10px) scale(1.02);
+    }
+    .project-image2 {
+        width: 300px; /* Reduced from 330px */
+        height: 320px; /* Reduced from 360px */
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.6s ease-out;
+    }
+    .project-image2:hover {
+        transform: scale(1.15);
+        cursor: pointer;
+    }
+
+    [data-theme="dark"] .project-image2 {
+      background: linear-gradient(45deg, #444, #555);
+      color: #aaa;
+    }
+
+    .section.visible .project-image2 {
+      transform: translateY(-10px) scale(1.02);
+    }
+
+    /* Lightbox container */
+    .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Lightbox image */
+    .lightbox-content {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Close button */
+    .close-lightbox {
+      position: absolute;
+      top: 20px;
+      right: 35px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 40px; /* Reduced from 100px */
+      background: var(--accent-bg);
+      transition: background var(--transition);
+      scroll-snap-align: start;
+    }
+
+    .contact-content {
+      max-width: 600px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+
+    .contact-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .contact-content h2 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 20px;
+      color: var(--primary-text);
+    }
+
+    .contact-content p {
+      font-size: 1.1rem;
+      color: var(--meta-text);
+      margin-bottom: 40px;
+      line-height: 1.8;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 30px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .contact-link {
+      color: var(--primary-text);
+      text-decoration: none;
+      padding: 12px 24px;
+      border: 2px solid var(--primary-text);
+      border-radius: 30px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .contact-link:hover {
+      background: var(--primary-text);
+      color: var(--accent-bg);
+      transform: translateY(-2px);
+    }
+
+    /* Scroll Progress Indicator */
+    .scroll-indicator {
+      position: fixed;
+      top: 0;
+      right: 20px;
+      width: 5px;
+      height: 100vh;
+      background: var(--scroll-bg);
+      z-index: 5;
+    }
+
+    .scroll-progress {
+      position: absolute;
+      width: 100%;
+      height: 0;
+      background: var(--scroll-progress);
+      transition: height var(--transition);
+    }
+
+    /* Mobile Responsive Design */
+    @media (max-width: 768px) {
+      html {
+        scroll-snap-type: none;
+      }
+
+      header {
+        padding: 15px 20px;
+      }
+
+      .nav-center {
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+      }
+
+      .hero .subtitle, .dynamic-text {
+        font-size: 1.1rem;
+      }
+
+      .hero .welcome {
+        font-size: 1rem;
+      }
+
+      /* Mobile skills slider adjustments */
+      .skills-slider {
+        padding: 20px 0;
+      }
+
+      .slider-track {
+        width: calc(110px * 24); /* 12 skills * 2 for seamless loop */
+        animation: scroll 30s linear infinite;
+      }
+
+      @keyframes scroll {
+        0% {
+          transform: translateX(0);
+        }
+        100% {
+          transform: translateX(calc(-110px * 12)); /* Move exactly half the width for seamless loop */
+        }
+      }
+
+      .skill-item {
+        min-width: 90px;
+        height: 50px;
+      }
+
+      .skill-text {
+        font-size: 12px;
+      }
+
+      /* Mobile about section */
+      .about-container h2 {
+        font-size: 2.5rem;
+      }
+
+      .about-container p {
+        font-size: 1.1rem;
+      }
+
+      /* Mobile layout - stack sections vertically */
+      .section {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .section-left, .section-right {
+        width: 100%;
+        padding: 40px;
+      }
+
+      /* Mobile animation - fade instead of slide */
+      .section-content {
+        transform: translateX(0);
+        opacity: 0;
+        transition: opacity 0.6s ease;
+      }
+
+      .section-left.visible .section-content {
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .section-left.exit-left .section-content {
+        transform: translateX(0);
+        opacity: 0.3;
+      }
+
+      .project-title {
+        font-size: 1.8rem;
+      }
+
+      .project-number {
+        font-size: 1.5rem;
+      }
+
+      .project-image {
+        max-width: 100%;
+        max-height: 60vh;
+      }
+
+      /* Social links horizontal on mobile */
+      .social {
+        position: static;
+        flex-direction: row;
+        left: auto;
+        transform: none;
+        bottom: auto;
+        margin-top: 20px;
+        justify-content: center;
+      }
+
+      .contact-links {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .contact-link {
+        width: 200px;
+        text-align: center;
+      }
+    }
+
+    /* Accessibility - Respect user's motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-snap-type: none;
+      }
+
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+
+      .typewriter {
+        animation: none;
+        border-right: none;
+        width: auto;
+      }
+
+      .scroll-down {
+        animation: none;
+      }
+
+      .slider-track {
+        animation: none;
+      }
+
+      .dynamic-text {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .skills-container {
+  overflow: hidden;
+  width: 100%;
+}
+.skills-wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  animation: scroll 20s linear infinite;
+}
+.skills-wrapper:hover {
+  animation-play-state: paused;
+}
+.skill {
+  flex: 0 0 auto;
+  margin-right: 20px;
+  padding: 10px 20px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  font-size: 1.2rem;
+}
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 768px) {
+  .skill {
+    margin-right: 10px;
+    padding: 5px 10px;
+    font-size: 1rem;
+  }
+}
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Cursor Elements -->
+  <div class="custom-cursor"></div>
+
+  <div id="main-content" class="main-content">
+    <header>
+      <div class="nav-center">
+        <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
+        <button class="nav-btn" id="projects-btn" aria-label="View projects">⌘ | projects</button>
+        <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+      </div>
+    </header>
+<section class="hero">
+  <h1 class="typewriter">Shay McKim</h1>
+  <div id="dynamic-text" class="dynamic-text"></div>
+  <p class="subtitle">Mechatronics Engineering at University of Waterloo</p>
+  <p class="welcome">Welcome to my portfolio</p>
+  
+  <div class="skills-slider">
+    <div class="slider-track">
+      <div class="skill-item">
+        <div class="skill-text sixsigma">Six Sigma</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text nodejs">Node.js</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text javascript">Javascript</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text web">CSS/HTML</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text planning">Project Planning</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text embedded">Embedded Systems</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text python">Python</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text arduino">Arduino</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text cpp">C++</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text printing">3D Printing</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text solidworks">SolidWorks</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text autocad">AutoCAD</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text sixsigma">Six Sigma</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text nodejs">Node.js</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text javascript">Javascript</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text web">CSS/HTML</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text planning">Project Planning</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text embedded">Embedded Systems</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text python">Python</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text arduino">Arduino</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text cpp">C++</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text printing">3D Printing</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text solidworks">SolidWorks</div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-text autocad">AutoCAD</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="scroll-down">scroll ↓</div>
+</section>
+
+    <!-- About Me Section - Simplified -->
+    <section class="about-section" id="about">
+      <div class="about-container">
+        <h2>About Me</h2>
+        <p>
+          Hi! My name’s Shay, and I’m a Mechatronics Engineering student at the University of Waterloo. I’ve been tinkering and working on personal projects for the last five years — building, breaking, and rebuilding all kinds of things. In that time, I’ve learned how to bring unique ideas to life… and just as many ways not to do things.        </p>
+        <p>
+          Those trial-and-error moments have shaped how I approach problems: with creativity, persistence, and a willingness to try something different. I love working where mechanical, electrical, and software design overlap, and I’m always looking for the next challenge to take on.
+        </p>
+        <p>
+          Right now, I’m looking for Winter 2026 co-op opportunities where I can put my skills to work and keep learning through hands-on experience. Keep scolling to see more of my work!
+
+        </p>
+      </div>
+    </section>
+
+    <div class="scroll-indicator">
+      <div class="scroll-progress"></div>
+    </div>
+
+    <section class="section" data-project="1" id="first-project">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">1</div>
+          <h2 class="project-title">Calendar Application<br>for PolySense Solutions</h2>
+          <div class="project-meta">Front End Web Development</div>
+          <p class="project-description"><strong>What?</strong><br> A web application to add to the company's pre-existing website. 
+            Designed to schedule the usage of high-value machinery like x-ray and manufacturing equipment, optimizing efficiency for clients.<br><strong> How? </strong><br> Independently developed skills to meet client-specific needs.
+    Built the app using JavaScript, HTML, CSS, and the FullCalendar library <br><strong> Results? </strong><br> The new functionality was seamlessly integrated into the pre-existing website using the foundation I built, to be used by clients. </p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="AddEventView.png" alt="">
+          <img class="project-image" src="CalendarView.png" alt="">
+          <img class="project-image" src="CalendarView2.png" alt="">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="2">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">2</div>
+          <h2 class="project-title">Interactive<br>4 Axis Robot</h2>
+          <div class="project-meta">3D Design, Motor Control, C++ and Python</div>
+          <p class="project-description"><strong>What?</strong><br>A robotic arm designed completely from scratch. Programmed the robot to place blocks in squares 1-9 of a tic-tac-toe board as a test of its functionality. I also programmed tic-tac-toe logic so that the robot could play against a user.<br><strong> How? </strong><br>Used Fusion 360 to model all the components, which were then 3D printed. An Arduino board was used to control the micro servo motors. Programmed motor control with C++ and the game logic with python.
+            <br><strong> Results? </strong><br>The robot could process the user's chosen position, decide its next move, pick up a block, and accurately place it.
+    The robot's logic ensured it was unbeatable in gameplay.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="Tik.jpg" alt="Garden Party Image 1">
+          <img class="project-image2" src="ArmCAD.png" alt="Garden Party Image 2">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="3">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">3</div>
+          <h2 class="project-title">Automated Culinary Robotics System</h2>
+          <div class="project-meta">Mechatronics Design</div>
+          <p class="project-description"><strong>What?</strong><br>A robot designed to create a customized cup of pudding for a quarter by combining pudding powder, water, and sprinkles. Depending on user specifications, the robot could make different types of pudding.
+             <br><strong> How? </strong><br>Programmed user input, sensor logic, and motor control using C++. Built the robot using LEGO Technic components and 3D-printed parts modeled in Fusion 360.
+            <br><strong> Results? </strong><br>Built a fully functional robot capable of detecting a quarter, processing user input for flavor preferences, accurately moving cups via conveyor, dispensing ingredients, and mixing the pudding. Earned recognition from the professor as the most intricate project in the class.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="PuddingBack.jpg" alt="Async NYC Image 1">
+          <img class="project-image" src="Slider.png" alt="Async NYC Image 2">
+          <img class="project-image" src="pudbot.jpg" alt="Async NYC Image 2">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="4">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">4</div>
+          <h2 class="project-title">Filtration System <br> for Remote Communities</h2>
+          <div class="project-meta">Project Management</div>
+          <p class="project-description"><strong>What?</strong><br>Led a team of 5 to design a water filtration system for underserved northern communities, aiming to produce over 100L/day of clean water.
+             <br><strong> How? </strong><br>Programmed an Arduino-controlled chlorination and agitation system in C++ for one-touch disinfection; modeled and 3D printed compact electronic housing in Fusion 360 for seamless pump integration.
+            <br><strong> Results? </strong><br>Delivered clear, drinkable water from heavily soiled sources, surpassing the 100L/day goal. Project was recognized as the top performer in the cohort for filtration efficiency and system reliability.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="elec.jpeg" alt="Hometown Image 1">
+          <img class="project-image" src="tower.jpeg" alt="Hometown Image 2">
+          <img class="project-image" src="test.jpeg" alt="Hometown Image 3">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="5">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">5</div>
+          <h2 class="project-title">Sunshine</h2>
+          <div class="project-meta">illustration | August 2018</div>
+          <p class="project-description">An illustration series exploring light, nature, and mood through vibrant gradients and organic forms.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="sun1.png" alt="Sunshine Image 1">
+          <img class="project-image" src="sun2.png" alt="Sunshine Image 2">
+          <img class="project-image" src="sun3.png" alt="Sunshine Image 3">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="6">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">6</div>
+          <h2 class="project-title">Nosta</h2>
+          <div class="project-meta">UI/UX | September 2018</div>
+          <p class="project-description">Nosta is a concept app that lets users capture and relive digital memories through a time-based UI, focusing on emotional resonance.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="nosta1.png" alt="Nosta Image 1">
+          <img class="project-image" src="nosta2.png" alt="Nosta Image 2">
+          <img class="project-image" src="nosta3.png" alt="Nosta Image 3">
+        </div>
+      </div>
+    </section>
+
+    <div id="lightbox" class="lightbox">
+      <span class="close-lightbox">&times;</span>
+      <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
+    </div>
+
+    <section class="contact-section" id="contact">
+      <div class="contact-content">
+        <h2>Get in Touch!</h2>
+        <p>I'm always interested in new opportunities and connections. Whether you have a project in mind or just want to say hello, I'd greatly appreciate hearing from you.</p>
+        <div class="contact-links">
+          <a href="mailto:smckim@uwaterloo.ca" class="contact-link">Email Me</a>
+          <a href="https://linkedin.com/in/shaymckim" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+          <a href="#" class="contact-link">Download CV</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+ <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    initializePortfolio();
+  });
+
+  function initializePortfolio() {
+    // Get DOM elements
+    const sections = document.querySelectorAll('.section');
+    const sectionLefts = document.querySelectorAll('.section-left');
+    const hero = document.querySelector('.hero');
+    const themeToggle = document.getElementById('theme-toggle');
+    const aboutBtn = document.getElementById('about-btn');
+    const projectsBtn = document.getElementById('projects-btn');
+    const contactBtn = document.getElementById('contact-btn');
+    const contactContent = document.querySelector('.contact-content');
+    const aboutContainer = document.querySelector('.about-container');
+
+    console.log(`Portfolio initialized with ${sections.length} sections`);
+
+    // Initialize custom cursor
+    initCustomCursor();
+
+    // Theme Management - Load saved theme preference
+    const currentTheme = localStorage.getItem('theme') || 'light';
+    if (currentTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      if (themeToggle) themeToggle.textContent = '☀️';
+    }
+
+    // Dynamic text typewriter functionality
+    const phrases = [
+      "Builder",
+      "Competitor", 
+      "Leader",
+      "Maker",
+      "Designer",
+      "Problem Solver",
+      "Team Player"
+    ];
+    
+    let phraseIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const dynamicText = document.getElementById('dynamic-text');
+    const typeSpeed = 100;
+    const deleteSpeed = 50;
+    const pauseDelay = 1250;
+
+    function typeWriter() {
+      const currentPhrase = phrases[phraseIndex];
+      
+      if (isDeleting) {
+        // Deleting characters
+        dynamicText.textContent = currentPhrase.substring(0, charIndex - 1);
+        charIndex--;
+        dynamicText.classList.add('deleting');
+        dynamicText.classList.remove('typing');
+        
+        if (charIndex === 0) {
+          isDeleting = false;
+          phraseIndex = (phraseIndex + 1) % phrases.length;
+          setTimeout(typeWriter, 500); // Pause before typing next phrase
+          return;
+        }
+        
+        setTimeout(typeWriter, deleteSpeed);
+      } else {
+        // Typing characters
+        dynamicText.textContent = currentPhrase.substring(0, charIndex + 1);
+        charIndex++;
+        dynamicText.classList.add('typing');
+        dynamicText.classList.remove('deleting');
+        
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          setTimeout(typeWriter, pauseDelay); // Pause before deleting
+          return;
+        }
+        
+        setTimeout(typeWriter, typeSpeed);
+      }
+    }
+
+    // Start typewriter effect after initial animation delay
+    setTimeout(() => {
+      typeWriter();
+    }, 3000);
+
+    // Reset all sections to initial state
+    sectionLefts.forEach((sectionLeft) => {
+      sectionLeft.classList.remove('visible', 'exit-left');
+    });
+
+    // Smooth scroll utility function
+    function smoothScrollTo(element) {
+      if (element) {
+        element.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      }
+    }
+
+    // Navigation event handlers
+    if (aboutBtn) {
+      aboutBtn.addEventListener('click', () => {
+        const aboutSection = document.getElementById('about');
+        smoothScrollTo(aboutSection);
+      });
+    }
+
+    if (projectsBtn) {
+      projectsBtn.addEventListener('click', () => {
+        const firstProject = document.getElementById('first-project');
+        smoothScrollTo(firstProject);
+      });
+    }
+
+    if (contactBtn) {
+      contactBtn.addEventListener('click', () => {
+        const contactSection = document.getElementById('contact');
+        smoothScrollTo(contactSection);
+      });
+    }
+  
+    // Initialize hero animation
+    if (hero) hero.classList.add('visible');
+
+    // Remove typewriter cursor after animation completes
+    setTimeout(() => {
+      const typewriter = document.querySelector('.typewriter');
+      if (typewriter) {
+        typewriter.classList.add('animation-complete');
+      }
+    }, 2500);
+
+    // Intersection Observer for slide-in animations
+    const slideObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (entry.target.classList.contains('section')) {
+            // Animate project section
+            const sectionLeft = entry.target.querySelector('.section-left');
+            if (sectionLeft) {
+              const projectNum = entry.target.dataset.project;
+              sectionLeft.classList.add('visible');
+              sectionLeft.classList.remove('exit-left');
+              console.log(`Project ${projectNum} animated in`);
+            }
+          } else if (entry.target.classList.contains('contact-content')) {
+            // Animate contact section
+            entry.target.classList.add('visible');
+            console.log('Contact section animated in');
+          } else if (entry.target.classList.contains('about-container')) {
+            // Animate about section
+            entry.target.classList.add('visible');
+            console.log('About section animated in');
+          }
+        }
+      });
+    }, { 
+      threshold: 0.3,
+      rootMargin: '0px 0px -20% 0px'
+    });
+
+    // Intersection Observer for exit animations when scrolling past
+    const exitObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.target.classList.contains('section')) {
+          const sectionLeft = entry.target.querySelector('.section-left');
+          if (sectionLeft) {
+            const projectNum = entry.target.dataset.project;
+            
+            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
+              // Section scrolled past - exit left
+              sectionLeft.classList.add('exit-left');
+              sectionLeft.classList.remove('visible');
+              console.log(`Project ${projectNum} exited left`);
+            } else if (entry.isIntersecting) {
+              // Section back in view - remove exit state
+              sectionLeft.classList.remove('exit-left');
+              sectionLeft.classList.add('visible');
+              console.log(`Project ${projectNum} back in view`);
+            } else if (entry.boundingClientRect.top > window.innerHeight) {
+              // Section below viewport - reset to initial state
+              sectionLeft.classList.remove('visible', 'exit-left');
+              console.log(`Project ${projectNum} reset`);
+            }
+          }
+        }
+      });
+    }, {
+      threshold: [0, 0.1],
+      rootMargin: '-10% 0px -10% 0px'
+    });
+
+    // Set up observers for contact and about sections
+    if (contactContent) {
+      slideObserver.observe(contactContent);
+    }
+    
+    if (aboutContainer) {
+      slideObserver.observe(aboutContainer);
+    }
+    
+    // Set up observers for all project sections
+    sections.forEach((section, index) => {
+      // Add staggered animation delay
+      const sectionContent = section.querySelector('.section-content');
+      if (sectionContent) {
+        sectionContent.style.transitionDelay = `${index * 0.1}s`;
+      }
+      
+      slideObserver.observe(section);
+      exitObserver.observe(section);
+    });
+
+    // Scroll progress indicator with throttling
+    let ticking = false;
+    
+    function updateScroll() {
+      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollTop = window.scrollY;
+      const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
+      
+      const progressBar = document.querySelector('.scroll-progress');
+      if (progressBar) {
+        progressBar.style.height = `${progress}%`;
+      }
+      
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(updateScroll);
+        ticking = true;
+      }
+    });
+
+    // Theme toggle with visual feedback
+    themeToggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const newTheme = current === 'dark' ? 'light' : 'dark';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      
+      // Visual feedback animation
+      themeToggle.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        themeToggle.style.transform = 'scale(1)';
+      }, 150);
+    });
+
+    // Keyboard navigation accessibility
+    document.querySelectorAll('.nav-btn, #theme-toggle').forEach(btn => {
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.querySelector('.close-lightbox');
+
+    // Add click handler to all project images
+    document.querySelectorAll('.project-image, .project-image2').forEach(img => {
+      img.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
+        lightboxImg.src = img.src;
+        lightboxImg.alt = img.alt;
+      });
+    });
+
+    // Close modal when clicking close button
+    closeBtn.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+    });
+
+    // Close modal when clicking outside the image
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+      }
+    });
+
+    console.log('Portfolio initialized successfully! 🚀');
+  }
+
+  // Custom Cursor Implementation
+  function initCustomCursor() {
+    const cursor = document.querySelector('.custom-cursor');
+    let mouseX = 0;
+    let mouseY = 0;
+
+    // Update cursor position
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      
+      cursor.style.left = mouseX + 'px';
+      cursor.style.top = mouseY + 'px';
+    });
+
+    // Add hover effects
+    const hoverElements = document.querySelectorAll('a, button, .project-image, .project-image2, .nav-btn, .skill-item, .contact-link');
+    
+    hoverElements.forEach(element => {
+      element.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+      });
+
+      element.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+      });
+    });
+
+    // Hide cursor when leaving window
+    document.addEventListener('mouseleave', () => {
+      cursor.style.opacity = '0';
+    });
+
+    document.addEventListener('mouseenter', () => {
+      cursor.style.opacity = '1';
+    });
+
+    // Disable custom cursor on mobile devices
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
+      document.body.style.cursor = 'auto';
+      cursor.style.display = 'none';
+    }
+  }
+  </script>
+</body>
