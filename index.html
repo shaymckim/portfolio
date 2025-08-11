@@ -759,13 +759,12 @@
     }
 
     /* Mobile Responsive Design */
-    @media (max-width: 768px) {
+    @media (max-width: 1500px) {
       html {
         scroll-snap-type: none;
       }
-
       header {
-        padding: 15px 20px;
+        padding: 15px 20px; 
       }
 
       .nav-center {
@@ -786,32 +785,9 @@
         font-size: 1rem;
       }
 
-      /* Mobile skills slider adjustments */
+      /* HIDE SKILLS SLIDER ON MOBILE */
       .skills-slider {
-        padding: 20px 0;
-      }
-
-      .slider-track {
-        width: calc(110px * 24); /* 12 skills * 2 for seamless loop */
-        animation: scroll 30s linear infinite;
-      }
-
-      @keyframes scroll {
-        0% {
-          transform: translateX(0);
-        }
-        100% {
-          transform: translateX(calc(-110px * 12)); /* Move exactly half the width for seamless loop */
-        }
-      }
-
-      .skill-item {
-        min-width: 90px;
-        height: 50px;
-      }
-
-      .skill-text {
-        font-size: 12px;
+        display: none;
       }
 
       /* Mobile about section */
@@ -909,48 +885,13 @@
       }
 
       .slider-track {
-        animation: none;
+        animation: none !important;
       }
 
       .dynamic-text {
         opacity: 1 !important;
         transform: none !important;
       }
-      .skills-container {
-  overflow: hidden;
-  width: 100%;
-}
-.skills-wrapper {
-  display: flex;
-  flex-wrap: nowrap;
-  animation: scroll 20s linear infinite;
-}
-.skills-wrapper:hover {
-  animation-play-state: paused;
-}
-.skill {
-  flex: 0 0 auto;
-  margin-right: 20px;
-  padding: 10px 20px;
-  background: #f0f0f0;
-  border-radius: 5px;
-  font-size: 1.2rem;
-}
-@keyframes scroll {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-@media (max-width: 768px) {
-  .skill {
-    margin-right: 10px;
-    padding: 5px 10px;
-    font-size: 1rem;
-  }
-}
     }
   </style>
 </head>
@@ -975,33 +916,6 @@
   
   <div class="skills-slider">
     <div class="slider-track">
-      <div class="skill-item">
-        <div class="skill-text sixsigma">Six Sigma</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text nodejs">Node.js</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text javascript">Javascript</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text web">CSS/HTML</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text planning">Project Planning</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text embedded">Embedded Systems</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text python">Python</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text arduino">Arduino</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text cpp">C++</div>
-      </div>
       <div class="skill-item">
         <div class="skill-text printing">3D Printing</div>
       </div>
@@ -1058,12 +972,12 @@
       <div class="about-container">
         <h2>About Me</h2>
         <p>
-          Hi! My name’s Shay, and I’m a Mechatronics Engineering student at the University of Waterloo. I’ve been tinkering and working on personal projects for the last five years — building, breaking, and rebuilding all kinds of things. In that time, I’ve learned how to bring unique ideas to life… and just as many ways not to do things.        </p>
+          Hi! My name's Shay, and I'm a Mechatronics Engineering student at the University of Waterloo. I've been tinkering and working on personal projects for the last five years — building, breaking, and rebuilding all kinds of things. In that time, I've learned how to bring unique ideas to life… and just as many ways not to do things.        </p>
         <p>
-          Those trial-and-error moments have shaped how I approach problems: with creativity, persistence, and a willingness to try something different. I love working where mechanical, electrical, and software design overlap, and I’m always looking for the next challenge to take on.
+          Those trial-and-error moments have shaped how I approach problems: with creativity, persistence, and a willingness to try something different. I love working where mechanical, electrical, and software design overlap, and I'm always looking for the next challenge to take on.
         </p>
         <p>
-          Right now, I’m looking for Winter 2026 co-op opportunities where I can put my skills to work and keep learning through hands-on experience. Keep scolling to see more of my work!
+          Right now, I'm looking for Winter 2026 co-op opportunities where I can put my skills to work and keep learning through hands-on experience. Keep scolling to see more of my work!
 
         </p>
       </div>
@@ -1529,3 +1443,4 @@
   }
   </script>
 </body>
+</html>
