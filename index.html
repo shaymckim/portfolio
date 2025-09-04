@@ -1070,25 +1070,66 @@
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">5</div>
-          <h2 class="project-title">More Coming Soon!</h2>
-          <div class="project-meta"></div>
-          <p class="project-description"></p>
+          <h2 class="project-title">12ft Trebuchet!</h2>
+          <div class="project-meta">Creative and Resourceful Design</div>
+          <p class="project-description">
+          <strong>What?</strong><br>
+          Designed and built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. Led a cross-generational design team—including my grandma—to blend medieval mechanics with modern determination.<br>
+          <strong>How?</strong><br>
+          Applied statics and energy transfer calculations to optimize arm length and counterweight ratio; sourced and repurposed recycled materials for all structural components; relied entirely on hand tools and practical problem-solving—no computers required.<br>
+          <strong>Results?</strong><br>
+          Produced a fully operational trebuchet that consistently hurled projectiles beyond 250 ft, built entirely from recycled scrap. The project showcased resourceful engineering, and sustainable construction.
+        </p>
+
         </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image" src="" alt="">
-          <img class="project-image" src="" alt="">
-          <img class="project-image" src="" alt="">
+          <img class="project-image2" src="Treb.png" alt="Garden Party Image 1">
+          <video class="project-image2" autoplay loop muted playsinline>
+            <source src="Trebuchet.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="6">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">6</div>
+          <h2 class="project-title">Drone Capture Device <br></h2>
+          <div class="project-meta">Mechanical Engineering</div>
+          <p class="project-description">
+            <strong>What?</strong><br>
+            Designed and built a lightweight net gun system intended for portable drone defense, keeping the total system weight under 0.5kg for field deployability.<br>
+            <strong>How?</strong><br>
+            Modeled 8 custom components in Fusion 360 optimized for FDM 3D printing; iterated the trigger mechanism through 20+ CAD revisions to improve actuation smoothness and ensure mechanical reliability.<br>
+            <strong>Results?</strong><br>
+            Achieved consistent net deployment in field tests with improved accuracy and reliability compared to initial prototypes, demonstrating feasibility for compact counter-drone applications.
+          </p>
+          </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="Net1.jpg" alt="Hometown Image 1">
+          <img class="project-image" src="Net3.jpg" alt="Hometown Image 2">
+          <img class="project-image" src="Net2.jpg" alt="Hometown Image 3">
         </div>
       </div>
     </section>
 
     
+
+    
     <div id="lightbox" class="lightbox">
-      <span class="close-lightbox">&times;</span>
-      <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
-    </div>
+  <span class="close-lightbox">&times;</span>
+  <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
+  <video class="lightbox-content" id="lightbox-video" controls autoplay loop muted playsinline>
+    <source id="lightbox-video-source" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
 
     <section class="contact-section" id="contact">
       <div class="contact-content">
@@ -1369,31 +1410,70 @@
       });
     });
 
-    // Lightbox functionality
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const closeBtn = document.querySelector('.close-lightbox');
+// Lightbox functionality
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightbox-img');
+const lightboxVideo = document.getElementById('lightbox-video');
+const lightboxVideoSource = document.getElementById('lightbox-video-source');
+const closeBtn = document.querySelector('.close-lightbox');
 
-    // Add click handler to all project images
-    document.querySelectorAll('.project-image, .project-image2').forEach(img => {
-      img.addEventListener('click', () => {
-        lightbox.style.display = 'flex';
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-      });
-    });
+// Add click handler to all project images and videos
+document.querySelectorAll('.project-image, .project-image2, video').forEach(el => {
+  el.addEventListener('click', () => {
+    lightbox.style.display = 'flex';
 
-    // Close modal when clicking close button
-    closeBtn.addEventListener('click', () => {
-      lightbox.style.display = 'none';
-    });
+    if (el.tagName.toLowerCase() === 'img') {
+      // Show image
+      lightboxImg.src = el.src;
+      lightboxImg.alt = el.alt;
+      lightboxImg.style.display = 'block';
 
-    // Close modal when clicking outside the image
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-      }
-    });
+      // Hide and reset video
+      lightboxVideo.style.display = 'none';
+      lightboxVideo.pause();
+      lightboxVideoSource.src = '';
+      lightboxVideo.load();
+    } 
+    else if (el.tagName.toLowerCase() === 'video') {
+      // Grab the video source
+      const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
+
+      // Show video
+      lightboxVideoSource.src = videoSrc;
+      lightboxVideo.load();
+      lightboxVideo.style.display = 'block';
+      lightboxVideo.play();
+
+      // Hide image
+      lightboxImg.style.display = 'none';
+      lightboxImg.src = '';
+    }
+  });
+});
+
+// Close modal when clicking close button
+closeBtn.addEventListener('click', () => {
+  lightbox.style.display = 'none';
+  lightboxImg.src = '';
+
+  lightboxVideo.pause();
+  lightboxVideoSource.src = '';
+  lightboxVideo.load();
+});
+
+// Close modal when clicking outside the content
+lightbox.addEventListener('click', (e) => {
+  if (e.target === lightbox) {
+    lightbox.style.display = 'none';
+    lightboxImg.src = '';
+
+    lightboxVideo.pause();
+    lightboxVideoSource.src = '';
+    lightboxVideo.load();
+  }
+});
+
+
 
     console.log('Portfolio initialized successfully! 🚀');
   }
