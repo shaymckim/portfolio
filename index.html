@@ -138,6 +138,72 @@
       transform: scale(1.05);
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+    /* Dropdown Menu Styles */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+      z-index: 100;
+      min-width: 200px;
+      padding: 8px 0;
+      margin-top: 8px;
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+      transition: all 0.2s ease;
+    }
+
+    [data-theme="dark"] .dropdown-content {
+      background: rgba(26, 26, 46, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .dropdown-content.show {
+      display: block;
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px 16px;
+      color: var(--nav-text);
+      text-decoration: none;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      border-radius: 4px;
+      margin: 0 4px;
+    }
+
+    .dropdown-content a:hover {
+      background: rgba(0, 0, 0, 0.05);
+      color: var(--nav-hover);
+      transform: translateX(2px);
+    }
+
+    [data-theme="dark"] .dropdown-content a:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dropdown-btn {
+      position: relative;
+    }
+
+    .dropdown-btn.active {
+      color: var(--nav-hover);
+    }
 
     /* Hero Section with typewriter animation */
     .hero {
@@ -772,6 +838,19 @@
         flex-wrap: wrap;
         justify-content: center;
       }
+      /* Mobile dropdown adjustments */
+      .dropdown-content {
+        position: fixed;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 280px;
+      }
+
+      .dropdown-content.show {
+        transform: translateX(-50%) translateY(0);
+      }
 
       .hero h1 {
         font-size: 3rem;
@@ -903,7 +982,18 @@
     <header>
       <div class="nav-center">
         <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
-        <button class="nav-btn" id="projects-btn" aria-label="View projects">⌘ | projects</button>
+        <div class="dropdown">
+          <button class="nav-btn dropdown-btn" id="projects-btn" aria-label="View projects">⌘ | projects ▼</button>
+          <div class="dropdown-content" id="projects-dropdown">
+            <a href="#" data-project="1">Calendar Application</a>
+            <a href="#" data-project="2">Interactive 4 Axis Robot</a>
+            <a href="#" data-project="3">Culinary Robotics System</a>
+            <a href="#" data-project="4">Filtration System</a>
+            <a href="#" data-project="5">12ft Trebuchet!</a>
+            <a href="#" data-project="6">Drone Capture Device</a>
+            <a href="#" data-project="7">Forging</a>
+          </div>
+        </div>
         <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
       </div>
@@ -981,6 +1071,7 @@
 
         </p>
       </div>
+      <div class="scroll-down">scroll ↓</div>
     </section>
 
     <div class="scroll-indicator">
@@ -1272,12 +1363,101 @@
       });
     }
 
-    if (projectsBtn) {
-      projectsBtn.addEventListener('click', () => {
-        const firstProject = document.getElementById('first-project');
-        smoothScrollTo(firstProject);
-      });
+    // Projects dropdown functionality
+const projectsDropdown = document.getElementById('projects-dropdown');
+let dropdownTimeout;
+
+if (projectsBtn && projectsDropdown) {
+  // Toggle dropdown on click
+  projectsBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isOpen = projectsDropdown.classList.contains('show');
+    
+    if (isOpen) {
+      closeDropdown();
+    } else {
+      openDropdown();
     }
+  });
+
+  // Handle project selection from dropdown
+  projectsDropdown.addEventListener('click', (e) => {
+    if (e.target.tagName === 'A') {
+      e.preventDefault();
+      const projectNumber = e.target.dataset.project;
+      console.log('Clicked project:', projectNumber); // Debug log
+      
+      // Try multiple ways to find the target section
+      let targetSection = document.querySelector(`section[data-project="${projectNumber}"]`);
+      
+      if (!targetSection) {
+        // Fallback: try to find by ID for first project
+        if (projectNumber === '1') {
+          targetSection = document.getElementById('first-project');
+        }
+      }
+      
+      if (!targetSection) {
+        // Another fallback: find all sections and get by index
+        const allSections = document.querySelectorAll('.section');
+        const index = parseInt(projectNumber) - 1;
+        if (index >= 0 && index < allSections.length) {
+          targetSection = allSections[index];
+        }
+      }
+      
+      console.log('Target section found:', targetSection); // Debug log
+      
+      if (targetSection) {
+        smoothScrollTo(targetSection);
+        closeDropdown();
+      } else {
+        console.error('Could not find project section:', projectNumber);
+      }
+    }
+  });
+
+  // Show dropdown on hover with delay
+  projectsBtn.addEventListener('mouseenter', () => {
+    clearTimeout(dropdownTimeout);
+    dropdownTimeout = setTimeout(openDropdown, 200);
+  });
+
+  // Hide dropdown when leaving both button and dropdown
+  projectsBtn.addEventListener('mouseleave', () => {
+    clearTimeout(dropdownTimeout);
+    dropdownTimeout = setTimeout(() => {
+      if (!projectsDropdown.matches(':hover') && !projectsBtn.matches(':hover')) {
+        closeDropdown();
+      }
+    }, 300);
+  });
+
+  projectsDropdown.addEventListener('mouseenter', () => {
+    clearTimeout(dropdownTimeout);
+  });
+
+  projectsDropdown.addEventListener('mouseleave', () => {
+    dropdownTimeout = setTimeout(closeDropdown, 200);
+  });
+
+  function openDropdown() {
+    projectsDropdown.classList.add('show');
+    projectsBtn.classList.add('active');
+  }
+
+  function closeDropdown() {
+    projectsDropdown.classList.remove('show');
+    projectsBtn.classList.remove('active');
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) {
+      closeDropdown();
+    }
+  });
+}
 
     if (contactBtn) {
       contactBtn.addEventListener('click', () => {
