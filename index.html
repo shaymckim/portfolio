@@ -9,16 +9,16 @@
     /* CSS Custom Properties - Consolidated theme management */
     :root {
       --primary-bg: linear-gradient(to bottom,
-        hsl(0, 0%, 100%) 0%,    /* Very subtle white-to-blue start */
-        hsl(300, 75%, 95%) 25%,   /* Subtle blue tint */
-        hsl(218, 87%, 65%) 50%,    /* Light yellow-orange transition */
-        hsl(55, 83%, 58%) 75%,    /* Light orange */
-        hwb(0 7% 0%) 100%     /* Subtle red at bottom */
+        hsl(0, 0%, 100%) 0%,
+        hsl(300, 75%, 95%) 25%,
+        hsl(218, 87%, 65%) 50%,
+        hsl(55, 83%, 58%) 75%,
+        hwb(0 7% 0%) 100%
       );
       --primary-bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
       --primary-text: #333;
       --accent-bg: rgba(255, 255, 255, 0.8);
-      --secondary-bg: rgba(255, 255, 255, 0.8); /* Changed to semi-transparent */
+      --secondary-bg: rgba(255, 255, 255, 0.8);
       --nav-text: #666;
       --nav-hover: #333;
       --meta-text: #888;
@@ -33,7 +33,7 @@
     [data-theme="dark"] {
       --primary-text: #e0e0e0;
       --accent-bg: rgba(34, 34, 34, 0.8);
-      --secondary-bg: rgba(34, 34, 34, 0.8); /* Changed to semi-transparent */
+      --secondary-bg: rgba(34, 34, 34, 0.8);
       --nav-text: #bbb;
       --nav-hover: #ddd;
       --meta-text: #aaa;
@@ -49,7 +49,17 @@
     }
 
     html {
-      scroll-snap-type: y mandatory; /* Changed from mandatory to proximity for gentler snapping */
+      scroll-behavior: smooth;
+      /* Improved snap scrolling for desktop */
+      scroll-snap-type: y proximity;
+      scroll-padding-top: 0;
+    }
+
+    /* Desktop-specific snap scrolling */
+    @media (min-width: 701px) {
+      html {
+        scroll-snap-type: y mandatory;
+      }
     }
 
     body {
@@ -138,6 +148,7 @@
       transform: scale(1.05);
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
+
     /* Dropdown Menu Styles */
     .dropdown {
       position: relative;
@@ -215,6 +226,8 @@
       text-align: center;
       padding: 120px 20px 40px;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
+      position: relative;
     }
 
     .hero.visible {
@@ -223,7 +236,7 @@
     }
 
     .hero h1 {
-      font-size: 4rem;
+      font-size: clamp(2.5rem, 8vw, 4rem);
       font-weight: 600;
       color: var(--primary-text);
       line-height: 1.1;
@@ -241,7 +254,7 @@
     }
 
     .dynamic-text {
-      font-size: 1.3rem;
+      font-size: clamp(1rem, 3vw, 1.3rem);
       color: var(--nav-text);
       margin-bottom: 10px;
       animation-delay: 2.2s;
@@ -270,14 +283,14 @@
     }
 
     .hero .subtitle {
-      font-size: 1.3rem;
+      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
       color: var(--nav-text);
       margin-bottom: 10px;
       animation-delay: 2.8s;
     }
 
     .hero .welcome {
-      font-size: 1.1rem;
+      font-size: clamp(0.8rem, 2vw, 1.1rem);
       font-weight: 300;
       color: var(--meta-text);
       margin-bottom: 40px;
@@ -321,9 +334,10 @@
       border-right: none;
     }
 
-    /* Skills Slider Styles */
+    /* Skills Slider Styles - FIXED FOR MOBILE */
     .skills-slider {
       width: 100%;
+      max-width: 100vw;
       overflow: hidden;
       position: relative;
       padding: 30px 0;
@@ -339,7 +353,7 @@
       content: '';
       position: absolute;
       top: 0;
-      width: 80px;
+      width: 60px;
       height: 100%;
       z-index: 5;
       pointer-events: none;
@@ -348,14 +362,14 @@
     .skills-slider::before {
       left: 0;
       background: linear-gradient(to right, 
-        var(--primary-bg) 0%, 
+        rgba(255, 255, 255, 1) 0%, 
         transparent 100%);
     }
 
     .skills-slider::after {
       right: 0;
       background: linear-gradient(to left, 
-        var(--primary-bg) 0%, 
+        rgba(255, 255, 255, 1) 0%, 
         transparent 100%);
     }
 
@@ -371,19 +385,19 @@
         transparent 100%);
     }
 
-    /* Slider track */
+    /* Slider track - FIXED INFINITE LOOP */
     .slider-track {
       display: flex;
-      width: calc(140px * 24); /* 12 skills * 2 for seamless loop */
-      animation: scroll 25s linear infinite;
+      width: fit-content;
+      animation: infiniteScroll 30s linear infinite;
     }
 
-    @keyframes scroll {
+    @keyframes infiniteScroll {
       0% {
         transform: translateX(0);
       }
       100% {
-        transform: translateX(calc(-140px * 12)); /* Move exactly half the width for seamless loop */
+        transform: translateX(-50%);
       }
     }
 
@@ -423,42 +437,6 @@
       line-height: 1.2;
       transition: color var(--transition);
     }
-
-    /* Specific brand colors for skills */
-    .react { color: #61dafb; }
-    .javascript { 
-      color: #000; 
-      background: #f7df1e; 
-      padding: 2px 6px; 
-      border-radius: 4px; 
-      font-size: 12px;
-    }
-    .python { color: #3776ab; }
-    .figma { 
-      background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .solidworks { color: #ff6600; }
-    .arduino { color: #00979d; }
-    .flutter { color: #02569b; }
-    .nodejs { color: #339933; }
-    .mongodb { color: #47a248; }
-    .aws { color: #ff9900; }
-    .matlab { color: #0076a8; }
-    .autocad { color: #e51937; }
-    .cpp { color: #00599c; }
-    .printing { color: #ff6b35; }
-    .sixsigma { color: #2c5aa0; }
-    .web { 
-      background: linear-gradient(45deg, #e34c26, #1572b6); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .planning { color: #6c757d; }
-    .embedded { color: #28a745; }
 
     /* Custom Cursor Styles */
     body {
@@ -504,11 +482,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px 40px; /* Reduced from 100px */
+      padding: 80px 40px;
       background: var(--secondary-bg);
       position: relative;
       overflow: hidden;
       scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
 
     .about-container {
@@ -525,7 +504,7 @@
     }
 
     .about-container h2 {
-      font-size: 3rem;
+      font-size: clamp(2rem, 5vw, 3rem);
       font-weight: 300;
       margin-bottom: 40px;
       color: var(--primary-text);
@@ -544,7 +523,7 @@
     }
 
     .about-container p {
-      font-size: 1.2rem;
+      font-size: clamp(1rem, 2vw, 1.2rem);
       line-height: 1.8;
       color: var(--meta-text);
       margin-bottom: 30px;
@@ -577,23 +556,23 @@
     .section {
       display: flex;
       flex-direction: row;
-      min-height: 100vh; /* Changed from height to min-height */
+      min-height: 100vh;
       position: relative;
       scroll-snap-align: start;
-      scroll-snap-stop: normal; /* Allow smoother scrolling through sections */
+      scroll-snap-stop: always;
     }
 
     .section-left {
       width: 40%;
       background: var(--accent-bg);
-      padding: 80px 40px; /* Reduced from 100px to prevent cutoff */
+      padding: 80px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       transition: background var(--transition);
       position: relative;
       z-index: 2;
-      min-height: 100vh; /* Ensure minimum height */
+      min-height: 100vh;
     }
 
     .section-right {
@@ -604,8 +583,8 @@
       background: var(--secondary-bg);
       transition: background var(--transition);
       position: relative;
-      min-height: 100vh; /* Ensure minimum height */
-      padding: 40px 20px; /* Added padding to prevent image cutoff */
+      min-height: 100vh;
+      padding: 40px 20px;
     }
 
     /* Core slide animation - content slides in from left */
@@ -626,57 +605,58 @@
 
     /* Project content styling */
     .project-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--primary-text);
-    opacity: 0.8;
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary-text);
+      opacity: 0.8;
     }
 
     .project-title {
-    font-size: 2rem;
-    font-weight: 400;
-    margin-bottom: 10px;
-    line-height: 1.2;
-    color: var(--primary-text);
+      font-size: clamp(1.3rem, 3vw, 2rem);
+      font-weight: 400;
+      margin-bottom: 10px;
+      line-height: 1.2;
+      color: var(--primary-text);
     }
 
     .project-meta {
       margin-top: 0px;
-      font-size: 0.875rem;
+      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
       color: var(--meta-text);
       transition: color var(--transition);
     }
 
     .project-description {
-        margin-top: 10px;
-        font-size: 1rem;
-        color: var(--meta-text);
-        line-height: 1.6;
+      margin-top: 10px;
+      font-size: clamp(0.9rem, 1.8vw, 1rem);
+      color: var(--meta-text);
+      line-height: 1.6;
     }
 
     /* Project image placeholders */
     .project-images {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 15px; /* Reduced gap */
-        justify-content: center;
-        align-items: center;
-        max-width: 100%; /* Ensure images don't overflow */
-        padding: 20px; /* Added padding for breathing room */
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      align-items: center;
+      max-width: 100%;
+      padding: 20px;
     }
 
     .project-image {
-        width: 300px; /* Reduced from 330px */
-        height: 240px; /* Reduced from 260px */
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: transform 0.6s ease-out;
+      width: 300px;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.6s ease-out;
     }
+
     .project-image:hover {
-        transform: scale(1.15);
-        cursor: pointer;
+      transform: scale(1.15);
+      cursor: pointer;
     }
 
     [data-theme="dark"] .project-image {
@@ -687,17 +667,19 @@
     .section.visible .project-image {
       transform: translateY(-10px) scale(1.02);
     }
+
     .project-image2 {
-        width: 300px; /* Reduced from 330px */
-        height: 320px; /* Reduced from 360px */
-        object-fit: cover;
-        border-radius: 8px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: transform 0.6s ease-out;
+      width: 300px;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      transition: transform 0.6s ease-out;
     }
+
     .project-image2:hover {
-        transform: scale(1.15);
-        cursor: pointer;
+      transform: scale(1.15);
+      cursor: pointer;
     }
 
     [data-theme="dark"] .project-image2 {
@@ -750,10 +732,11 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 80px 40px; /* Reduced from 100px */
+      padding: 80px 40px;
       background: var(--accent-bg);
       transition: background var(--transition);
       scroll-snap-align: start;
+      scroll-snap-stop: always;
     }
 
     .contact-content {
@@ -769,14 +752,14 @@
     }
 
     .contact-content h2 {
-      font-size: 2.5rem;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       font-weight: 300;
       margin-bottom: 20px;
       color: var(--primary-text);
     }
 
     .contact-content p {
-      font-size: 1.1rem;
+      font-size: clamp(0.95rem, 2vw, 1.1rem);
       color: var(--meta-text);
       margin-bottom: 40px;
       line-height: 1.8;
@@ -824,20 +807,36 @@
       transition: height var(--transition);
     }
 
-    /* Mobile Responsive Design */
+    /* Mobile Responsive Design - ENHANCED */
     @media (max-width: 700px) {
       html {
         scroll-snap-type: none;
       }
+
+      body {
+        cursor: auto;
+      }
+
+      .custom-cursor {
+        display: none;
+      }
+
       header {
-        padding: 15px 20px; 
+        padding: 15px 20px;
       }
 
       .nav-center {
-        gap: 30px;
+        gap: 15px;
         flex-wrap: wrap;
         justify-content: center;
+        font-size: 12px;
       }
+
+      .nav-btn {
+        font-size: 12px;
+        padding: 6px 8px;
+      }
+
       /* Mobile dropdown adjustments */
       .dropdown-content {
         position: fixed;
@@ -852,41 +851,42 @@
         transform: translateX(-50%) translateY(0);
       }
 
-      .hero h1 {
-        font-size: 3rem;
-      }
-
-      .hero .subtitle, .dynamic-text {
-        font-size: 1.1rem;
-      }
-
-      .hero .welcome {
-        font-size: 1rem;
-      }
-
-      /* HIDE SKILLS SLIDER ON MOBILE */
+      /* FIXED: Skills slider for mobile */
       .skills-slider {
-        display: none;
+        width: 100%;
+        padding: 20px 0;
+      }
+
+      .slider-track {
+        animation: infiniteScroll 20s linear infinite;
+      }
+
+      .skill-item {
+        min-width: 100px;
+        height: 50px;
+        margin: 0 8px;
+      }
+
+      .skill-text {
+        font-size: 12px;
       }
 
       /* Mobile about section */
-      .about-container h2 {
-        font-size: 2.5rem;
-      }
-
-      .about-container p {
-        font-size: 1.1rem;
+      .about-section {
+        padding: 60px 20px;
       }
 
       /* Mobile layout - stack sections vertically */
       .section {
         flex-direction: column;
         height: auto;
+        min-height: 100vh;
       }
 
       .section-left, .section-right {
         width: 100%;
-        padding: 40px;
+        padding: 40px 20px;
+        min-height: auto;
       }
 
       /* Mobile animation - fade instead of slide */
@@ -906,17 +906,15 @@
         opacity: 0.3;
       }
 
-      .project-title {
-        font-size: 1.8rem;
+      .project-images {
+        padding: 10px;
       }
 
-      .project-number {
-        font-size: 1.5rem;
-      }
-
-      .project-image {
-        max-width: 100%;
-        max-height: 60vh;
+      .project-image,
+      .project-image2 {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
       }
 
       /* Social links horizontal on mobile */
@@ -938,6 +936,10 @@
       .contact-link {
         width: 200px;
         text-align: center;
+      }
+
+      .scroll-indicator {
+        display: none;
       }
     }
 
@@ -999,77 +1001,34 @@
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
       </div>
     </header>
-<section class="hero">
-  <h1 class="typewriter">Shay McKim</h1>
-  <div id="dynamic-text" class="dynamic-text"></div>
-  <p class="subtitle">Mechatronics Engineering at University of Waterloo</p>
-  <p class="welcome">Welcome to my portfolio</p>
-  
-  <div class="skills-slider">
-    <div class="slider-track">
-      <div class="skill-item">
-        <div class="skill-text printing">3D Printing</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text solidworks">SolidWorks</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text autocad">AutoCAD</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text sixsigma">Six Sigma</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text nodejs">Node.js</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text javascript">Javascript</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text web">CSS/HTML</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text planning">Project Planning</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text embedded">Embedded Systems</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text python">Python</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text arduino">Arduino</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text cpp">C++</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text printing">3D Printing</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text solidworks">SolidWorks</div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-text autocad">AutoCAD</div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="scroll-down">scroll ↓</div>
-</section>
 
-    <!-- About Me Section - Simplified -->
+    <section class="hero">
+      <h1 class="typewriter">Shay McKim</h1>
+      <div id="dynamic-text" class="dynamic-text"></div>
+      <p class="subtitle">Mechatronics Engineering at University of Waterloo</p>
+      <p class="welcome">Welcome to my portfolio</p>
+      
+      <div class="skills-slider">
+        <div class="slider-track" id="slider-track">
+          <!-- Skills will be populated by JavaScript for proper infinite loop -->
+        </div>
+      </div>
+      
+      <div class="scroll-down">scroll ↓</div>
+    </section>
+
+    <!-- About Me Section -->
     <section class="about-section" id="about">
       <div class="about-container">
         <h2>About Me</h2>
         <p>
-          Hi! My name's Shay, and I'm a Mechatronics Engineering student at the University of Waterloo. I've been tinkering and working on personal projects for the last five years — building, breaking, and rebuilding all kinds of things. In that time, I've learned how to bring unique ideas to life… and just as many ways not to do things.        </p>
+          Hi! My name's Shay, and I'm a Mechatronics Engineering student at the University of Waterloo. I've been tinkering and working on personal projects for the last five years — building, breaking, and rebuilding all kinds of things. In that time, I've learned how to bring unique ideas to life… and just as many ways not to do things.
+        </p>
         <p>
           Those trial-and-error moments have shaped how I approach problems: with creativity, persistence, and a willingness to try something different. I love working where mechanical, electrical, and software design overlap, and I'm always looking for the next challenge to take on.
         </p>
         <p>
-          Right now, I'm looking for Winter 2026 co-op opportunities where I can put my skills to work and keep learning through hands-on experience. Keep scolling to see more of my work!
-
+          Right now, I'm looking for Winter 2026 co-op opportunities where I can put my skills to work and keep learning through hands-on experience. Keep scrolling to see more of my work!
         </p>
       </div>
       <div class="scroll-down">scroll ↓</div>
@@ -1079,7 +1038,8 @@
       <div class="scroll-progress"></div>
     </div>
 
-    <section class="section" data-project="1" id="first-project">
+    <!-- Project Sections -->
+    <section class="section" data-project="1" id="project-1">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">1</div>
@@ -1087,19 +1047,19 @@
           <div class="project-meta">Front End Web Development</div>
           <p class="project-description"><strong>What?</strong><br> A web application to add to the company's pre-existing website. 
             Designed to schedule the usage of high-value machinery like x-ray and manufacturing equipment, optimizing efficiency for clients.<br><strong> How? </strong><br> Independently developed skills to meet client-specific needs.
-    Built the app using JavaScript, HTML, CSS, and the FullCalendar library <br><strong> Results? </strong><br> The new functionality was seamlessly integrated into the pre-existing website using the foundation I built, to be used by clients. </p>
+    Built the app using JavaScript, HTML, CSS, and the FullCalendar library <br><strong> Results? </strong><br> The new functionality was seamlessly integrated into the pre-existing website using the foundation I built, to be used by clients.</p>
         </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image" src="AddEventView.png" alt="">
-          <img class="project-image" src="CalendarView.png" alt="">
-          <img class="project-image" src="CalendarView2.png" alt="">
+          <img class="project-image" src="AddEventView.png" alt="Add Event View">
+          <img class="project-image" src="CalendarView.png" alt="Calendar View 1">
+          <img class="project-image" src="CalendarView2.png" alt="Calendar View 2">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="2">
+    <section class="section" data-project="2" id="project-2">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">2</div>
@@ -1112,13 +1072,13 @@
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image2" src="Tik.jpg" alt="Garden Party Image 1">
-          <img class="project-image2" src="ArmCAD.png" alt="Garden Party Image 2">
+          <img class="project-image2" src="Tik.jpg" alt="Tic Tac Toe Robot">
+          <img class="project-image2" src="ArmCAD.png" alt="Robot Arm CAD">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="3">
+    <section class="section" data-project="3" id="project-3">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">3</div>
@@ -1131,14 +1091,14 @@
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image" src="PuddingBack.jpg" alt="Async NYC Image 1">
-          <img class="project-image" src="Slider.png" alt="Async NYC Image 2">
-          <img class="project-image" src="pudbot.jpg" alt="Async NYC Image 2">
+          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
+          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
+          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="4">
+    <section class="section" data-project="4" id="project-4">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">4</div>
@@ -1151,14 +1111,14 @@
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image" src="elec.jpeg" alt="Hometown Image 1">
-          <img class="project-image" src="tower.jpeg" alt="Hometown Image 2">
-          <img class="project-image" src="test.jpeg" alt="Hometown Image 3">
+          <img class="project-image" src="elec.jpeg" alt="Electronics">
+          <img class="project-image" src="tower.jpeg" alt="Filtration Tower">
+          <img class="project-image" src="test.jpeg" alt="Water Test">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="5">
+    <section class="section" data-project="5" id="project-5">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">5</div>
@@ -1170,14 +1130,13 @@
           <strong>How?</strong><br>
           Applied statics and energy transfer calculations to optimize arm length and counterweight ratio; sourced and repurposed recycled materials for all structural components; relied entirely on hand tools and practical problem-solving—no computers required.<br>
           <strong>Results?</strong><br>
-          Produced a fully operational trebuchet that consistently hurled projectiles beyond 250 ft, built entirely from recycled scrap. The project showcased resourceful engineering, and sustainable construction.
+          Produced a fully operational trebuchet that consistently hurled projectiles beyond 250 ft, built entirely from recycled scrap. The project showcased resourceful engineering and sustainable construction.
         </p>
-
         </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image2" src="Treb.png" alt="Garden Party Image 1">
+          <img class="project-image2" src="Treb.png" alt="Trebuchet">
           <video class="project-image2" autoplay loop muted playsinline>
             <source src="Trebuchet.mp4" type="video/mp4">
             Your browser does not support the video tag.
@@ -1186,11 +1145,11 @@
       </div>
     </section>
 
-    <section class="section" data-project="6">
+    <section class="section" data-project="6" id="project-6">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">6</div>
-          <h2 class="project-title">Drone Capture Device <br></h2>
+          <h2 class="project-title">Drone Capture Device</h2>
           <div class="project-meta">Mechanical Engineering</div>
           <p class="project-description">
             <strong>What?</strong><br>
@@ -1200,61 +1159,60 @@
             <strong>Results?</strong><br>
             Achieved consistent net deployment in field tests with improved accuracy and reliability compared to initial prototypes, demonstrating feasibility for compact counter-drone applications.
           </p>
-          </div>
+        </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image" src="Net1.jpg" alt="Hometown Image 1">
-          <img class="project-image" src="Net3.jpg" alt="Hometown Image 2">
-          <img class="project-image" src="Net2.jpg" alt="Hometown Image 3">
+          <img class="project-image" src="Net1.jpg" alt="Net Gun 1">
+          <img class="project-image" src="Net3.jpg" alt="Net Gun 2">
+          <img class="project-image" src="Net2.jpg" alt="Net Gun 3">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="7">
+    <section class="section" data-project="7" id="project-7">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">7</div>
-          <h2 class="project-title">Forging <br></h2>
+          <h2 class="project-title">Forging</h2>
           <div class="project-meta">Metal and Woodworking</div>
           <p class="project-description"><strong>What?</strong><br>As a hobby, I've taken on a few forging/knife making projects.<br><strong> How? </strong><br> By building a forge in a hole in the ground, using a hair dryer for airflow. Used a sledge hammer head as an anvil. Spent dozens of hours filing and sanding to finish the blade and handle. 
-            <br><strong> Results? </strong><br>I've made around 5 knives, each one significantly better then the last. I've very proud of the final product you see in these images. </p>
+            <br><strong> Results? </strong><br>I've made around 5 knives, each one significantly better than the last. I'm very proud of the final product you see in these images.</p>
         </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image2" src="knife2.JPG" alt="Garden Party Image 1">
-          <img class="project-image2" src="knife1.JPG" alt="Garden Party Image 2">
+          <img class="project-image2" src="knife2.JPG" alt="Forged Knife 1">
+          <img class="project-image2" src="knife1.JPG" alt="Forged Knife 2">
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="8">
+    <section class="section" data-project="8" id="project-8">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">8</div>
-          <h2 class="project-title">Octopus Inspired Gripper <br></h2>
+          <h2 class="project-title">Octopus Inspired Gripper</h2>
           <div class="project-meta">Modeled in Fusion</div>
-            <p class="project-description"><strong>What?</strong><br>I am currently working on a pulley-actuated robotic gripper. Taking inspiration from the tentacles of an octopus, this gripper should easily grip a large variety of unique shapes. <br><strong> How? </strong><br> Designed using Fusion 360, I've begun 3D printing prototypes with the goal of perfecting the joint tolerances. The arms will be actuated using pulleys and a stepper motor. The grip strength will be monitored by tension load cells attached to the pulley.   <br><strong> Results? </strong><br> Coming soon! The final prototype should grip a variety of objects with a specified force, so as not to damage delicate objects.  </p>        </div>
+          <p class="project-description"><strong>What?</strong><br>I am currently working on a pulley-actuated robotic gripper. Taking inspiration from the tentacles of an octopus, this gripper should easily grip a large variety of unique shapes. <br><strong> How? </strong><br> Designed using Fusion 360, I've begun 3D printing prototypes with the goal of perfecting the joint tolerances. The arms will be actuated using pulleys and a stepper motor. The grip strength will be monitored by tension load cells attached to the pulley.<br><strong> Results? </strong><br> Coming soon! The final prototype should grip a variety of objects with a specified force, so as not to damage delicate objects.</p>
+        </div>
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image2" src="gripper1.png" alt="Garden Party Image 1">
-          <img class="project-image2" src="gripper3.png" alt="Garden Party Image 2">
+          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
+          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
         </div>
       </div>
     </section>
-    
 
-    
     <div id="lightbox" class="lightbox">
-  <span class="close-lightbox">&times;</span>
-  <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
-  <video class="lightbox-content" id="lightbox-video" controls autoplay loop muted playsinline>
-    <source id="lightbox-video-source" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
-</div>
+      <span class="close-lightbox">&times;</span>
+      <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
+      <video class="lightbox-content" id="lightbox-video" controls autoplay loop muted playsinline>
+        <source id="lightbox-video-source" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
 
     <section class="contact-section" id="contact">
       <div class="contact-content">
@@ -1269,7 +1227,7 @@
     </section>
   </div>
 
- <script>
+<script>
   document.addEventListener('DOMContentLoaded', () => {
     initializePortfolio();
   });
@@ -1288,8 +1246,13 @@
 
     console.log(`Portfolio initialized with ${sections.length} sections`);
 
-    // Initialize custom cursor
-    initCustomCursor();
+    // Initialize custom cursor (only on desktop)
+    if (window.innerWidth > 700) {
+      initCustomCursor();
+    }
+
+    // Initialize skills slider with proper infinite loop
+    initSkillsSlider();
 
     // Theme Management - Load saved theme preference
     const currentTheme = localStorage.getItem('theme') || 'light';
@@ -1330,7 +1293,7 @@
         if (charIndex === 0) {
           isDeleting = false;
           phraseIndex = (phraseIndex + 1) % phrases.length;
-          setTimeout(typeWriter, 500); // Pause before typing next phrase
+          setTimeout(typeWriter, 500);
           return;
         }
         
@@ -1344,7 +1307,7 @@
         
         if (charIndex === currentPhrase.length) {
           isDeleting = true;
-          setTimeout(typeWriter, pauseDelay); // Pause before deleting
+          setTimeout(typeWriter, pauseDelay);
           return;
         }
         
@@ -1376,105 +1339,82 @@
     if (aboutBtn) {
       aboutBtn.addEventListener('click', () => {
         const aboutSection = document.getElementById('about');
-        smoothScrollTo(aboutSection);
+         smoothScrollTo(aboutSection);
       });
     }
 
     // Projects dropdown functionality
-const projectsDropdown = document.getElementById('projects-dropdown');
-let dropdownTimeout;
+    const projectsDropdown = document.getElementById('projects-dropdown');
+    let dropdownTimeout;
 
-if (projectsBtn && projectsDropdown) {
-  // Toggle dropdown on click
-  projectsBtn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isOpen = projectsDropdown.classList.contains('show');
-    
-    if (isOpen) {
-      closeDropdown();
-    } else {
-      openDropdown();
-    }
-  });
-
-  // Handle project selection from dropdown
-  projectsDropdown.addEventListener('click', (e) => {
-    if (e.target.tagName === 'A') {
-      e.preventDefault();
-      const projectNumber = e.target.dataset.project;
-      console.log('Clicked project:', projectNumber); // Debug log
-      
-      // Try multiple ways to find the target section
-      let targetSection = document.querySelector(`section[data-project="${projectNumber}"]`);
-      
-      if (!targetSection) {
-        // Fallback: try to find by ID for first project
-        if (projectNumber === '1') {
-          targetSection = document.getElementById('first-project');
+    if (projectsBtn && projectsDropdown) {
+      // Toggle dropdown on click
+      projectsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = projectsDropdown.classList.contains('show');
+        
+        if (isOpen) {
+          closeDropdown();
+        } else {
+          openDropdown();
         }
-      }
-      
-      if (!targetSection) {
-        // Another fallback: find all sections and get by index
-        const allSections = document.querySelectorAll('.section');
-        const index = parseInt(projectNumber) - 1;
-        if (index >= 0 && index < allSections.length) {
-          targetSection = allSections[index];
+      });
+
+      // Handle project selection from dropdown
+      projectsDropdown.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          e.preventDefault();
+          const projectNumber = e.target.dataset.project;
+          const targetSection = document.querySelector(`#project-${projectNumber}`);
+          
+          if (targetSection) {
+            smoothScrollTo(targetSection);
+            closeDropdown();
+          }
         }
+      });
+
+      // Show dropdown on hover with delay
+      projectsBtn.addEventListener('mouseenter', () => {
+        clearTimeout(dropdownTimeout);
+        dropdownTimeout = setTimeout(openDropdown, 200);
+      });
+
+      // Hide dropdown when leaving both button and dropdown
+      projectsBtn.addEventListener('mouseleave', () => {
+        clearTimeout(dropdownTimeout);
+        dropdownTimeout = setTimeout(() => {
+          if (!projectsDropdown.matches(':hover') && !projectsBtn.matches(':hover')) {
+            closeDropdown();
+          }
+        }, 300);
+      });
+
+      projectsDropdown.addEventListener('mouseenter', () => {
+        clearTimeout(dropdownTimeout);
+      });
+
+      projectsDropdown.addEventListener('mouseleave', () => {
+        dropdownTimeout = setTimeout(closeDropdown, 200);
+      });
+
+      function openDropdown() {
+        projectsDropdown.classList.add('show');
+        projectsBtn.classList.add('active');
       }
-      
-      console.log('Target section found:', targetSection); // Debug log
-      
-      if (targetSection) {
-        smoothScrollTo(targetSection);
-        closeDropdown();
-      } else {
-        console.error('Could not find project section:', projectNumber);
+
+      function closeDropdown() {
+        projectsDropdown.classList.remove('show');
+        projectsBtn.classList.remove('active');
       }
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) {
+          closeDropdown();
+        }
+      });
     }
-  });
-
-  // Show dropdown on hover with delay
-  projectsBtn.addEventListener('mouseenter', () => {
-    clearTimeout(dropdownTimeout);
-    dropdownTimeout = setTimeout(openDropdown, 200);
-  });
-
-  // Hide dropdown when leaving both button and dropdown
-  projectsBtn.addEventListener('mouseleave', () => {
-    clearTimeout(dropdownTimeout);
-    dropdownTimeout = setTimeout(() => {
-      if (!projectsDropdown.matches(':hover') && !projectsBtn.matches(':hover')) {
-        closeDropdown();
-      }
-    }, 300);
-  });
-
-  projectsDropdown.addEventListener('mouseenter', () => {
-    clearTimeout(dropdownTimeout);
-  });
-
-  projectsDropdown.addEventListener('mouseleave', () => {
-    dropdownTimeout = setTimeout(closeDropdown, 200);
-  });
-
-  function openDropdown() {
-    projectsDropdown.classList.add('show');
-    projectsBtn.classList.add('active');
-  }
-
-  function closeDropdown() {
-    projectsDropdown.classList.remove('show');
-    projectsBtn.classList.remove('active');
-  }
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) {
-      closeDropdown();
-    }
-  });
-}
 
     if (contactBtn) {
       contactBtn.addEventListener('click', () => {
@@ -1624,77 +1564,195 @@ if (projectsBtn && projectsDropdown) {
       });
     });
 
-// Lightbox functionality
-const lightbox = document.getElementById('lightbox');
-const lightboxImg = document.getElementById('lightbox-img');
-const lightboxVideo = document.getElementById('lightbox-video');
-const lightboxVideoSource = document.getElementById('lightbox-video-source');
-const closeBtn = document.querySelector('.close-lightbox');
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxVideo = document.getElementById('lightbox-video');
+    const lightboxVideoSource = document.getElementById('lightbox-video-source');
+    const closeBtn = document.querySelector('.close-lightbox');
 
-// Add click handler to all project images and videos
-document.querySelectorAll('.project-image, .project-image2, video').forEach(el => {
-  el.addEventListener('click', () => {
-    lightbox.style.display = 'flex';
+    // Add click handler to all project images and videos
+    document.querySelectorAll('.project-image, .project-image2, video').forEach(el => {
+      el.addEventListener('click', () => {
+        lightbox.style.display = 'flex';
 
-    if (el.tagName.toLowerCase() === 'img') {
-      // Show image
-      lightboxImg.src = el.src;
-      lightboxImg.alt = el.alt;
-      lightboxImg.style.display = 'block';
+        if (el.tagName.toLowerCase() === 'img') {
+          // Show image
+          lightboxImg.src = el.src;
+          lightboxImg.alt = el.alt;
+          lightboxImg.style.display = 'block';
 
-      // Hide and reset video
-      lightboxVideo.style.display = 'none';
+          // Hide and reset video
+          lightboxVideo.style.display = 'none';
+          lightboxVideo.pause();
+          lightboxVideoSource.src = '';
+          lightboxVideo.load();
+        } 
+        else if (el.tagName.toLowerCase() === 'video') {
+          // Grab the video source
+          const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
+
+          // Show video
+          lightboxVideoSource.src = videoSrc;
+          lightboxVideo.load();
+          lightboxVideo.style.display = 'block';
+          lightboxVideo.play();
+
+          // Hide image
+          lightboxImg.style.display = 'none';
+          lightboxImg.src = '';
+        }
+      });
+    });
+
+    // Close modal when clicking close button
+    closeBtn.addEventListener('click', () => {
+      lightbox.style.display = 'none';
+      lightboxImg.src = '';
+
       lightboxVideo.pause();
       lightboxVideoSource.src = '';
       lightboxVideo.load();
-    } 
-    else if (el.tagName.toLowerCase() === 'video') {
-      // Grab the video source
-      const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
+    });
 
-      // Show video
-      lightboxVideoSource.src = videoSrc;
-      lightboxVideo.load();
-      lightboxVideo.style.display = 'block';
-      lightboxVideo.play();
+    // Close modal when clicking outside the content
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) {
+        lightbox.style.display = 'none';
+        lightboxImg.src = '';
 
-      // Hide image
-      lightboxImg.style.display = 'none';
-      lightboxImg.src = '';
-    }
-  });
-});
-
-// Close modal when clicking close button
-closeBtn.addEventListener('click', () => {
-  lightbox.style.display = 'none';
-  lightboxImg.src = '';
-
-  lightboxVideo.pause();
-  lightboxVideoSource.src = '';
-  lightboxVideo.load();
-});
-
-// Close modal when clicking outside the content
-lightbox.addEventListener('click', (e) => {
-  if (e.target === lightbox) {
-    lightbox.style.display = 'none';
-    lightboxImg.src = '';
-
-    lightboxVideo.pause();
-    lightboxVideoSource.src = '';
-    lightboxVideo.load();
-  }
-});
-
-
+        lightboxVideo.pause();
+        lightboxVideoSource.src = '';
+        lightboxVideo.load();
+      }
+    });
 
     console.log('Portfolio initialized successfully! 🚀');
+  }
+
+  // Initialize skills slider with proper infinite loop
+  function initSkillsSlider() {
+    const sliderTrack = document.getElementById('slider-track');
+    if (!sliderTrack) return;
+
+    const skills = [
+      { text: '3D Printing', class: 'printing' },
+      { text: 'SolidWorks', class: 'solidworks' },
+      { text: 'AutoCAD', class: 'autocad' },
+      { text: 'Six Sigma', class: 'sixsigma' },
+      { text: 'Node.js', class: 'nodejs' },
+      { text: 'Javascript', class: 'javascript' },
+      { text: 'CSS/HTML', class: 'web' },
+      { text: 'Project Planning', class: 'planning' },
+      { text: 'Embedded Systems', class: 'embedded' },
+      { text: 'Python', class: 'python' },
+      { text: 'Arduino', class: 'arduino' },
+      { text: 'C++', class: 'cpp' }
+    ];
+
+    // Create double set of skills for seamless loop
+    const doubleSkills = [...skills, ...skills];
+
+    // Clear existing content
+    sliderTrack.innerHTML = '';
+
+    // Populate slider track
+    doubleSkills.forEach(skill => {
+      const skillItem = document.createElement('div');
+      skillItem.className = 'skill-item';
+      
+      const skillText = document.createElement('div');
+      skillText.className = `skill-text ${skill.class}`;
+      skillText.textContent = skill.text;
+      
+      skillItem.appendChild(skillText);
+      sliderTrack.appendChild(skillItem);
+    });
+
+    // Add specific brand colors styling
+    const style = document.createElement('style');
+    style.textContent = `
+      .react { color: #61dafb; }
+      .javascript { 
+        color: #000; 
+        background: #f7df1e; 
+        padding: 2px 6px; 
+        border-radius: 4px; 
+        font-size: 12px;
+      }
+      .python { color: #3776ab; }
+      .figma { 
+        background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .solidworks { color: #ff6600; }
+      .arduino { color: #00979d; }
+      .flutter { color: #02569b; }
+      .nodejs { color: #339933; }
+      .mongodb { color: #47a248; }
+      .aws { color: #ff9900; }
+      .matlab { color: #0076a8; }
+      .autocad { color: #e51937; }
+      .cpp { color: #00599c; }
+      .printing { color: #ff6b35; }
+      .sixsigma { color: #2c5aa0; }
+      .web { 
+        background: linear-gradient(45deg, #e34c26, #1572b6); 
+        -webkit-background-clip: text; 
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+      .planning { color: #6c757d; }
+      .embedded { color: #28a745; }
+    `;
+    document.head.appendChild(style);
+
+    // Add touch support for mobile
+    let isDown = false;
+    let startX;
+    let scrollLeft;
+    let velocity = 0;
+    let rafId;
+
+    sliderTrack.addEventListener('touchstart', (e) => {
+      isDown = true;
+      startX = e.touches[0].pageX - sliderTrack.offsetLeft;
+      scrollLeft = sliderTrack.scrollLeft;
+      cancelAnimationFrame(rafId);
+    });
+
+    sliderTrack.addEventListener('touchmove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.touches[0].pageX - sliderTrack.offsetLeft;
+      const walk = (x - startX) * 2;
+      sliderTrack.scrollLeft = scrollLeft - walk;
+      velocity = walk;
+    });
+
+    sliderTrack.addEventListener('touchend', () => {
+      isDown = false;
+      
+      // Apply momentum
+      const decelerate = () => {
+        velocity *= 0.95;
+        sliderTrack.scrollLeft -= velocity;
+        
+        if (Math.abs(velocity) > 0.5) {
+          rafId = requestAnimationFrame(decelerate);
+        }
+      };
+      decelerate();
+    });
   }
 
   // Custom Cursor Implementation
   function initCustomCursor() {
     const cursor = document.querySelector('.custom-cursor');
+    if (!cursor) return;
+    
     let mouseX = 0;
     let mouseY = 0;
 
@@ -1735,6 +1793,7 @@ lightbox.addEventListener('click', (e) => {
       cursor.style.display = 'none';
     }
   }
-  </script>
+</script>
 </body>
 </html>
+        
