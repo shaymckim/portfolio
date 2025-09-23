@@ -394,10 +394,10 @@
 
     @keyframes infiniteScroll {
       0% {
-        transform: translateX(0);
+        transform: translate3d(0, 0, 0);
       }
       100% {
-        transform: translateX(-50%);
+        transform: translate3d(-50%, 0, 0);
       }
     }
 
@@ -855,26 +855,22 @@
       .skills-slider {
         width: 100%;
         padding: 20px 0;
-        touch-action: none;
+        touch-action: pan-y;
         -webkit-user-select: none;
         user-select: none;
+        -webkit-overflow-scrolling: touch;
       }
 
       .slider-track {
-        animation: infiniteScrollMobile 20s linear infinite;
+        animation: infiniteScroll 15s linear infinite !important;
         animation-play-state: running !important;
-        transform: translateZ(0);
+        transform: translate3d(0, 0, 0);
+        will-change: transform;
         backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        -webkit-transform: translate3d(0, 0, 0);
+        -webkit-perspective: 1000px;
         perspective: 1000px;
-      }
-
-      @keyframes infiniteScrollMobile {
-        0% {
-          transform: translate3d(0, 0, 0);
-        }
-        100% {
-          transform: translate3d(-50%, 0, 0);
-        }
       }
 
       .skill-item {
@@ -882,6 +878,8 @@
         height: 50px;
         margin: 0 8px;
         pointer-events: none;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
       }
 
       .skill-text {
