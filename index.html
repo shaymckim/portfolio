@@ -855,16 +855,33 @@
       .skills-slider {
         width: 100%;
         padding: 20px 0;
+        touch-action: none;
+        -webkit-user-select: none;
+        user-select: none;
       }
 
       .slider-track {
-        animation: infiniteScroll 20s linear infinite;
+        animation: infiniteScrollMobile 20s linear infinite;
+        animation-play-state: running !important;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        perspective: 1000px;
+      }
+
+      @keyframes infiniteScrollMobile {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        100% {
+          transform: translate3d(-50%, 0, 0);
+        }
       }
 
       .skill-item {
         min-width: 100px;
         height: 50px;
         margin: 0 8px;
+        pointer-events: none;
       }
 
       .skill-text {
@@ -1115,7 +1132,7 @@
         <div class="section-content">
           <div class="project-number">5</div>
           <h2 class="project-title">12ft Trebuchet!</h2>
-          <div class="project-meta">Statics · Energy Calculations · Hands-on Design</div>
+          <div class="project-meta">Hands-on Design</div>
           <p class="project-description">
           <strong>What?</strong><br>
           Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.<br>
@@ -1621,124 +1638,88 @@
 
     console.log('Portfolio initialized successfully! 🚀');
   }
+// Initialize skills slider with proper infinite loop
+function initSkillsSlider() {
+  const sliderTrack = document.getElementById('slider-track');
+  if (!sliderTrack) return;
 
-  // Initialize skills slider with proper infinite loop
-  function initSkillsSlider() {
-    const sliderTrack = document.getElementById('slider-track');
-    if (!sliderTrack) return;
+  const skills = [
+    { text: '3D Printing', class: 'printing' },
+    { text: 'SolidWorks', class: 'solidworks' },
+    { text: 'AutoCAD', class: 'autocad' },
+    { text: 'Six Sigma', class: 'sixsigma' },
+    { text: 'Fusion 360', class: 'Fusion360' },
+    { text: 'Javascript', class: 'javascript' },
+    { text: 'CSS/HTML', class: 'web' },
+    { text: 'Project Planning', class: 'planning' },
+    { text: 'Embedded Systems', class: 'embedded' },
+    { text: 'Python', class: 'python' },
+    { text: 'Arduino', class: 'arduino' },
+    { text: 'C++', class: 'cpp' }
+  ];
 
-    const skills = [
-      { text: '3D Printing', class: 'printing' },
-      { text: 'SolidWorks', class: 'solidworks' },
-      { text: 'AutoCAD', class: 'autocad' },
-      { text: 'Six Sigma', class: 'sixsigma' },
-      { text: 'Fusion 360', class: 'Fusion360' },
-      { text: 'Javascript', class: 'javascript' },
-      { text: 'CSS/HTML', class: 'web' },
-      { text: 'Project Planning', class: 'planning' },
-      { text: 'Embedded Systems', class: 'embedded' },
-      { text: 'Python', class: 'python' },
-      { text: 'Arduino', class: 'arduino' },
-      { text: 'C++', class: 'cpp' }
-    ];
+  // Create double set of skills for seamless loop
+  const doubleSkills = [...skills, ...skills];
 
-    // Create double set of skills for seamless loop
-    const doubleSkills = [...skills, ...skills];
+  // Clear existing content
+  sliderTrack.innerHTML = '';
 
-    // Clear existing content
-    sliderTrack.innerHTML = '';
+  // Populate slider track
+  doubleSkills.forEach(skill => {
+    const skillItem = document.createElement('div');
+    skillItem.className = 'skill-item';
+    
+    const skillText = document.createElement('div');
+    skillText.className = `skill-text ${skill.class}`;
+    skillText.textContent = skill.text;
+    
+    skillItem.appendChild(skillText);
+    sliderTrack.appendChild(skillItem);
+  });
 
-    // Populate slider track
-    doubleSkills.forEach(skill => {
-      const skillItem = document.createElement('div');
-      skillItem.className = 'skill-item';
-      
-      const skillText = document.createElement('div');
-      skillText.className = `skill-text ${skill.class}`;
-      skillText.textContent = skill.text;
-      
-      skillItem.appendChild(skillText);
-      sliderTrack.appendChild(skillItem);
-    });
+  // Add specific brand colors styling
+  const style = document.createElement('style');
+  style.textContent = `
+    .react { color: #61dafb; }
+    .javascript { 
+      color: #000; 
+      background: #f7df1e; 
+      padding: 2px 6px; 
+      border-radius: 4px; 
+      font-size: 12px;
+    }
+    .python { color: #3776ab; }
+    .figma { 
+      background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .solidworks { color: #ff6600; }
+    .arduino { color: #00979d; }
+    .flutter { color: #02569b; }
+    .Fusion360 { color: #339933; }
+    .mongodb { color: #47a248; }
+    .aws { color: #ff9900; }
+    .matlab { color: #0076a8; }
+    .autocad { color: #e51937; }
+    .cpp { color: #00599c; }
+    .printing { color: #ff6b35; }
+    .sixsigma { color: #2c5aa0; }
+    .web { 
+      background: linear-gradient(45deg, #e34c26, #1572b6); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .planning { color: #6c757d; }
+    .embedded { color: #28a745; }
+  `;
+  document.head.appendChild(style);
 
-    // Add specific brand colors styling
-    const style = document.createElement('style');
-    style.textContent = `
-      .react { color: #61dafb; }
-      .javascript { 
-        color: #000; 
-        background: #f7df1e; 
-        padding: 2px 6px; 
-        border-radius: 4px; 
-        font-size: 12px;
-      }
-      .python { color: #3776ab; }
-      .figma { 
-        background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .solidworks { color: #ff6600; }
-      .arduino { color: #00979d; }
-      .flutter { color: #02569b; }
-      .Fusion360 { color: #339933; }
-      .mongodb { color: #47a248; }
-      .aws { color: #ff9900; }
-      .matlab { color: #0076a8; }
-      .autocad { color: #e51937; }
-      .cpp { color: #00599c; }
-      .printing { color: #ff6b35; }
-      .sixsigma { color: #2c5aa0; }
-      .web { 
-        background: linear-gradient(45deg, #e34c26, #1572b6); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .planning { color: #6c757d; }
-      .embedded { color: #28a745; }
-    `;
-    document.head.appendChild(style);
-
-    // Add touch support for mobile
-    let isDown = false;
-    let startX;
-    let scrollLeft;
-    let velocity = 0;
-    let rafId;
-
-    sliderTrack.addEventListener('touchstart', (e) => {
-      isDown = true;
-      startX = e.touches[0].pageX - sliderTrack.offsetLeft;
-      scrollLeft = sliderTrack.scrollLeft;
-      cancelAnimationFrame(rafId);
-    });
-
-    sliderTrack.addEventListener('touchmove', (e) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.touches[0].pageX - sliderTrack.offsetLeft;
-      const walk = (x - startX) * 2;
-      sliderTrack.scrollLeft = scrollLeft - walk;
-      velocity = walk;
-    });
-
-    sliderTrack.addEventListener('touchend', () => {
-      isDown = false;
-      
-      // Apply momentum
-      const decelerate = () => {
-        velocity *= 0.95;
-        sliderTrack.scrollLeft -= velocity;
-        
-        if (Math.abs(velocity) > 0.5) {
-          rafId = requestAnimationFrame(decelerate);
-        }
-      };
-      decelerate();
-    });
-  }
+  // REMOVED: Touch event handlers that interfere with CSS animation
+  // Let the CSS animation handle everything automatically
+}
 
   // Custom Cursor Implementation
   function initCustomCursor() {
