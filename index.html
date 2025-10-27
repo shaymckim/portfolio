@@ -1028,18 +1028,16 @@
     <header>
       <div class="nav-center">
         <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
-        <div class="dropdown">
-          <button class="nav-btn dropdown-btn" id="projects-btn" aria-label="View projects">⌘ | projects ▼</button>
-          <div class="dropdown-content" id="projects-dropdown">
-            <a href="#" data-project="1">Calendar Application</a>
-            <a href="#" data-project="2">Interactive 4 Axis Robot</a>
-            <a href="#" data-project="3">Culinary Robotics System</a>
-            <a href="#" data-project="4">Filtration System</a>
-            <a href="#" data-project="5">12ft Trebuchet!</a>
-            <a href="#" data-project="6">Drone Capture Device</a>
-            <a href="#" data-project="7">Forging</a>
-            <a href="#" data-project="8">Octopus Inspired Gripper</a>
-          </div>
+        <div class="dropdown-content" id="projects-dropdown">
+        <a href="#project-1" data-project="1">12ft Trebuchet!</a>
+        <a href="#project-2" data-project="2">Calendar Application</a>
+        <a href="#project-3" data-project="3">Interactive 4 Axis Robot</a>
+        <a href="#project-4" data-project="4">Filtration System</a>
+        <a href="#project-5" data-project="5">Drone Capture Device</a>
+        <a href="#project-6" data-project="6">Octopus Inspired Gripper</a>
+        <a href="#project-7" data-project="7">Automated Culinary Robotics</a>
+        <a href="#project-8" data-project="8">Forging</a>
+      </div>
         </div>
         <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
@@ -1061,32 +1059,38 @@
       <div class="scroll-down">scroll ↓</div>
     </section>
 
-    <!-- About Me Section -->
-    <section class="about-section" id="about">
-    <div class="about-container">
-      <h2>About Me</h2>
-      <p>
-        Hi! I’m Shay, a Mechatronics Engineering student at the University of Waterloo. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
-      </p>
-      <p>
-        Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to build cool stuff).
-      </p>
-      <p>
-        I’m currently looking for Winter and Summer 2026 co-op opportunities to apply my skills in hands-on engineering while continuing to learn from new challenges. Keep scrolling to see more of my work!
-      </p>
-    </div>
-    <div class="scroll-down">scroll ↓</div>
-  </section>
-
-    <div class="scroll-indicator">
-      <div class="scroll-progress"></div>
-    </div>
-
     <!-- Project Sections -->
     <section class="section" data-project="1" id="project-1">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">1</div>
+          <h2 class="project-title">12ft Trebuchet!</h2>
+          <div class="project-meta">Hands-on Design</div>
+          <p class="project-description">
+            <strong>What?</strong><br>
+            Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.<br>
+            <strong>How?</strong><br>
+            Recycled wood from a demolished deck and used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm lengths and counterweight ratios.<br>
+            <strong>Results?</strong><br>
+            Built a fully functional trebuchet that consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering, and effective collaboration.<br>
+          </p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="Treb.png" alt="Trebuchet">
+          <video class="project-image2" autoplay loop muted playsinline>
+            <source src="Trebuchet.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="2" id="project-2">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">2</div>
           <h2 class="project-title">Calendar Application<br>for PolySense Solutions</h2>
           <div class="project-meta">JavaScript · HTML/CSS · FullCalendar</div>
           <p class="project-description"><strong>What?</strong><br> A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.<br><strong> How? </strong><br> Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.<br><strong> Results? </strong><br> Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</p>
@@ -1101,10 +1105,10 @@
       </div>
     </section>
 
-    <section class="section" data-project="2" id="project-2">
+    <section class="section" data-project="3" id="project-3">
       <div class="section-left">
         <div class="section-content">
-          <div class="project-number">2</div>
+          <div class="project-number">3</div>
           <h2 class="project-title">Interactive<br>4 Axis Robot</h2>
           <div class="project-meta">Fusion 360 · Arduino (C++) · Python</div>
           <p class="project-description"><strong>What?</strong><br>A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.<br><strong> How? </strong><br> Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.<br><strong> Results? </strong><br>The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</p>
@@ -1118,23 +1122,27 @@
       </div>
     </section>
 
-    <section class="section" data-project="3" id="project-3">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">3</div>
-          <h2 class="project-title">Automated Culinary Robotics System</h2>
-          <div class="project-meta">C++ · Fusion 360 · LEGO Technic</div>
-          <p class="project-description"><strong>What?</strong><br>A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users could select flavors, and the machine handled the rest.<br><strong> How? </strong><br>Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.<br><strong> Results? </strong><br>Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
-          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
-          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
-        </div>
-      </div>
-    </section>
+    <!-- About Me Section -->
+    <section class="about-section" id="about">
+    <div class="about-container">
+      <h2>Keep Scrolling for More Projects!</h2>
+      <p>Or let me tell you more about me:</p>
+     <p>
+       Hi! I’m Shay, a <strong>Mechatronics Engineering</strong> student at the <strong>University of Waterloo</strong>. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
+     </p>
+     <p>
+       Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to <strong>build cool stuff</strong>).
+     </p>
+     <p>
+       I’m currently looking for <strong>Winter and Summer 2026</strong> co-op opportunities to apply my skills in hands-on engineering while continuing to learn from new challenges. Keep scrolling to see more of my work!
+     </p>
+    </div>
+    <div class="scroll-down">scroll ↓</div>
+  </section>
+
+    <div class="scroll-indicator">
+      <div class="scroll-progress"></div>
+    </div>
 
     <section class="section" data-project="4" id="project-4">
       <div class="section-left">
@@ -1158,33 +1166,6 @@
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">5</div>
-          <h2 class="project-title">12ft Trebuchet!</h2>
-          <div class="project-meta">Hands-on Design</div>
-          <p class="project-description">
-          <strong>What?</strong><br>
-          Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.<br>
-          <strong>How?</strong><br>
-          Recycled wood from a demolished deck and used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm lengths and counterweight ratios.<br>
-          <strong>Results?</strong><br>
-          Built a fully functional trebuchet that consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering, and effective collaboration.<br>
-        </p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image2" src="Treb.png" alt="Trebuchet">
-          <video class="project-image2" autoplay loop muted playsinline>
-            <source src="Trebuchet.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="6" id="project-6">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">6</div>
           <h2 class="project-title">Drone Capture Device</h2>
           <div class="project-meta">Fusion 360 · CAD Iteration · Prototyping</div>
           <p class="project-description">
@@ -1206,10 +1187,45 @@
       </div>
     </section>
 
+    <section class="section" data-project="6" id="project-6">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">6</div>
+          <h2 class="project-title">Octopus Inspired Gripper</h2>
+          <div class="project-meta">Fusion 360 · 3D Printing · Robotics</div>
+          <p class="project-description"><strong>What?</strong><br>I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.<br><strong> How? </strong><br> Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.<br><strong> Results? </strong><br> Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
+          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
+        </div>
+      </div>
+    </section>
+
     <section class="section" data-project="7" id="project-7">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">7</div>
+          <h2 class="project-title">Automated Culinary Robotics System</h2>
+          <div class="project-meta">C++ · Fusion 360 · LEGO Technic</div>
+          <p class="project-description"><strong>What?</strong><br>A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users could select flavors, and the machine handled the rest.<br><strong> How? </strong><br>Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.<br><strong> Results? </strong><br>Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
+          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
+          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="8" id="project-8">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">8</div>
           <h2 class="project-title">Forging</h2>
           <div class="project-meta">Blacksmithing · Hand Tools · Woodworking</div>
           <p class="project-description"><strong>What?</strong><br>As a hobby, I’ve taken on a handful of forging and knife-making projects.<br><strong> How? </strong><br> Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.<br><strong> Results? </strong><br>I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</p>
@@ -1223,22 +1239,6 @@
       </div>
     </section>
 
-    <section class="section" data-project="8" id="project-8">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">8</div>
-          <h2 class="project-title">Octopus Inspired Gripper</h2>
-          <div class="project-meta">Fusion 360 · 3D Printing · Robotics</div>
-          <p class="project-description"><strong>What?</strong><br>I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.<br><strong> How? </strong><br> Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.<br><strong> Results? </strong><br> Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
-          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
-        </div>
-      </div>
-    </section>
 
 
     <div id="lightbox" class="lightbox">
