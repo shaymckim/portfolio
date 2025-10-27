@@ -1026,9 +1026,19 @@
 
   <div id="main-content" class="main-content">
     <header>
-      <div class="nav-center">
-        <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
-        <div class="dropdown-content" id="projects-dropdown">
+  <div class="nav-center">
+
+    <!-- About Button -->
+    <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
+
+    <!-- Project Dropdown: Wrapper for button + content -->
+    <div class="dropdown">
+      
+      <!-- Button to *open* the dropdown -->
+      <button class="nav-btn" id="projects-btn" aria-label="View projects"> 📁 | projects</button>
+
+      <!-- The dropdown content (hidden by default) -->
+      <div class="dropdown-content" id="projects-dropdown">
         <a href="#project-1" data-project="1">12ft Trebuchet!</a>
         <a href="#project-2" data-project="2">Calendar Application</a>
         <a href="#project-3" data-project="3">Interactive 4 Axis Robot</a>
@@ -1038,11 +1048,18 @@
         <a href="#project-7" data-project="7">Automated Culinary Robotics</a>
         <a href="#project-8" data-project="8">Forging</a>
       </div>
-        </div>
-        <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
-        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-      </div>
-    </header>
+    </div>
+
+    <!-- Contact Button -->
+    <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
+  
+    <!-- Dark Mode Toggle -->
+    <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
+
+    
+
+  </div>
+</header>
 
     <section class="hero">
       <h1 class="typewriter">Shay McKim</h1>
@@ -1078,11 +1095,11 @@
       </div>
       <div class="section-right">
         <div class="project-images">
-          <img class="project-image2" src="Treb.png" alt="Trebuchet">
           <video class="project-image2" autoplay loop muted playsinline>
             <source src="Trebuchet.mp4" type="video/mp4">
             Your browser does not support the video tag.
           </video>
+          <img class="project-image2" src="Treb.png" alt="Trebuchet">
         </div>
       </div>
     </section>
