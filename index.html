@@ -125,6 +125,7 @@
       z-index: 10;
       scroll-snap-align: start;
       scroll-snap-stop: always;
+      background-color: var(--intro-bg);
     }
     
     #hero-video {
@@ -791,6 +792,11 @@
         max-width: 280px;
       }
       .dropdown-content.show { transform: translateX(-50%) translateY(0); }
+
+      /* Modifying the hero video for mobile so it fits the screen fully */
+      #hero-video {
+        object-fit: contain;
+      }
 
       .about-section { padding: 60px 20px; }
       
