@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shay McKim - Portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  
   <style>
     /* CSS Custom Properties - Consolidated theme management */
     :root {
@@ -27,6 +29,12 @@
       --transition: 0.3s ease;
       --slide-transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
       --exit-transition: 0.8s cubic-bezier(0.6, 0, 0.4, 1);
+      
+      /* Intro Sequence Variables */
+      --font-mono: 'Space Mono', monospace;
+      --intro-bg: #050505;
+      --intro-text: #f0f0f0;
+      --overlay-opacity: 0.8;
     }
 
     /* Dark theme overrides */
@@ -50,12 +58,10 @@
 
     html {
       scroll-behavior: smooth;
-      /* Improved snap scrolling for desktop */
       scroll-snap-type: y proximity;
       scroll-padding-top: 0;
     }
 
-    /* Desktop-specific snap scrolling */
     @media (min-width: 701px) {
       html {
         scroll-snap-type: y mandatory;
@@ -72,17 +78,127 @@
       cursor: none;
     }
 
-    /* Apply dark background gradient */
     [data-theme="dark"] body {
       background: var(--primary-bg-dark);
     }
 
+    /* =========================================
+       INTRO SEQUENCE STYLES
+       ========================================= */
+    #noise-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    #preloader {
+      position: fixed; inset: 0;
+      background-color: var(--intro-bg);
+      display: flex; justify-content: center; align-items: center;
+      z-index: 1000; transition: opacity 0.4s ease;
+    }
+    
+    .tension-meter-container {
+      width: 200px; height: 1px;
+      background-color: rgba(255, 255, 255, 0.2);
+      margin: 0 auto 15px auto; overflow: hidden;
+    }
+    
+    #tension-meter-fill {
+      height: 100%; width: 0%;
+      background-color: var(--intro-text);
+      transition: width 0.2s ease;
+    }
+    
+    .loader-text {
+      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.6); text-align: center;
+    }
+
+    #hero {
+      position: relative;
+      width: 100vw; height: 100vh;
+      overflow: hidden;
+      z-index: 10;
+      scroll-snap-align: start;
+      scroll-snap-stop: always;
+    }
+    
+    #hero-video {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: filter 0.8s ease;
+    }
+    
+    #hero-video.frozen { filter: grayscale(100%) brightness(0.4) contrast(1.2); }
+    
+    #video-overlay {
+      position: absolute; inset: 0;
+      background-color: var(--intro-bg);
+      opacity: 0; transition: opacity 0.8s ease; z-index: 2;
+    }
+    
+    #video-overlay.active { opacity: var(--overlay-opacity); }
+
+    #titles-container {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 3; text-align: center; width: 90%;
+    }
+    
+    .hero-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1rem, 1.5vw, 1.5rem);
+      font-weight: 300; letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--intro-text);
+      opacity: 0;
+    }
+    
+    .fade-in { animation: fadeInEffect 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+    @keyframes fadeInEffect {
+      0% { transform: translateY(15px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    
+    .shake-high { animation: shakeViolent 0.3s cubic-bezier(.36,.07,.19,.97) both; }
+    @keyframes shakeViolent {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      20% { transform: translate3d(-10px, 5px, 0) scale(1.02); }
+      40% { transform: translate3d(10px, -5px, 0) scale(1.02); }
+      60% { transform: translate3d(-5px, -10px, 0) scale(1.02); }
+      80% { transform: translate3d(5px, 10px, 0) scale(1.02); }
+    }
+
+    .scroll-down {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      opacity: 0;
+      color: var(--intro-text);
+      z-index: 4;
+      animation: bounce 2s infinite;
+      transition: opacity 1s ease;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+      40% { transform: translate(-50%, -10px); }
+      60% { transform: translate(-50%, -5px); }
+    }
+
+    /* =========================================
+       MAIN SITE STYLES
+       ========================================= */
     .main-content {
       opacity: 1;
       transition: opacity 0.5s ease;
     }
 
-    /* Header Navigation - Centered design */
     header {
       position: fixed;
       top: 0;
@@ -94,8 +210,8 @@
       align-items: center;
       background: rgba(248, 249, 250, 0.95);
       backdrop-filter: blur(10px);
-      z-index: 10;
-      transition: background var(--transition);
+      z-index: 100;
+      transition: background var(--transition), opacity 1s ease;
       border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
@@ -111,7 +227,6 @@
       align-items: center;
     }
 
-    /* Navigation buttons with consistent styling */
     .nav-btn {
       background: none;
       border: none;
@@ -134,7 +249,6 @@
       outline-offset: 2px;
     }
 
-    /* Theme toggle button */
     #theme-toggle {
       background: var(--accent-bg);
       border: 1px solid var(--nav-text);
@@ -149,7 +263,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* Dropdown Menu Styles */
     .dropdown {
       position: relative;
       display: inline-block;
@@ -216,125 +329,6 @@
       color: var(--nav-hover);
     }
 
-    /* Hero Section with typewriter animation */
-    .hero {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 120px 20px 40px;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-      position: relative;
-    }
-
-    .hero.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .hero h1 {
-      font-size: clamp(2.5rem, 8vw, 4rem);
-      font-weight: 600;
-      color: var(--primary-text);
-      line-height: 1.1;
-      margin-bottom: 20px;
-    }
-
-    /* Dynamic text styling with typewriter effect */
-    .dynamic-text,
-    .hero .subtitle,
-    .hero .welcome {
-      font-weight: 400;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s ease forwards;
-    }
-
-    .dynamic-text {
-      font-size: clamp(1rem, 3vw, 1.3rem);
-      color: var(--nav-text);
-      margin-bottom: 10px;
-      animation-delay: 2.2s;
-      transition: opacity 0.3s ease;
-      min-height: 1.6em;
-      position: relative;
-    }
-
-    .dynamic-text::after {
-      content: '|';
-      color: var(--primary-text);
-      animation: blink 1s step-end infinite;
-    }
-
-    .dynamic-text.typing::after {
-      animation: blink 1s step-end infinite;
-    }
-
-    .dynamic-text.deleting::after {
-      animation: blink 0.5s step-end infinite;
-    }
-
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-
-    .hero .subtitle {
-      font-size: clamp(0.9rem, 2.5vw, 1.3rem);
-      color: var(--nav-text);
-      margin-bottom: 10px;
-      animation-delay: 2.8s;
-    }
-
-    .hero .welcome {
-      font-size: clamp(0.8rem, 2vw, 1.1rem);
-      font-weight: 300;
-      color: var(--meta-text);
-      margin-bottom: 40px;
-      animation-delay: 3.5s;
-    }
-
-    .typewriter {
-      overflow: hidden;
-      border-right: 3px solid var(--primary-text);
-      white-space: nowrap;
-      letter-spacing: 0.05em;
-      width: 0;
-      animation: 
-          typing 2s steps(10, end) 0.5s forwards,
-          blink-caret 0.75s step-end infinite 0.5s;
-    }       
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 10ch; }
-    }
-
-    @keyframes blink-caret {
-      from, to { border-color: transparent; }
-      50% { border-color: var(--primary-text); }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Remove cursor after animation completes */
-    .typewriter.animation-complete {
-      border-right: none;
-    }
-
-    /* Skills Slider Styles - FIXED FOR MOBILE */
     .skills-slider {
       width: 100%;
       max-width: 100vw;
@@ -347,7 +341,6 @@
       animation-delay: 4.2s;
     }
 
-    /* Fade edges for seamless look */
     .skills-slider::before,
     .skills-slider::after {
       content: '';
@@ -385,7 +378,6 @@
         transparent 100%);
     }
 
-    /* Slider track - FIXED INFINITE LOOP */
     .slider-track {
       display: flex;
       width: fit-content;
@@ -393,15 +385,10 @@
     }
 
     @keyframes infiniteScroll {
-      0% {
-        transform: translate3d(0, 0, 0);
-      }
-      100% {
-        transform: translate3d(-50%, 0, 0);
-      }
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-50%, 0, 0); }
     }
 
-    /* Individual skill items */
     .skill-item {
       min-width: 120px;
       height: 60px;
@@ -428,7 +415,6 @@
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
     }
 
-    /* Skill text styling */
     .skill-text {
       font-size: 14px;
       font-weight: 500;
@@ -438,7 +424,6 @@
       transition: color var(--transition);
     }
 
-    /* Custom Cursor Styles */
     body {
       cursor: none;
     }
@@ -461,22 +446,6 @@
       opacity: 0.8;
     }
 
-    /* Scroll indicator */
-    .scroll-down {
-      position: absolute;
-      bottom: 40px;
-      font-size: 12px;
-      opacity: 0.6;
-      animation: bounce 2s infinite;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(-10px); }
-      60% { transform: translateY(-5px); }
-    }
-
-    /* About Me Section - Simplified */
     .about-section {
       min-height: 100vh;
       display: flex;
@@ -529,7 +498,6 @@
       margin-bottom: 30px;
     }
 
-    /* Social Links - Fixed position */
     .social {
       position: fixed;
       left: 20px;
@@ -552,7 +520,6 @@
       transform: scale(1.2);
     }
 
-    /* Project Sections Layout - Split screen design */
     .section {
       display: flex;
       flex-direction: row;
@@ -587,7 +554,6 @@
       padding: 40px 20px;
     }
 
-    /* Core slide animation - content slides in from left */
     .section-content {
       transform: translateX(-100vw);
       transition: transform var(--slide-transition);
@@ -603,7 +569,6 @@
       transition: transform var(--exit-transition);
     }
 
-    /* Project content styling */
     .project-number {
       font-size: clamp(1.5rem, 4vw, 2.5rem);
       font-weight: 700;
@@ -634,7 +599,6 @@
       line-height: 1.6;
     }
 
-    /* Project image placeholders */
     .project-images {
       display: flex;
       flex-wrap: wrap;
@@ -691,7 +655,6 @@
       transform: translateY(-10px) scale(1.02);
     }
 
-    /* Lightbox container */
     .lightbox {
       display: none;
       position: fixed;
@@ -705,7 +668,6 @@
       align-items: center;
     }
 
-    /* Lightbox image */
     .lightbox-content {
       max-width: 90%;
       max-height: 90%;
@@ -713,7 +675,6 @@
       box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
 
-    /* Close button */
     .close-lightbox {
       position: absolute;
       top: 20px;
@@ -724,7 +685,6 @@
       cursor: pointer;
     }
 
-    /* Contact Section */
     .contact-section {
       min-height: 100vh;
       display: flex;
@@ -788,7 +748,6 @@
       transform: translateY(-2px);
     }
 
-    /* Scroll Progress Indicator */
     .scroll-indicator {
       position: fixed;
       top: 0;
@@ -807,44 +766,22 @@
       transition: height var(--transition);
     }
 
-    /* Mobile Responsive Design - ENHANCED */
+    /* Mobile Responsive Design */
     @media (max-width: 700px) {
-      html {
-        scroll-snap-type: none;
-      }
+      html { scroll-snap-type: none; }
+      body { cursor: auto; }
+      .custom-cursor { display: none; }
+      .skills-slider { display: none; }
 
-      body {
-        cursor: auto;
-      }
-
-      .custom-cursor {
-        display: none;
-      }
-
-
-      /* Hide skills slider on mobile */
-      .skills-slider {
-        display: none;
-      }
-
-
-      header {
-        padding: 15px 20px;
-      }
-
+      header { padding: 15px 20px; }
       .nav-center {
         gap: 15px;
         flex-wrap: wrap;
         justify-content: center;
         font-size: 12px;
       }
+      .nav-btn { font-size: 12px; padding: 6px 8px; }
 
-      .nav-btn {
-        font-size: 12px;
-        padding: 6px 8px;
-      }
-
-      /* Mobile dropdown adjustments */
       .dropdown-content {
         position: fixed;
         top: 60px;
@@ -853,74 +790,10 @@
         width: 90%;
         max-width: 280px;
       }
+      .dropdown-content.show { transform: translateX(-50%) translateY(0); }
 
-      .dropdown-content.show {
-        transform: translateX(-50%) translateY(0);
-      }
-
-      /* FIXED: Skills slider for mobile */
-      .skills-slider {
-        width: 100%;
-        padding: 20px 0;
-        touch-action: none;
-        -webkit-user-select: none;
-        user-select: none;
-        position: relative;
-        overflow: hidden;
-      }
-
-      .slider-track {
-        display: flex;
-        width: fit-content;
-        animation: infiniteScroll 20s linear infinite;
-        animation-play-state: running;
-        transform: translate3d(0, 0, 0);
-        will-change: transform;
-        backface-visibility: hidden;
-        -webkit-backface-visibility: hidden;
-        -webkit-transform: translate3d(0, 0, 0);
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-
-      /* Force animation to work on all mobile browsers */
-      @-webkit-keyframes infiniteScroll {
-        0% { -webkit-transform: translate3d(0, 0, 0); }
-        100% { -webkit-transform: translate3d(-50%, 0, 0); }
-      }
-
-      @keyframes infiniteScroll {
-        0% { transform: translate3d(0, 0, 0); }
-        100% { transform: translate3d(-50%, 0, 0); }
-      }
-
-      .skill-item {
-        min-width: 100px;
-        height: 50px;
-        margin: 0 8px;
-        pointer-events: none;
-        flex-shrink: 0;
-        -webkit-transform: translateZ(0);
-        transform: translateZ(0);
-      }
-
-      /* Ensure animation never stops on mobile */
-      .skills-slider:hover .slider-track,
-      .skills-slider:focus .slider-track,
-      .skills-slider:active .slider-track {
-        animation-play-state: running !important;
-      }
-
-      .skill-text {
-        font-size: 12px;
-      }
-
-      /* Mobile about section */
-      .about-section {
-        padding: 60px 20px;
-      }
-
-      /* Mobile layout - stack sections vertically */
+      .about-section { padding: 60px 20px; }
+      
       .section {
         flex-direction: column;
         height: auto;
@@ -933,35 +806,17 @@
         min-height: auto;
       }
 
-      /* Mobile animation - fade instead of slide */
       .section-content {
         transform: translateX(0);
         opacity: 0;
         transition: opacity 0.6s ease;
       }
+      .section-left.visible .section-content { opacity: 1; transform: translateX(0); }
+      .section-left.exit-left .section-content { opacity: 0.3; transform: translateX(0); }
 
-      .section-left.visible .section-content {
-        transform: translateX(0);
-        opacity: 1;
-      }
+      .project-images { padding: 10px; }
+      .project-image, .project-image2 { width: 100%; max-width: 280px; height: auto; }
 
-      .section-left.exit-left .section-content {
-        transform: translateX(0);
-        opacity: 0.3;
-      }
-
-      .project-images {
-        padding: 10px;
-      }
-
-      .project-image,
-      .project-image2 {
-        width: 100%;
-        max-width: 280px;
-        height: auto;
-      }
-
-      /* Social links horizontal on mobile */
       .social {
         position: static;
         flex-direction: row;
@@ -972,107 +827,218 @@
         justify-content: center;
       }
 
-      .contact-links {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .contact-link {
-        width: 200px;
-        text-align: center;
-      }
-
-      .scroll-indicator {
-        display: none;
-      }
+      .contact-links { flex-direction: column; align-items: center; }
+      .contact-link { width: 200px; text-align: center; }
+      .scroll-indicator { display: none; }
     }
 
-    /* Accessibility - Respect user's motion preferences */
     @media (prefers-reduced-motion: reduce) {
-      html {
-        scroll-snap-type: none;
-      }
-
+      html { scroll-snap-type: none; }
       * {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
       }
-
-      .typewriter {
-        animation: none;
-        border-right: none;
-        width: auto;
-      }
-
-      .scroll-down {
-        animation: none;
-      }
-
-      .slider-track {
-        animation: none !important;
-      }
-
-      .dynamic-text {
-        opacity: 1 !important;
-        transform: none !important;
-      }
+      .scroll-down { animation: none; }
+      .slider-track { animation: none !important; }
     }
   </style>
 </head>
 <body>
-  <!-- Custom Cursor Elements -->
+  <div id="noise-overlay"></div>
+
   <div class="custom-cursor"></div>
+
+  <div id="preloader">
+    <div>
+      <div class="tension-meter-container"><div id="tension-meter-fill"></div></div>
+      <p class="loader-text">Loading Assets / <span id="load-percent">00</span>%</p>
+    </div>
+  </div>
 
   <div id="main-content" class="main-content">
     <header>
-  <div class="nav-center">
-
-    <!-- About Button -->
-    <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
-
-    <!-- Project Dropdown: Wrapper for button + content -->
-    <div class="dropdown">
-      
-      <!-- Button to *open* the dropdown -->
-      <button class="nav-btn" id="projects-btn" aria-label="View projects"> 📁 | projects</button>
-
-      <!-- The dropdown content (hidden by default) -->
-      <div class="dropdown-content" id="projects-dropdown">
-        <a href="#project-1" data-project="1">12ft Trebuchet!</a>
-        <a href="#project-2" data-project="2">Calendar Application</a>
-        <a href="#project-3" data-project="3">Interactive 4 Axis Robot</a>
-        <a href="#project-4" data-project="4">Filtration System</a>
-        <a href="#project-5" data-project="5">Drone Capture Device</a>
-        <a href="#project-6" data-project="6">Octopus Inspired Gripper</a>
-        <a href="#project-7" data-project="7">Automated Culinary Robotics</a>
-        <a href="#project-8" data-project="8">Forging</a>
+      <div class="nav-center">
+        <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
+        <div class="dropdown">
+          <button class="nav-btn" id="projects-btn" aria-label="View projects"> 📁 | projects</button>
+          <div class="dropdown-content" id="projects-dropdown">
+            <a href="#project-1" data-project="1">Calendar Application</a>
+            <a href="#project-2" data-project="2">Interactive 4 Axis Robot</a>
+            <a href="#project-3" data-project="3">Filtration System</a>
+            <a href="#project-4" data-project="4">Drone Capture Device</a>
+            <a href="#project-5" data-project="5">Octopus Inspired Gripper</a>
+            <a href="#project-6" data-project="6">Automated Culinary Robotics</a>
+            <a href="#project-7" data-project="7">Forging</a>
+            <a href="#project-8" data-project="8">12ft Trebuchet!</a>
+          </div>
+        </div>
+        <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
+        <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
       </div>
-    </div>
+    </header>
 
-    <!-- Contact Button -->
-    <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
-  
-    <!-- Dark Mode Toggle -->
-    <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
-
-  </div>
-</header>
-
-    <section class="hero">
-      <h1 class="typewriter">Shay McKim</h1>
-      <div id="dynamic-text" class="dynamic-text"></div>
-      <p class="subtitle">Mechatronics Engineering at University of Waterloo</p>
-      <p class="welcome">Welcome to my portfolio</p>
-      
-      <div class="scroll-down">scroll ↓</div>
+    <section id="hero">
+      <video id="hero-video" muted playsinline></video>
+      <div id="video-overlay"></div>
+      <div id="titles-container">
+        <h1 class="hero-title">Welcome to my portfolio</h1>
+      </div>
+      <div class="scroll-down" id="hero-scroll">scroll ↓</div>
     </section>
 
-    <!-- Project Sections -->
     <section class="section" data-project="1" id="project-1">
       <div class="section-left">
         <div class="section-content">
           <div class="project-number">1</div>
+          <h2 class="project-title">Calendar Application<br>for PolySense Solutions</h2>
+          <div class="project-meta">JavaScript · HTML/CSS · FullCalendar</div>
+          <p class="project-description"><strong>What?</strong><br> A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.<br><strong> How? </strong><br> Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.<br><strong> Results? </strong><br> Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="AddEventView.png" alt="Add Event View">
+          <img class="project-image" src="CalendarView.png" alt="Calendar View 1">
+          <img class="project-image" src="CalendarView2.png" alt="Calendar View 2">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="2" id="project-2">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">2</div>
+          <h2 class="project-title">Interactive<br>4 Axis Robot</h2>
+          <div class="project-meta">Fusion 360 · Arduino (C++) · Python</div>
+          <p class="project-description"><strong>What?</strong><br>A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.<br><strong> How? </strong><br> Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.<br><strong> Results? </strong><br>The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="Tik.jpg" alt="Tic Tac Toe Robot">
+          <img class="project-image2" src="ArmCAD.png" alt="Robot Arm CAD">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="3" id="project-3">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">3</div>
+          <h2 class="project-title">Filtration System <br> for Remote Communities</h2>
+          <div class="project-meta">Team Leadership · Arduino (C++) · Fusion 360</div>
+          <p class="project-description"><strong>What?</strong><br>Led a team of 5 to design a water filtration system for northern communities, targeting over 100L/day of clean drinking water.<br><strong> How? </strong><br>Programmed Arduino-controlled chlorination and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion 360.<br><strong> Results? </strong><br>Produced drinkable water from heavily soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort for both efficiency and reliability.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="elec.jpeg" alt="Electronics">
+          <img class="project-image" src="tower.jpeg" alt="Filtration Tower">
+          <img class="project-image" src="test.jpeg" alt="Water Test">
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section" id="about">
+      <div class="about-container">
+        <h2>Keep Scrolling for More Projects!</h2>
+        <p>Or let me tell you more about me:</p>
+        <p>
+         Hi! I’m Shay, a <strong>Mechatronics Engineering</strong> student at the <strong>University of Waterloo</strong>. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
+        </p>
+        <p>
+         Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to <strong>build cool stuff</strong>).
+        </p>
+      </div>
+      <div class="scroll-down" style="opacity: 1; color: var(--primary-text);">scroll ↓</div>
+    </section>
+
+    <div class="scroll-indicator">
+      <div class="scroll-progress"></div>
+    </div>
+
+    <section class="section" data-project="4" id="project-4">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">4</div>
+          <h2 class="project-title">Drone Capture Device</h2>
+          <div class="project-meta">Fusion 360 · CAD Iteration · Prototyping</div>
+          <p class="project-description">
+            <strong>What?</strong><br>
+            Designed and built a lightweight net gun for portable drone defense, keeping the system under 0.5kg for easy field use.<br>
+            <strong>How?</strong><br>
+            Modeled 8 custom parts in Fusion 360 optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation smoothness and reliability.<br>
+            <strong>Results?</strong><br>
+            Achieved consistent net deployment in field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact counter-drone applications.
+          </p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="Net1.jpg" alt="Net Gun 1">
+          <img class="project-image" src="Net3.jpg" alt="Net Gun 2">
+          <img class="project-image" src="Net2.jpg" alt="Net Gun 3">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="5" id="project-5">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">5</div>
+          <h2 class="project-title">Octopus Inspired Gripper</h2>
+          <div class="project-meta">Fusion 360 · 3D Printing · Robotics</div>
+          <p class="project-description"><strong>What?</strong><br>I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.<br><strong> How? </strong><br> Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.<br><strong> Results? </strong><br> Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
+          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="6" id="project-6">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">6</div>
+          <h2 class="project-title">Automated Culinary Robotics System</h2>
+          <div class="project-meta">C++ · Fusion 360 · LEGO Technic</div>
+          <p class="project-description"><strong>What?</strong><br>A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users could select flavors, and the machine handled the rest.<br><strong> How? </strong><br>Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.<br><strong> Results? </strong><br>Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
+          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
+          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="7" id="project-7">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">7</div>
+          <h2 class="project-title">Forging</h2>
+          <div class="project-meta">Blacksmithing · Hand Tools · Woodworking</div>
+          <p class="project-description"><strong>What?</strong><br>As a hobby, I’ve taken on a handful of forging and knife-making projects.<br><strong> How? </strong><br> Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.<br><strong> Results? </strong><br>I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</p>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="project-images">
+          <img class="project-image2" src="knife2.JPG" alt="Forged Knife 1">
+          <img class="project-image2" src="knife1.JPG" alt="Forged Knife 2">
+        </div>
+      </div>
+    </section>
+
+    <section class="section" data-project="8" id="project-8">
+      <div class="section-left">
+        <div class="section-content">
+          <div class="project-number">8</div>
           <h2 class="project-title">12ft Trebuchet!</h2>
           <div class="project-meta">Hands-on Design</div>
           <p class="project-description">
@@ -1095,157 +1061,6 @@
         </div>
       </div>
     </section>
-
-    <section class="section" data-project="2" id="project-2">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">2</div>
-          <h2 class="project-title">Calendar Application<br>for PolySense Solutions</h2>
-          <div class="project-meta">JavaScript · HTML/CSS · FullCalendar</div>
-          <p class="project-description"><strong>What?</strong><br> A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.<br><strong> How? </strong><br> Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.<br><strong> Results? </strong><br> Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image" src="AddEventView.png" alt="Add Event View">
-          <img class="project-image" src="CalendarView.png" alt="Calendar View 1">
-          <img class="project-image" src="CalendarView2.png" alt="Calendar View 2">
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="3" id="project-3">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">3</div>
-          <h2 class="project-title">Interactive<br>4 Axis Robot</h2>
-          <div class="project-meta">Fusion 360 · Arduino (C++) · Python</div>
-          <p class="project-description"><strong>What?</strong><br>A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.<br><strong> How? </strong><br> Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.<br><strong> Results? </strong><br>The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image2" src="Tik.jpg" alt="Tic Tac Toe Robot">
-          <img class="project-image2" src="ArmCAD.png" alt="Robot Arm CAD">
-        </div>
-      </div>
-    </section>
-
-    <!-- About Me Section -->
-    <section class="about-section" id="about">
-    <div class="about-container">
-      <h2>Keep Scrolling for More Projects!</h2>
-      <p>Or let me tell you more about me:</p>
-     <p>
-       Hi! I’m Shay, a <strong>Mechatronics Engineering</strong> student at the <strong>University of Waterloo</strong>. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
-     </p>
-     <p>
-       Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to <strong>build cool stuff</strong>).
-     </p>
-    </div>
-    <div class="scroll-down">scroll ↓</div>
-  </section>
-
-    <div class="scroll-indicator">
-      <div class="scroll-progress"></div>
-    </div>
-
-    <section class="section" data-project="4" id="project-4">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">4</div>
-          <h2 class="project-title">Filtration System <br> for Remote Communities</h2>
-          <div class="project-meta">Team Leadership · Arduino (C++) · Fusion 360</div>
-          <p class="project-description"><strong>What?</strong><br>Led a team of 5 to design a water filtration system for northern communities, targeting over 100L/day of clean drinking water.<br><strong> How? </strong><br>Programmed Arduino-controlled chlorination and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion 360.<br><strong> Results? </strong><br>Produced drinkable water from heavily soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort for both efficiency and reliability.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image" src="elec.jpeg" alt="Electronics">
-          <img class="project-image" src="tower.jpeg" alt="Filtration Tower">
-          <img class="project-image" src="test.jpeg" alt="Water Test">
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="5" id="project-5">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">5</div>
-          <h2 class="project-title">Drone Capture Device</h2>
-          <div class="project-meta">Fusion 360 · CAD Iteration · Prototyping</div>
-          <p class="project-description">
-            <strong>What?</strong><br>
-            Designed and built a lightweight net gun for portable drone defense, keeping the system under 0.5kg for easy field use.<br>
-            <strong>How?</strong><br>
-            Modeled 8 custom parts in Fusion 360 optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation smoothness and reliability.<br>
-            <strong>Results?</strong><br>
-            Achieved consistent net deployment in field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact counter-drone applications.
-          </p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image" src="Net1.jpg" alt="Net Gun 1">
-          <img class="project-image" src="Net3.jpg" alt="Net Gun 2">
-          <img class="project-image" src="Net2.jpg" alt="Net Gun 3">
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="6" id="project-6">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">6</div>
-          <h2 class="project-title">Octopus Inspired Gripper</h2>
-          <div class="project-meta">Fusion 360 · 3D Printing · Robotics</div>
-          <p class="project-description"><strong>What?</strong><br>I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.<br><strong> How? </strong><br> Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.<br><strong> Results? </strong><br> Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
-          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="7" id="project-7">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">7</div>
-          <h2 class="project-title">Automated Culinary Robotics System</h2>
-          <div class="project-meta">C++ · Fusion 360 · LEGO Technic</div>
-          <p class="project-description"><strong>What?</strong><br>A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users could select flavors, and the machine handled the rest.<br><strong> How? </strong><br>Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.<br><strong> Results? </strong><br>Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
-          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
-          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
-        </div>
-      </div>
-    </section>
-
-    <section class="section" data-project="8" id="project-8">
-      <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">8</div>
-          <h2 class="project-title">Forging</h2>
-          <div class="project-meta">Blacksmithing · Hand Tools · Woodworking</div>
-          <p class="project-description"><strong>What?</strong><br>As a hobby, I’ve taken on a handful of forging and knife-making projects.<br><strong> How? </strong><br> Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.<br><strong> Results? </strong><br>I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</p>
-        </div>
-      </div>
-      <div class="section-right">
-        <div class="project-images">
-          <img class="project-image2" src="knife2.JPG" alt="Forged Knife 1">
-          <img class="project-image2" src="knife1.JPG" alt="Forged Knife 2">
-        </div>
-      </div>
-    </section>
-
-
 
     <div id="lightbox" class="lightbox">
       <span class="close-lightbox">&times;</span>
@@ -1271,14 +1086,121 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    initializeIntroSequence();
     initializePortfolio();
   });
+
+  function initializeIntroSequence() {
+    const CONFIG = {
+        VIDEO_SRC: "vid.mp4", 
+        FREEZE_TIMESTAMP: 0.7, 
+        TITLE_DELAY_MS: 400 
+    };
+
+    const preloader = document.getElementById('preloader');
+    const tensionMeter = document.getElementById('tension-meter-fill');
+    const loadPercentText = document.getElementById('load-percent');
+    const heroVideo = document.getElementById('hero-video');
+    const videoOverlay = document.getElementById('video-overlay');
+    const heroContainer = document.getElementById('hero');
+    const titleLine1 = document.querySelector('.hero-title');
+    const scrollDown = document.getElementById('hero-scroll');
+    const header = document.querySelector('header');
+
+    if (!preloader || !heroVideo) return;
+
+    // Lock page scrolling while intro is running
+    document.body.style.overflow = 'hidden';
+    if (header) {
+      header.style.opacity = '0';
+      header.style.pointerEvents = 'none';
+    }
+
+    let hasFrozen = false; 
+
+    heroVideo.src = CONFIG.VIDEO_SRC;
+    heroVideo.load();
+
+    let loadProgress = 0;
+    const loadInterval = setInterval(() => {
+        if (loadProgress < 90) {
+            loadProgress += Math.random() * 15;
+            let currentP = Math.min(Math.round(loadProgress), 90);
+            tensionMeter.style.width = `${currentP}%`;
+            loadPercentText.innerText = currentP.toString().padStart(2, '0');
+        }
+    }, 150);
+
+    const completeLoad = () => {
+        clearInterval(loadInterval);
+        tensionMeter.style.width = '100%';
+        loadPercentText.innerText = '100';
+        
+        setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.remove();
+                heroVideo.play().catch(e => console.log("Autoplay prevented:", e));
+            }, 400); 
+        }, 500);
+    };
+
+    if (heroVideo.readyState >= 3) {
+      completeLoad();
+    } else {
+      heroVideo.addEventListener('canplaythrough', completeLoad);
+    }
+
+    heroVideo.addEventListener('timeupdate', () => {
+        if (heroVideo.currentTime >= CONFIG.FREEZE_TIMESTAMP && !hasFrozen) {
+            hasFrozen = true; 
+            
+            heroVideo.pause();
+            heroVideo.classList.add('frozen');
+            videoOverlay.classList.add('active');
+            
+            // Screen Shake
+            heroContainer.classList.add('shake-high');
+            setTimeout(() => heroContainer.classList.remove('shake-high'), 300);
+
+            // Sequence Complete: Title Drop & Unlock Layout
+            setTimeout(() => {
+                titleLine1.classList.add('fade-in');
+                document.body.style.overflow = ''; // Unlock scrolling!
+                
+                if (scrollDown) {
+                  scrollDown.style.opacity = '0.6';
+                }
+
+                // Reveal header when the user scrolls (either manually or via auto-scroll)
+                const revealHeader = () => {
+                  if (header) {
+                    header.style.opacity = '1';
+                    header.style.pointerEvents = 'auto';
+                  }
+                  window.removeEventListener('scroll', revealHeader);
+                };
+                window.addEventListener('scroll', revealHeader);
+
+                // Auto-scroll to first project after 2 seconds
+                setTimeout(() => {
+                  const firstProject = document.getElementById('project-1');
+                  if(firstProject) {
+                    firstProject.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                  // Failsafe reveal just in case the scroll event doesn't fire as expected
+                  revealHeader();
+                }, 2000);
+
+            }, CONFIG.TITLE_DELAY_MS);
+        }
+    });
+  }
 
   function initializePortfolio() {
     // Get DOM elements
     const sections = document.querySelectorAll('.section');
     const sectionLefts = document.querySelectorAll('.section-left');
-    const hero = document.querySelector('.hero');
     const themeToggle = document.getElementById('theme-toggle');
     const aboutBtn = document.getElementById('about-btn');
     const projectsBtn = document.getElementById('projects-btn');
@@ -1288,86 +1210,22 @@
 
     console.log(`Portfolio initialized with ${sections.length} sections`);
 
-    // Initialize custom cursor (only on desktop)
     if (window.innerWidth > 700) {
       initCustomCursor();
     }
 
-    // Initialize skills slider with proper infinite loop
-    initSkillsSlider();
-
-    // Theme Management - Load saved theme preference
+    // Theme Management
     const currentTheme = localStorage.getItem('theme') || 'light';
     if (currentTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       if (themeToggle) themeToggle.textContent = '☀️';
     }
 
-    // Dynamic text typewriter functionality
-    const phrases = [
-      "Builder",
-      "Competitor", 
-      "Leader",
-      "Maker",
-      "Designer",
-      "Problem Solver",
-      "Team Player"
-    ];
-    
-    let phraseIndex = 0;
-    let charIndex = 0;
-    let isDeleting = false;
-    const dynamicText = document.getElementById('dynamic-text');
-    const typeSpeed = 100;
-    const deleteSpeed = 50;
-    const pauseDelay = 1250;
-
-    function typeWriter() {
-      const currentPhrase = phrases[phraseIndex];
-      
-      if (isDeleting) {
-        // Deleting characters
-        dynamicText.textContent = currentPhrase.substring(0, charIndex - 1);
-        charIndex--;
-        dynamicText.classList.add('deleting');
-        dynamicText.classList.remove('typing');
-        
-        if (charIndex === 0) {
-          isDeleting = false;
-          phraseIndex = (phraseIndex + 1) % phrases.length;
-          setTimeout(typeWriter, 500);
-          return;
-        }
-        
-        setTimeout(typeWriter, deleteSpeed);
-      } else {
-        // Typing characters
-        dynamicText.textContent = currentPhrase.substring(0, charIndex + 1);
-        charIndex++;
-        dynamicText.classList.add('typing');
-        dynamicText.classList.remove('deleting');
-        
-        if (charIndex === currentPhrase.length) {
-          isDeleting = true;
-          setTimeout(typeWriter, pauseDelay);
-          return;
-        }
-        
-        setTimeout(typeWriter, typeSpeed);
-      }
-    }
-
-    // Start typewriter effect after initial animation delay
-    setTimeout(() => {
-      typeWriter();
-    }, 3000);
-
     // Reset all sections to initial state
     sectionLefts.forEach((sectionLeft) => {
       sectionLeft.classList.remove('visible', 'exit-left');
     });
 
-    // Smooth scroll utility function
     function smoothScrollTo(element) {
       if (element) {
         element.scrollIntoView({
@@ -1377,38 +1235,28 @@
       }
     }
 
-    // Navigation event handlers
+    // Navigation handlers
     if (aboutBtn) {
       aboutBtn.addEventListener('click', () => {
-        const aboutSection = document.getElementById('about');
-         smoothScrollTo(aboutSection);
+         smoothScrollTo(document.getElementById('about'));
       });
     }
 
-    // Projects dropdown functionality
     const projectsDropdown = document.getElementById('projects-dropdown');
     let dropdownTimeout;
 
     if (projectsBtn && projectsDropdown) {
-      // Toggle dropdown on click
       projectsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         const isOpen = projectsDropdown.classList.contains('show');
-        
-        if (isOpen) {
-          closeDropdown();
-        } else {
-          openDropdown();
-        }
+        if (isOpen) closeDropdown();
+        else openDropdown();
       });
 
-      // Handle project selection from dropdown
       projectsDropdown.addEventListener('click', (e) => {
         if (e.target.tagName === 'A') {
           e.preventDefault();
-          const projectNumber = e.target.dataset.project;
-          const targetSection = document.querySelector(`#project-${projectNumber}`);
-          
+          const targetSection = document.querySelector(`#project-${e.target.dataset.project}`);
           if (targetSection) {
             smoothScrollTo(targetSection);
             closeDropdown();
@@ -1416,13 +1264,11 @@
         }
       });
 
-      // Show dropdown on hover with delay
       projectsBtn.addEventListener('mouseenter', () => {
         clearTimeout(dropdownTimeout);
         dropdownTimeout = setTimeout(openDropdown, 200);
       });
 
-      // Hide dropdown when leaving both button and dropdown
       projectsBtn.addEventListener('mouseleave', () => {
         clearTimeout(dropdownTimeout);
         dropdownTimeout = setTimeout(() => {
@@ -1432,13 +1278,8 @@
         }, 300);
       });
 
-      projectsDropdown.addEventListener('mouseenter', () => {
-        clearTimeout(dropdownTimeout);
-      });
-
-      projectsDropdown.addEventListener('mouseleave', () => {
-        dropdownTimeout = setTimeout(closeDropdown, 200);
-      });
+      projectsDropdown.addEventListener('mouseenter', () => clearTimeout(dropdownTimeout));
+      projectsDropdown.addEventListener('mouseleave', () => dropdownTimeout = setTimeout(closeDropdown, 200));
 
       function openDropdown() {
         projectsDropdown.classList.add('show');
@@ -1450,126 +1291,71 @@
         projectsBtn.classList.remove('active');
       }
 
-      // Close dropdown when clicking outside
       document.addEventListener('click', (e) => {
-        if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) {
-          closeDropdown();
-        }
+        if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) closeDropdown();
       });
     }
 
     if (contactBtn) {
       contactBtn.addEventListener('click', () => {
-        const contactSection = document.getElementById('contact');
-        smoothScrollTo(contactSection);
+        smoothScrollTo(document.getElementById('contact'));
       });
     }
-  
-    // Initialize hero animation
-    if (hero) hero.classList.add('visible');
 
-    // Remove typewriter cursor after animation completes
-    setTimeout(() => {
-      const typewriter = document.querySelector('.typewriter');
-      if (typewriter) {
-        typewriter.classList.add('animation-complete');
-      }
-    }, 2500);
-
-    // Intersection Observer for slide-in animations
+    // Intersection Observers for layout snapping
     const slideObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           if (entry.target.classList.contains('section')) {
-            // Animate project section
             const sectionLeft = entry.target.querySelector('.section-left');
             if (sectionLeft) {
-              const projectNum = entry.target.dataset.project;
               sectionLeft.classList.add('visible');
               sectionLeft.classList.remove('exit-left');
-              console.log(`Project ${projectNum} animated in`);
             }
           } else if (entry.target.classList.contains('contact-content')) {
-            // Animate contact section
             entry.target.classList.add('visible');
-            console.log('Contact section animated in');
           } else if (entry.target.classList.contains('about-container')) {
-            // Animate about section
             entry.target.classList.add('visible');
-            console.log('About section animated in');
           }
         }
       });
-    }, { 
-      threshold: 0.3,
-      rootMargin: '0px 0px -20% 0px'
-    });
+    }, { threshold: 0.3, rootMargin: '0px 0px -20% 0px' });
 
-    // Intersection Observer for exit animations when scrolling past
     const exitObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.target.classList.contains('section')) {
           const sectionLeft = entry.target.querySelector('.section-left');
           if (sectionLeft) {
-            const projectNum = entry.target.dataset.project;
-            
             if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-              // Section scrolled past - exit left
               sectionLeft.classList.add('exit-left');
               sectionLeft.classList.remove('visible');
-              console.log(`Project ${projectNum} exited left`);
             } else if (entry.isIntersecting) {
-              // Section back in view - remove exit state
               sectionLeft.classList.remove('exit-left');
               sectionLeft.classList.add('visible');
-              console.log(`Project ${projectNum} back in view`);
             } else if (entry.boundingClientRect.top > window.innerHeight) {
-              // Section below viewport - reset to initial state
               sectionLeft.classList.remove('visible', 'exit-left');
-              console.log(`Project ${projectNum} reset`);
             }
           }
         }
       });
-    }, {
-      threshold: [0, 0.1],
-      rootMargin: '-10% 0px -10% 0px'
-    });
+    }, { threshold: [0, 0.1], rootMargin: '-10% 0px -10% 0px' });
 
-    // Set up observers for contact and about sections
-    if (contactContent) {
-      slideObserver.observe(contactContent);
-    }
+    if (contactContent) slideObserver.observe(contactContent);
+    if (aboutContainer) slideObserver.observe(aboutContainer);
     
-    if (aboutContainer) {
-      slideObserver.observe(aboutContainer);
-    }
-    
-    // Set up observers for all project sections
     sections.forEach((section, index) => {
-      // Add staggered animation delay
       const sectionContent = section.querySelector('.section-content');
-      if (sectionContent) {
-        sectionContent.style.transitionDelay = `${index * 0.1}s`;
-      }
-      
+      if (sectionContent) sectionContent.style.transitionDelay = `${index * 0.1}s`;
       slideObserver.observe(section);
       exitObserver.observe(section);
     });
 
-    // Scroll progress indicator with throttling
     let ticking = false;
-    
     function updateScroll() {
       const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollTop = window.scrollY;
-      const progress = Math.min((scrollTop / scrollHeight) * 100, 100);
-      
+      const progress = Math.min((window.scrollY / scrollHeight) * 100, 100);
       const progressBar = document.querySelector('.scroll-progress');
-      if (progressBar) {
-        progressBar.style.height = `${progress}%`;
-      }
-      
+      if (progressBar) progressBar.style.height = `${progress}%`;
       ticking = false;
     }
 
@@ -1580,23 +1366,16 @@
       }
     });
 
-    // Theme toggle with visual feedback
     themeToggle.addEventListener('click', () => {
       const current = document.documentElement.getAttribute('data-theme');
       const newTheme = current === 'dark' ? 'light' : 'dark';
-      
       document.documentElement.setAttribute('data-theme', newTheme);
       localStorage.setItem('theme', newTheme);
       themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      
-      // Visual feedback animation
       themeToggle.style.transform = 'scale(0.9)';
-      setTimeout(() => {
-        themeToggle.style.transform = 'scale(1)';
-      }, 150);
+      setTimeout(() => themeToggle.style.transform = 'scale(1)', 150);
     });
 
-    // Keyboard navigation accessibility
     document.querySelectorAll('.nav-btn, #theme-toggle').forEach(btn => {
       btn.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -1606,194 +1385,76 @@
       });
     });
 
-    // Lightbox functionality
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxVideo = document.getElementById('lightbox-video');
     const lightboxVideoSource = document.getElementById('lightbox-video-source');
     const closeBtn = document.querySelector('.close-lightbox');
 
-    // Add click handler to all project images and videos
     document.querySelectorAll('.project-image, .project-image2, video').forEach(el => {
+      if(el.id === 'hero-video') return; // Exclude hero video
+      
       el.addEventListener('click', () => {
         lightbox.style.display = 'flex';
-
         if (el.tagName.toLowerCase() === 'img') {
-          // Show image
           lightboxImg.src = el.src;
           lightboxImg.alt = el.alt;
           lightboxImg.style.display = 'block';
-
-          // Hide and reset video
           lightboxVideo.style.display = 'none';
           lightboxVideo.pause();
           lightboxVideoSource.src = '';
           lightboxVideo.load();
-        } 
-        else if (el.tagName.toLowerCase() === 'video') {
-          // Grab the video source
+        } else if (el.tagName.toLowerCase() === 'video') {
           const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
-
-          // Show video
           lightboxVideoSource.src = videoSrc;
           lightboxVideo.load();
           lightboxVideo.style.display = 'block';
           lightboxVideo.play();
-
-          // Hide image
           lightboxImg.style.display = 'none';
           lightboxImg.src = '';
         }
       });
     });
 
-    // Close modal when clicking close button
     closeBtn.addEventListener('click', () => {
       lightbox.style.display = 'none';
       lightboxImg.src = '';
-
       lightboxVideo.pause();
       lightboxVideoSource.src = '';
       lightboxVideo.load();
     });
 
-    // Close modal when clicking outside the content
     lightbox.addEventListener('click', (e) => {
       if (e.target === lightbox) {
         lightbox.style.display = 'none';
         lightboxImg.src = '';
-
         lightboxVideo.pause();
         lightboxVideoSource.src = '';
         lightboxVideo.load();
       }
     });
-
-    console.log('Portfolio initialized successfully! 🚀');
   }
-// Initialize skills slider with proper infinite loop
-function initSkillsSlider() {
-  const sliderTrack = document.getElementById('slider-track');
-  if (!sliderTrack) return;
 
-  const skills = [
-    { text: '3D Printing', class: 'printing' },
-    { text: 'SolidWorks', class: 'solidworks' },
-    { text: 'AutoCAD', class: 'autocad' },
-    { text: 'Six Sigma', class: 'sixsigma' },
-    { text: 'Fusion 360', class: 'Fusion360' },
-    { text: 'Javascript', class: 'javascript' },
-    { text: 'CSS/HTML', class: 'web' },
-    { text: 'Project Planning', class: 'planning' },
-    { text: 'Embedded Systems', class: 'embedded' },
-    { text: 'Python', class: 'python' },
-    { text: 'Arduino', class: 'arduino' },
-    { text: 'C++', class: 'cpp' }
-  ];
-
-  // Create double set of skills for seamless loop
-  const doubleSkills = [...skills, ...skills];
-
-  // Clear existing content
-  sliderTrack.innerHTML = '';
-
-  // Populate slider track
-  doubleSkills.forEach(skill => {
-    const skillItem = document.createElement('div');
-    skillItem.className = 'skill-item';
-    
-    const skillText = document.createElement('div');
-    skillText.className = `skill-text ${skill.class}`;
-    skillText.textContent = skill.text;
-    
-    skillItem.appendChild(skillText);
-    sliderTrack.appendChild(skillItem);
-  });
-
-  // Add specific brand colors styling
-  const style = document.createElement('style');
-  style.textContent = `
-    .react { color: #61dafb; }
-    .javascript { 
-      color: #000; 
-      background: #f7df1e; 
-      padding: 2px 6px; 
-      border-radius: 4px; 
-      font-size: 12px;
-    }
-    .python { color: #3776ab; }
-    .figma { 
-      background: linear-gradient(45deg, #ff7262, #9d4edd, #0ea5e9); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .solidworks { color: #ff6600; }
-    .arduino { color: #00979d; }
-    .flutter { color: #02569b; }
-    .Fusion360 { color: #339933; }
-    .mongodb { color: #47a248; }
-    .aws { color: #ff9900; }
-    .matlab { color: #0076a8; }
-    .autocad { color: #e51937; }
-    .cpp { color: #00599c; }
-    .printing { color: #ff6b35; }
-    .sixsigma { color: #2c5aa0; }
-    .web { 
-      background: linear-gradient(45deg, #e34c26, #1572b6); 
-      -webkit-background-clip: text; 
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .planning { color: #6c757d; }
-    .embedded { color: #28a745; }
-  `;
-  document.head.appendChild(style);
-
-  // REMOVED: Touch event handlers that interfere with CSS animation
-  // Let the CSS animation handle everything automatically
-}
-
-  // Custom Cursor Implementation
   function initCustomCursor() {
     const cursor = document.querySelector('.custom-cursor');
     if (!cursor) return;
     
-    let mouseX = 0;
-    let mouseY = 0;
-
-    // Update cursor position
+    let mouseX = 0, mouseY = 0;
     document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      
+      mouseX = e.clientX; mouseY = e.clientY;
       cursor.style.left = mouseX + 'px';
       cursor.style.top = mouseY + 'px';
     });
 
-    // Add hover effects
     const hoverElements = document.querySelectorAll('a, button, .project-image, .project-image2, .nav-btn, .skill-item, .contact-link');
-    
     hoverElements.forEach(element => {
-      element.addEventListener('mouseenter', () => {
-        cursor.classList.add('hover');
-      });
-
-      element.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hover');
-      });
+      element.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      element.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
 
-    // Hide cursor when leaving window
-    document.addEventListener('mouseleave', () => {
-      cursor.style.opacity = '0';
-    });
+    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
+    document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
 
-    document.addEventListener('mouseenter', () => {
-      cursor.style.opacity = '1';
-    });
-
-    // Disable custom cursor on mobile devices
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
       document.body.style.cursor = 'auto';
       cursor.style.display = 'none';
@@ -1802,4 +1463,3 @@ function initSkillsSlider() {
 </script>
 </body>
 </html>
-        
