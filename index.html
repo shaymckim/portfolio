@@ -5,51 +5,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shay McKim - Portfolio</title>
   
+  <link rel="preload" as="video" href="vid.mp4" type="video/mp4">
+  <link rel="preload" as="video" href="Trebuchet.mp4" type="video/mp4">
+  
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   
   <style>
-    /* CSS Custom Properties - Consolidated theme management */
+    /* CSS Custom Properties - Sleek, monochromatic theme */
     :root {
-      --primary-bg: linear-gradient(to bottom,
-        hsl(0, 0%, 100%) 0%,
-        hsl(300, 75%, 95%) 25%,
-        hsl(218, 87%, 65%) 50%,
-        hsl(55, 83%, 58%) 75%,
-        hwb(0 7% 0%) 100%
-      );
-      --primary-bg-dark: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-      --primary-text: #333;
-      --accent-bg: rgba(255, 255, 255, 0.8);
-      --secondary-bg: rgba(255, 255, 255, 0.8);
-      --nav-text: #666;
-      --nav-hover: #333;
-      --meta-text: #888;
-      --scroll-bg: #ddd;
-      --scroll-progress: #666;
+      --primary-bg: #fcfcfc;
+      --primary-bg-alt: #f0f0f2;
+      --primary-bg-dark: #050505;
+      --primary-text: #111111;
+      --accent-bg: #ffffff;
+      --secondary-bg: #f4f4f5;
+      --nav-text: #666666;
+      --nav-hover: #000000;
+      --meta-text: #666666;
+      --scroll-bg: #e5e5e5;
+      --scroll-progress: #111111;
       --transition: 0.3s ease;
-      --slide-transition: 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-      --exit-transition: 0.8s cubic-bezier(0.6, 0, 0.4, 1);
       
-      /* Intro Sequence Variables */
+      --font-sans: 'Inter', sans-serif;
       --font-mono: 'Space Mono', monospace;
+      
       --intro-bg: #050505;
       --intro-text: #f0f0f0;
       --overlay-opacity: 0.8;
     }
 
-    /* Dark theme overrides */
     [data-theme="dark"] {
-      --primary-text: #e0e0e0;
-      --accent-bg: rgba(34, 34, 34, 0.8);
-      --secondary-bg: rgba(34, 34, 34, 0.8);
-      --nav-text: #bbb;
-      --nav-hover: #ddd;
-      --meta-text: #aaa;
-      --scroll-bg: #444;
-      --scroll-progress: #bbb;
+      --primary-bg: #050505;
+      --primary-bg-alt: #0a0a0a;
+      --primary-text: #f5f5f5;
+      --accent-bg: #111111;
+      --secondary-bg: #0a0a0a;
+      --nav-text: #888888;
+      --nav-hover: #ffffff;
+      --meta-text: #999999;
+      --scroll-bg: #222222;
+      --scroll-progress: #eeeeee;
     }
 
-    /* Base styles and reset */
     * {
       margin: 0;
       padding: 0;
@@ -58,39 +55,28 @@
 
     html {
       scroll-behavior: smooth;
-      scroll-snap-type: y proximity;
-      scroll-padding-top: 0;
-    }
-
-    @media (min-width: 701px) {
-      html {
-        scroll-snap-type: y mandatory;
-      }
     }
 
     body {
-      font-family: 'Inter', sans-serif;
-      background: var(--primary-bg);
+      font-family: var(--font-sans);
+      background-color: var(--primary-bg);
       color: var(--primary-text);
       line-height: 1.6;
       overflow-x: hidden;
-      transition: background var(--transition), color var(--transition);
-      cursor: none;
+      transition: background-color 0.8s ease, color var(--transition);
+    }
+    
+    body.bg-shifted {
+      background-color: var(--primary-bg-alt);
     }
 
-    [data-theme="dark"] body {
-      background: var(--primary-bg-dark);
-    }
-
-    /* =========================================
-       INTRO SEQUENCE STYLES
-       ========================================= */
+    /* INTRO SEQUENCE */
     #noise-overlay {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
       pointer-events: none;
       z-index: 9999;
-      opacity: 0.04;
+      opacity: 0.02;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     }
 
@@ -123,8 +109,6 @@
       width: 100vw; height: 100vh;
       overflow: hidden;
       z-index: 10;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
       background-color: var(--intro-bg);
     }
     
@@ -150,9 +134,10 @@
     }
     
     .hero-title {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(1rem, 1.5vw, 1.5rem);
-      font-weight: 300; letter-spacing: 0.2em;
+      font-family: var(--font-sans);
+      font-size: clamp(1.5rem, 3vw, 3rem);
+      line-height: 1.3;
+      font-weight: 300; letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--intro-text);
       opacity: 0;
@@ -163,22 +148,15 @@
       0% { transform: translateY(15px); opacity: 0; }
       100% { transform: translateY(0); opacity: 1; }
     }
-    
-    .shake-high { animation: shakeViolent 0.3s cubic-bezier(.36,.07,.19,.97) both; }
-    @keyframes shakeViolent {
-      0%, 100% { transform: translate3d(0, 0, 0); }
-      20% { transform: translate3d(-10px, 5px, 0) scale(1.02); }
-      40% { transform: translate3d(10px, -5px, 0) scale(1.02); }
-      60% { transform: translate3d(-5px, -10px, 0) scale(1.02); }
-      80% { transform: translate3d(5px, 10px, 0) scale(1.02); }
-    }
 
     .scroll-down {
       position: absolute;
       bottom: 40px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 12px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
       opacity: 0;
       color: var(--intro-text);
       z-index: 4;
@@ -192,39 +170,39 @@
       60% { transform: translate(-50%, -5px); }
     }
 
-    /* =========================================
-       MAIN SITE STYLES
-       ========================================= */
-    .main-content {
-      opacity: 1;
-      transition: opacity 0.5s ease;
-    }
-
+    /* HEADER & NAV */
     header {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 30px 40px;
+      top: 0; left: 0; width: 100%;
+      padding: 20px 40px;
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
-      background: rgba(248, 249, 250, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       z-index: 100;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
       transition: background var(--transition), opacity 1s ease;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     [data-theme="dark"] header {
-      background: rgba(26, 26, 46, 0.95);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(5,5,5,0.7);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
     }
 
-    .nav-center {
+    .header-logo {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: 0.1em;
+      color: var(--primary-text);
+      cursor: pointer;
+    }
+
+    .nav-desktop {
       display: flex;
-      gap: 60px;
-      font-size: 14px;
+      gap: 30px;
       align-items: center;
     }
 
@@ -233,627 +211,506 @@
       border: none;
       cursor: pointer;
       color: var(--nav-text);
-      transition: color var(--transition), transform 0.2s ease;
-      font-size: 14px;
-      font-family: inherit;
-      padding: 8px 12px;
-      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: color var(--transition);
     }
 
     .nav-btn:hover {
       color: var(--nav-hover);
-      transform: translateY(-1px);
     }
 
-    .nav-btn:focus {
-      outline: 2px solid var(--nav-text);
-      outline-offset: 2px;
-    }
-
-    #theme-toggle {
-      background: var(--accent-bg);
-      border: 1px solid var(--nav-text);
-      padding: 6px 12px;
-      border-radius: 20px;
-      font-size: 12px;
-      transition: all var(--transition);
-    }
-
-    #theme-toggle:hover {
-      transform: scale(1.05);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .dropdown {
+    /* DROPDOWN MENU */
+    .nav-dropdown-wrapper {
       position: relative;
       display: inline-block;
     }
 
-    .dropdown-content {
-      display: none;
+    .nav-dropdown {
       position: absolute;
       top: 100%;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(10px);
       background: var(--accent-bg);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0,0,0,0.05);
       border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-      z-index: 100;
-      min-width: 200px;
-      padding: 8px 0;
-      margin-top: 8px;
+      padding: 10px 0;
+      min-width: 180px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       opacity: 0;
-      transform: translateX(-50%) translateY(-10px);
-      transition: all 0.2s ease;
+      visibility: hidden;
+      transition: all var(--transition);
+      z-index: 100;
+      pointer-events: none;
     }
 
-    [data-theme="dark"] .dropdown-content {
-      background: rgba(26, 26, 46, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    [data-theme="dark"] .nav-dropdown {
+      border: 1px solid rgba(255,255,255,0.05);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    .dropdown-content.show {
-      display: block;
+    .nav-dropdown-wrapper:hover .nav-dropdown {
       opacity: 1;
+      visibility: visible;
       transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
     }
 
-    .dropdown-content a {
+    .dropdown-link {
       display: block;
-      padding: 10px 16px;
+      padding: 8px 20px;
+      font-family: var(--font-mono);
+      font-size: 12px;
       color: var(--nav-text);
       text-decoration: none;
-      font-size: 14px;
-      transition: all 0.2s ease;
-      border-radius: 4px;
-      margin: 0 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      transition: all var(--transition);
     }
 
-    .dropdown-content a:hover {
-      background: rgba(0, 0, 0, 0.05);
-      color: var(--nav-hover);
-      transform: translateX(2px);
-    }
-
-    [data-theme="dark"] .dropdown-content a:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .dropdown-btn {
-      position: relative;
-    }
-
-    .dropdown-btn.active {
-      color: var(--nav-hover);
-    }
-
-    .skills-slider {
-      width: 100%;
-      max-width: 100vw;
-      overflow: hidden;
-      position: relative;
-      padding: 30px 0;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 0.8s ease forwards;
-      animation-delay: 4.2s;
-    }
-
-    .skills-slider::before,
-    .skills-slider::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      width: 60px;
-      height: 100%;
-      z-index: 5;
-      pointer-events: none;
-    }
-
-    .skills-slider::before {
-      left: 0;
-      background: linear-gradient(to right, 
-        rgba(255, 255, 255, 1) 0%, 
-        transparent 100%);
-    }
-
-    .skills-slider::after {
-      right: 0;
-      background: linear-gradient(to left, 
-        rgba(255, 255, 255, 1) 0%, 
-        transparent 100%);
-    }
-
-    [data-theme="dark"] .skills-slider::before {
-      background: linear-gradient(to right, 
-        #1a1a2e 0%, 
-        transparent 100%);
-    }
-
-    [data-theme="dark"] .skills-slider::after {
-      background: linear-gradient(to left, 
-        #1a1a2e 0%, 
-        transparent 100%);
-    }
-
-    .slider-track {
-      display: flex;
-      width: fit-content;
-      animation: infiniteScroll 30s linear infinite;
-    }
-
-    @keyframes infiniteScroll {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(-50%, 0, 0); }
-    }
-
-    .skill-item {
-      min-width: 120px;
-      height: 60px;
-      margin: 0 10px;
-      background: var(--accent-bg);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(0, 0, 0, 0.05);
-      flex-shrink: 0;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
-    }
-
-    [data-theme="dark"] .skill-item {
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .skill-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-    }
-
-    .skill-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--primary-text);
-      text-align: center;
-      line-height: 1.2;
-      transition: color var(--transition);
-    }
-
-    body {
-      cursor: none;
-    }
-
-    .custom-cursor {
-      position: fixed;
-      width: 20px;
-      height: 20px;
-      border: 2px solid var(--primary-text);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transition: all 0.1s ease;
-      mix-blend-mode: difference;
-    }
-
-    .custom-cursor.hover {
-      transform: scale(1.5);
-      background: var(--primary-text);
-      opacity: 0.8;
-    }
-
-    .about-section {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 80px 40px;
+    .dropdown-link:hover {
       background: var(--secondary-bg);
-      position: relative;
-      overflow: hidden;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
+      color: var(--nav-hover);
     }
 
-    .about-container {
-      max-width: 800px;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(50px);
-      transition: all 0.8s ease;
+    #theme-toggle {
+      background: var(--secondary-bg);
+      border: 1px solid var(--nav-text);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+      color: var(--primary-text);
     }
 
-    .about-container.visible {
+    #theme-toggle:hover {
+      transform: scale(1.05);
+    }
+
+    /* MOBILE NAV */
+    .mobile-menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--primary-text);
+      cursor: pointer;
+    }
+
+    .mobile-nav-overlay {
+      position: fixed; inset: 0;
+      background: var(--primary-bg);
+      z-index: 200; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: all 0.4s ease;
+    }
+
+    .mobile-nav-overlay.active {
+      opacity: 1; pointer-events: auto;
+    }
+
+    .mobile-menu-close {
+      position: absolute; top: 20px; right: 30px;
+      font-size: 2.5rem; background: none; border: none;
+      color: var(--primary-text); cursor: pointer;
+      font-family: var(--font-sans); font-weight: 300;
+    }
+
+    .mobile-nav-links {
+      display: flex; flex-direction: column; gap: 40px; text-align: center;
+    }
+
+    .mobile-link {
+      font-family: var(--font-mono);
+      color: var(--primary-text);
+      text-decoration: none;
+      font-size: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* TOC DOT NAV */
+    .toc-nav {
+      position: fixed;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .toc-dot {
+      display: block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--nav-text);
+      transition: all 0.3s ease;
+      opacity: 0.3;
+      text-decoration: none;
+    }
+
+    .toc-dot.active, .toc-dot:hover {
       opacity: 1;
-      transform: translateY(0);
+      transform: scale(1.5);
+      background: var(--nav-hover);
     }
 
-    .about-container h2 {
-      font-size: clamp(2rem, 5vw, 3rem);
-      font-weight: 300;
-      margin-bottom: 40px;
+    /* 12-COLUMN GRID SYSTEM */
+    .section {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 30px;
+      min-height: 100vh;
+      position: relative;
+      padding: 120px 40px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .section-left {
+      grid-column: 1 / span 5;
+      position: sticky;
+      top: 15vh;
+      height: fit-content;
+      z-index: 10;
+      padding-right: 20px;
+    }
+
+    .section-right {
+      grid-column: 6 / span 7;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      z-index: 5;
+      padding-bottom: 20vh;
+    }
+
+    /* TYPOGRAPHY UI & BG TITLES */
+    .project-number {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--primary-text);
+      background: var(--secondary-bg);
+      padding: 6px 12px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-bottom: 15px;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    [data-theme="dark"] .project-number {
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .project-title {
+      font-family: var(--font-sans);
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: 600;
+      margin-bottom: 15px;
+      line-height: 1.2;
       color: var(--primary-text);
       position: relative;
+      z-index: 1;
     }
 
-    .about-container h2::after {
-      content: '';
-      position: absolute;
-      bottom: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 3px;
-      background: linear-gradient(90deg, transparent, var(--primary-text), transparent);
+    .bg-title {
+      position: sticky;
+      top: 20vh;
+      font-family: var(--font-sans);
+      font-size: 8vw;
+      font-weight: 800;
+      line-height: 0.8;
+      color: var(--primary-text);
+      opacity: 0.03;
+      z-index: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
     }
 
-    .about-container p {
-      font-size: clamp(1rem, 2vw, 1.2rem);
-      line-height: 1.8;
+    .project-meta {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
       color: var(--meta-text);
       margin-bottom: 30px;
     }
 
-    .social {
-      position: fixed;
-      left: 20px;
-      bottom: 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      font-size: 18px;
+    .project-description {
+      font-family: var(--font-sans);
+      font-size: 1.05rem;
+      color: var(--meta-text);
+      line-height: 1.7;
+      font-weight: 400;
+    }
+    
+    .project-description dt {
+      font-weight: 600;
       color: var(--primary-text);
-      z-index: 5;
+      margin-top: 15px;
+    }
+    .project-description dd {
+      margin-bottom: 10px;
+    }
+    
+    .project-description strong {
+      color: var(--primary-text);
+      font-weight: 600;
+      display: block;
+      margin-top: 15px;
     }
 
-    .social a {
-      color: inherit;
-      text-decoration: none;
-      transition: transform 0.2s ease;
-    }
-
-    .social a:hover {
-      transform: scale(1.2);
-    }
-
-    .section {
-      display: flex;
-      flex-direction: row;
-      min-height: 100vh;
-      position: relative;
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
-    }
-
-    .section-left {
-      width: 40%;
-      background: var(--accent-bg);
-      padding: 80px 40px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      transition: background var(--transition);
+    /* IMAGE TREATMENT */
+    .project-images {
       position: relative;
       z-index: 2;
-      min-height: 100vh;
-    }
-
-    .section-right {
-      width: 60%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--secondary-bg);
-      transition: background var(--transition);
-      position: relative;
-      min-height: 100vh;
-      padding: 40px 20px;
-    }
-
-    .section-content {
-      transform: translateX(-100vw);
-      transition: transform var(--slide-transition);
-      will-change: transform;
-    }
-
-    .section-left.visible .section-content {
-      transform: translateX(0);
-    }
-
-    .section-left.exit-left .section-content {
-      transform: translateX(-120vw);
-      transition: transform var(--exit-transition);
-    }
-
-    .project-number {
-      font-size: clamp(1.5rem, 4vw, 2.5rem);
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: var(--primary-text);
-      opacity: 0.8;
-    }
-
-    .project-title {
-      font-size: clamp(1.3rem, 3vw, 2rem);
-      font-weight: 400;
-      margin-bottom: 10px;
-      line-height: 1.2;
-      color: var(--primary-text);
-    }
-
-    .project-meta {
-      margin-top: 0px;
-      font-size: clamp(0.75rem, 1.5vw, 0.875rem);
-      color: var(--meta-text);
-      transition: color var(--transition);
-    }
-
-    .project-description {
-      margin-top: 10px;
-      font-size: clamp(0.9rem, 1.8vw, 1rem);
-      color: var(--meta-text);
-      line-height: 1.6;
-    }
-
-    .project-images {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      justify-content: center;
-      align-items: center;
-      max-width: 100%;
-      padding: 20px;
-    }
-
-    .project-image {
-      width: 300px;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.6s ease-out;
-    }
-
-    .project-image:hover {
-      transform: scale(1.15);
-      cursor: pointer;
-    }
-
-    [data-theme="dark"] .project-image {
-      background: linear-gradient(45deg, #444, #555);
-      color: #aaa;
-    }
-
-    .section.visible .project-image {
-      transform: translateY(-10px) scale(1.02);
-    }
-
-    .project-image2 {
-      width: 300px;
-      height: 320px;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      transition: transform 0.6s ease-out;
-    }
-
-    .project-image2:hover {
-      transform: scale(1.15);
-      cursor: pointer;
-    }
-
-    [data-theme="dark"] .project-image2 {
-      background: linear-gradient(45deg, #444, #555);
-      color: #aaa;
-    }
-
-    .section.visible .project-image2 {
-      transform: translateY(-10px) scale(1.02);
-    }
-
-    .lightbox {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-    }
-
-    .lightbox-content {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 8px;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-    }
-
-    .close-lightbox {
-      position: absolute;
-      top: 20px;
-      right: 35px;
-      color: #fff;
-      font-size: 40px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .contact-section {
-      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 80px 40px;
-      background: var(--accent-bg);
-      transition: background var(--transition);
-      scroll-snap-align: start;
-      scroll-snap-stop: always;
+      gap: 80px;
+      margin-top: 0; 
     }
 
-    .contact-content {
-      max-width: 600px;
+    .project-images-row {
+      display: flex;
+      gap: 40px;
+      width: 100%;
+    }
+    
+    .img-col {
+      flex: 1;
+    }
+
+    .img-col-2 {
+      margin-top: 60px;
+    }
+
+    .img-container {
+      border-radius: 6px;
+      overflow: hidden;
+      width: 100%;
+      background: var(--secondary-bg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
       opacity: 0;
-      transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 1s ease, border-color 0.4s ease;
+      will-change: opacity;
+      box-sizing: border-box;
+      border: 1px solid transparent;
     }
 
-    .contact-content.visible {
+    [data-theme="dark"] .img-container {
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .img-container.in-view {
+      opacity: 1;
+    }
+
+    .img-container.passed {
+      opacity: 0;
+    }
+
+    .img-container.centered {
+      border-color: var(--primary-text);
+    }
+
+    .project-image-hero, .project-image-secondary {
+      width: 100%;
+      height: auto;
+      max-height: 70vh;
+      display: block;
+      object-fit: contain;
+      cursor: pointer;
+      transform: scale(0.95);
+      transition: transform 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+      will-change: transform;
+      transform-origin: center center;
+    }
+
+    .img-container.in-view .project-image-hero,
+    .img-container.in-view .project-image-secondary {
+      transform: scale(1);
+    }
+
+    .img-container.passed .project-image-hero,
+    .img-container.passed .project-image-secondary {
+      transform: scale(1.15);
+    }
+
+    /* INTERACTION & TRANSITION CLASSES */
+    .fade-line {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      will-change: opacity, transform;
+    }
+
+    .fade-line.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    .contact-content h2 {
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      font-weight: 300;
-      margin-bottom: 20px;
+    .project-title.type-out {
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 1.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .project-title.type-out.typed {
+      clip-path: inset(0 0 0 0);
+    }
+
+    /* ABOUT & CONTACT SECTIONS */
+    .about-section, .contact-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 40px;
+      background: var(--accent-bg);
+      text-align: center;
+      position: relative;
+    }
+
+    .about-container, .contact-content {
+      max-width: 800px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: all 0.8s ease;
+    }
+
+    .about-container.visible, .contact-content.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .about-section h2, .contact-section h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      margin-bottom: 30px;
       color: var(--primary-text);
     }
 
-    .contact-content p {
-      font-size: clamp(0.95rem, 2vw, 1.1rem);
-      color: var(--meta-text);
-      margin-bottom: 40px;
+    .about-section p, .contact-section p {
+      font-size: 1.1rem;
       line-height: 1.8;
+      color: var(--meta-text);
+      margin-bottom: 25px;
     }
 
     .contact-links {
       display: flex;
-      gap: 30px;
+      gap: 20px;
       justify-content: center;
       flex-wrap: wrap;
+      margin-top: 40px;
     }
 
     .contact-link {
+      font-family: var(--font-mono);
       color: var(--primary-text);
       text-decoration: none;
       padding: 12px 24px;
-      border: 2px solid var(--primary-text);
-      border-radius: 30px;
+      border: 1px solid var(--primary-text);
+      border-radius: 4px;
       transition: all 0.3s ease;
-      font-weight: 500;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
     .contact-link:hover {
       background: var(--primary-text);
       color: var(--accent-bg);
-      transform: translateY(-2px);
     }
 
-    .scroll-indicator {
+    /* LIGHTBOX */
+    .lightbox {
+      display: none;
       position: fixed;
-      top: 0;
-      right: 20px;
-      width: 5px;
-      height: 100vh;
-      background: var(--scroll-bg);
-      z-index: 5;
+      z-index: 1000;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(5px);
+      justify-content: center;
+      align-items: center;
     }
 
-    .scroll-progress {
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 4px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    .close-lightbox {
       position: absolute;
-      width: 100%;
-      height: 0;
-      background: var(--scroll-progress);
-      transition: height var(--transition);
+      top: 30px; right: 40px;
+      color: #fff; font-size: 40px; font-weight: 300;
+      cursor: pointer; font-family: var(--font-sans);
+      transition: transform 0.2s;
+    }
+    
+    .close-lightbox:hover {
+      transform: scale(1.1);
     }
 
-    /* Mobile Responsive Design */
-    @media (max-width: 700px) {
-      html { scroll-snap-type: none; }
-      body { cursor: auto; }
-      .custom-cursor { display: none; }
-      .skills-slider { display: none; }
-
-      header { padding: 15px 20px; }
-      .nav-center {
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: center;
-        font-size: 12px;
-      }
-      .nav-btn { font-size: 12px; padding: 6px 8px; }
-
-      .dropdown-content {
-        position: fixed;
-        top: 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 280px;
-      }
-      .dropdown-content.show { transform: translateX(-50%) translateY(0); }
-
-      /* Modifying the hero video for mobile so it fits the screen fully */
-      #hero-video {
-        object-fit: contain;
-      }
-
-      .about-section { padding: 60px 20px; }
-      
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 900px) {
       .section {
+        display: flex;
         flex-direction: column;
-        height: auto;
-        min-height: 100vh;
+        padding: 80px 20px;
+        gap: 40px;
       }
-
-      .section-left, .section-right {
-        width: 100%;
-        padding: 40px 20px;
-        min-height: auto;
+      .section-left {
+        position: relative;
+        top: 0;
+        padding-right: 0;
       }
-
-      .section-content {
-        transform: translateX(0);
-        opacity: 0;
-        transition: opacity 0.6s ease;
+      .section-right {
+        padding-bottom: 40px;
       }
-      .section-left.visible .section-content { opacity: 1; transform: translateX(0); }
-      .section-left.exit-left .section-content { opacity: 0.3; transform: translateX(0); }
-
-      .project-images { padding: 10px; }
-      .project-image, .project-image2 { width: 100%; max-width: 280px; height: auto; }
-
-      .social {
-        position: static;
-        flex-direction: row;
-        left: auto;
-        transform: none;
-        bottom: auto;
-        margin-top: 20px;
-        justify-content: center;
+      .bg-title {
+        display: none;
       }
-
-      .contact-links { flex-direction: column; align-items: center; }
-      .contact-link { width: 200px; text-align: center; }
-      .scroll-indicator { display: none; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-snap-type: none; }
-      * {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
+      .project-images {
+        gap: 30px;
+        margin-top: 0;
       }
-      .scroll-down { animation: none; }
-      .slider-track { animation: none !important; }
+      .project-images-row {
+        flex-direction: column;
+        gap: 30px;
+      }
+      .img-col-2 {
+        margin-top: 0;
+      }
+      .project-number {
+        font-size: 0.85rem;
+        margin-bottom: 10px;
+      }
+      .toc-nav {
+        display: none;
+      }
+      .nav-desktop {
+        display: none;
+      }
+      .mobile-menu-toggle {
+        display: block;
+      }
     }
   </style>
 </head>
 <body>
   <div id="noise-overlay"></div>
-
-  <div class="custom-cursor"></div>
 
   <div id="preloader">
     <div>
@@ -862,94 +719,170 @@
     </div>
   </div>
 
+  <!-- Mobile Nav Overlay -->
+  <div class="mobile-nav-overlay" id="mobile-nav">
+    <button class="mobile-menu-close" id="mobile-close">&times;</button>
+    <nav class="mobile-nav-links">
+      <a href="#about" class="mobile-link">About</a>
+      <a href="#project-1" class="mobile-link">Projects</a>
+      <a href="#contact" class="mobile-link">Contact</a>
+    </nav>
+  </div>
+
   <div id="main-content" class="main-content">
     <header>
-      <div class="nav-center">
-        <button class="nav-btn" id="about-btn" aria-label="View about">👤 | about</button>
-        <div class="dropdown">
-          <button class="nav-btn" id="projects-btn" aria-label="View projects"> 📁 | projects</button>
-          <div class="dropdown-content" id="projects-dropdown">
-            <a href="#project-1" data-project="1">Calendar Application</a>
-            <a href="#project-2" data-project="2">Interactive 4 Axis Robot</a>
-            <a href="#project-3" data-project="3">Filtration System</a>
-            <a href="#project-4" data-project="4">Drone Capture Device</a>
-            <a href="#project-5" data-project="5">Octopus Inspired Gripper</a>
-            <a href="#project-6" data-project="6">Automated Culinary Robotics</a>
-            <a href="#project-7" data-project="7">Forging</a>
-            <a href="#project-8" data-project="8">12ft Trebuchet!</a>
+      <div class="header-logo" id="logo-btn">SM</div>
+      <div class="nav-desktop">
+        <button class="nav-btn" id="about-btn" aria-label="View about">About</button>
+        <div class="nav-dropdown-wrapper">
+          <button class="nav-btn" id="projects-btn" aria-label="View projects">Projects ▾</button>
+          <div class="nav-dropdown">
+            <a href="#project-1" class="dropdown-link" data-target="project-1">Calendar Application</a>
+            <a href="#project-2" class="dropdown-link" data-target="project-2">Interactive 4 Axis Robot</a>
+            <a href="#project-3" class="dropdown-link" data-target="project-3">Filtration System</a>
+            <a href="#project-4" class="dropdown-link" data-target="project-4">Drone Capture Device</a>
+            <a href="#project-5" class="dropdown-link" data-target="project-5">Octopus Inspired Gripper</a>
+            <a href="#project-6" class="dropdown-link" data-target="project-6">Automated Culinary Robotics</a>
+            <a href="#project-7" class="dropdown-link" data-target="project-7">Forging</a>
+            <a href="#project-8" class="dropdown-link" data-target="project-8">12ft Trebuchet!</a>
           </div>
         </div>
-        <button class="nav-btn" id="contact-btn" aria-label="Contact">⛓ | contact</button>
+        <button class="nav-btn" id="contact-btn" aria-label="Contact">Contact</button>
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
       </div>
+      <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+      </button>
     </header>
 
-    <section id="hero">
+    <nav class="toc-nav">
+      <a href="#hero" class="toc-dot" data-target="hero" title="Intro"></a>
+      <a href="#project-1" class="toc-dot" data-target="project-1" title="Calendar"></a>
+      <a href="#project-2" class="toc-dot" data-target="project-2" title="Robot Arm"></a>
+      <a href="#project-3" class="toc-dot" data-target="project-3" title="Filtration"></a>
+      <a href="#about" class="toc-dot" data-target="about" title="About"></a>
+      <a href="#project-4" class="toc-dot" data-target="project-4" title="Drone Net"></a>
+      <a href="#project-5" class="toc-dot" data-target="project-5" title="Gripper"></a>
+      <a href="#project-6" class="toc-dot" data-target="project-6" title="Pudding Bot"></a>
+      <a href="#project-7" class="toc-dot" data-target="project-7" title="Forging"></a>
+      <a href="#project-8" class="toc-dot" data-target="project-8" title="Trebuchet"></a>
+      <a href="#contact" class="toc-dot" data-target="contact" title="Contact"></a>
+    </nav>
+
+    <section id="hero" class="scroll-section">
       <video id="hero-video" muted playsinline></video>
       <div id="video-overlay"></div>
       <div id="titles-container">
-        <h1 class="hero-title">Welcome to my portfolio</h1>
+        <h1 class="hero-title">Welcome to my Portfolio
       </div>
-      <div class="scroll-down" id="hero-scroll">scroll ↓</div>
+      <div class="scroll-down" id="hero-scroll">SCROLL ↓</div>
     </section>
 
-    <section class="section" data-project="1" id="project-1">
+    <!-- PROJECT 1 -->
+    <section class="section scroll-section" id="project-1">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">1</div>
-          <h2 class="project-title">Calendar Application<br>for PolySense Solutions</h2>
-          <div class="project-meta">JavaScript · HTML/CSS · FullCalendar</div>
-          <p class="project-description"><strong>What?</strong><br> A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.<br><strong> How? </strong><br> Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.<br><strong> Results? </strong><br> Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</p>
-        </div>
+        <div class="project-number fade-line">01</div>
+        <h2 class="project-title type-out">Calendar<br>Application</h2>
+        <div class="project-meta fade-line">JavaScript · HTML/CSS · FullCalendar</div>
+        <dl class="project-description">
+          <dt class="fade-line">What?</dt>
+          <dd class="fade-line">A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.</dd>
+          <dt class="fade-line">How?</dt>
+          <dd class="fade-line">Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.</dd>
+          <dt class="fade-line">Results?</dt>
+          <dd class="fade-line">Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</dd>
+        </dl>
       </div>
       <div class="section-right">
+        <div class="bg-title">01</div>
         <div class="project-images">
-          <img class="project-image" src="AddEventView.png" alt="Add Event View">
-          <img class="project-image" src="CalendarView.png" alt="Calendar View 1">
-          <img class="project-image" src="CalendarView2.png" alt="Calendar View 2">
+          <div class="img-container zoom-target blueprint-target">
+            <img class="project-image-hero" src="AddEventView.png" alt="Add Event View" loading="lazy">
+          </div>
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="CalendarView.png" alt="Calendar View 1" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="CalendarView2.png" alt="Calendar View 2" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="2" id="project-2">
+    <!-- PROJECT 2 -->
+    <section class="section scroll-section alt-bg" id="project-2">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">2</div>
-          <h2 class="project-title">Interactive<br>4 Axis Robot</h2>
-          <div class="project-meta">Fusion 360 · Arduino (C++) · Python</div>
-          <p class="project-description"><strong>What?</strong><br>A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.<br><strong> How? </strong><br> Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.<br><strong> Results? </strong><br>The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</p>
-        </div>
+        <div class="project-number fade-line">02</div>
+        <h2 class="project-title type-out">Interactive<br>4 Axis Robot</h2>
+        <div class="project-meta fade-line">Fusion 360 · Arduino (C++) · Python</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">02</div>
         <div class="project-images">
-          <img class="project-image2" src="Tik.jpg" alt="Tic Tac Toe Robot">
-          <img class="project-image2" src="ArmCAD.png" alt="Robot Arm CAD">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="Tik.jpg" alt="Tic Tac Toe Robot" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="ArmCAD.png" alt="Robot Arm CAD" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="3" id="project-3">
+    <!-- PROJECT 3 -->
+    <section class="section scroll-section" id="project-3">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">3</div>
-          <h2 class="project-title">Filtration System <br> for Remote Communities</h2>
-          <div class="project-meta">Team Leadership · Arduino (C++) · Fusion 360</div>
-          <p class="project-description"><strong>What?</strong><br>Led a team of 5 to design a water filtration system for northern communities, targeting over 100L/day of clean drinking water.<br><strong> How? </strong><br>Programmed Arduino-controlled chlorination and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion 360.<br><strong> Results? </strong><br>Produced drinkable water from heavily soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort for both efficiency and reliability.</p>
-        </div>
+        <div class="project-number fade-line">03</div>
+        <h2 class="project-title type-out">Filtration System</h2>
+        <div class="project-meta fade-line">Team Leadership · Arduino (C++) · Fusion 360</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Led a team of 5 to design a water filtration system for northern communities, targeting over 100L/day of clean drinking water.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed Arduino-controlled chlorination and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion 360.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Produced drinkable water from heavily soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort for both efficiency and reliability.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">03</div>
         <div class="project-images">
-          <img class="project-image" src="elec.jpeg" alt="Electronics">
-          <img class="project-image" src="tower.jpeg" alt="Filtration Tower">
-          <img class="project-image" src="test.jpeg" alt="Water Test">
+          <div class="img-container zoom-target blueprint-target">
+            <img class="project-image-hero" src="elec.jpeg" alt="Electronics" loading="lazy">
+          </div>
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="tower.jpeg" alt="Filtration Tower" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="test.jpeg" alt="Water Test" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="about-section" id="about">
+    <section class="about-section scroll-section" id="about">
       <div class="about-container">
-        <h2>Keep Scrolling for More Projects!</h2>
-        <p>Or let me tell you more about me:</p>
+        <h2>About Me</h2>
         <p>
          Hi! I’m Shay, a <strong>Mechatronics Engineering</strong> student at the <strong>University of Waterloo</strong>. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
         </p>
@@ -957,129 +890,174 @@
          Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to <strong>build cool stuff</strong>).
         </p>
       </div>
-      <div class="scroll-down" style="opacity: 1; color: var(--primary-text);">scroll ↓</div>
     </section>
 
-    <div class="scroll-indicator">
-      <div class="scroll-progress"></div>
-    </div>
-
-    <section class="section" data-project="4" id="project-4">
+    <!-- PROJECT 4 -->
+    <section class="section scroll-section alt-bg" id="project-4">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">4</div>
-          <h2 class="project-title">Drone Capture Device</h2>
-          <div class="project-meta">Fusion 360 · CAD Iteration · Prototyping</div>
-          <p class="project-description">
-            <strong>What?</strong><br>
-            Designed and built a lightweight net gun for portable drone defense, keeping the system under 0.5kg for easy field use.<br>
-            <strong>How?</strong><br>
-            Modeled 8 custom parts in Fusion 360 optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation smoothness and reliability.<br>
-            <strong>Results?</strong><br>
-            Achieved consistent net deployment in field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact counter-drone applications.
-          </p>
-        </div>
+        <div class="project-number fade-line">04</div>
+        <h2 class="project-title type-out">Drone Capture<br>Device</h2>
+        <div class="project-meta fade-line">Fusion 360 · CAD Iteration · Prototyping</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Designed and built a lightweight net gun for portable drone defense, keeping the system under 0.5kg for easy field use.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled 8 custom parts in Fusion 360 optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation smoothness and reliability.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Achieved consistent net deployment in field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact counter-drone applications.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">04</div>
         <div class="project-images">
-          <img class="project-image" src="Net1.jpg" alt="Net Gun 1">
-          <img class="project-image" src="Net3.jpg" alt="Net Gun 2">
-          <img class="project-image" src="Net2.jpg" alt="Net Gun 3">
+          <div class="img-container zoom-target blueprint-target">
+            <img class="project-image-hero" src="Net1.jpg" alt="Net Gun 1" loading="lazy">
+          </div>
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="Net3.jpg" alt="Net Gun 2" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="Net2.jpg" alt="Net Gun 3" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="5" id="project-5">
+    <!-- PROJECT 5 -->
+    <section class="section scroll-section" id="project-5">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">5</div>
-          <h2 class="project-title">Octopus Inspired Gripper</h2>
-          <div class="project-meta">Fusion 360 · 3D Printing · Robotics</div>
-          <p class="project-description"><strong>What?</strong><br>I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.<br><strong> How? </strong><br> Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.<br><strong> Results? </strong><br> Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</p>
-        </div>
+        <div class="project-number fade-line">05</div>
+        <h2 class="project-title type-out">Octopus Inspired<br>Gripper</h2>
+        <div class="project-meta fade-line">Fusion 360 · 3D Printing · Robotics</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">05</div>
         <div class="project-images">
-          <img class="project-image2" src="gripper1.png" alt="Gripper CAD 1">
-          <img class="project-image2" src="gripper3.png" alt="Gripper CAD 2">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="gripper1.png" alt="Gripper CAD 1" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="gripper3.png" alt="Gripper CAD 2" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="6" id="project-6">
+    <!-- PROJECT 6 -->
+    <section class="section scroll-section alt-bg" id="project-6">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">6</div>
-          <h2 class="project-title">Automated Culinary Robotics System</h2>
-          <div class="project-meta">C++ · Fusion 360 · LEGO Technic</div>
-          <p class="project-description"><strong>What?</strong><br>A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users could select flavors, and the machine handled the rest.<br><strong> How? </strong><br>Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.<br><strong> Results? </strong><br>Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</p>
-        </div>
+        <div class="project-number fade-line">06</div>
+        <h2 class="project-title type-out">Automated Culinary<br>Robotics</h2>
+        <div class="project-meta fade-line">C++ · Fusion 360 · LEGO Technic</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users select flavors, and the machine handles the rest.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">06</div>
         <div class="project-images">
-          <img class="project-image" src="PuddingBack.jpg" alt="Pudding Robot Back">
-          <img class="project-image" src="Slider.png" alt="Pudding Robot Slider">
-          <img class="project-image" src="pudbot.jpg" alt="Pudding Robot">
+          <div class="img-container zoom-target blueprint-target">
+            <img class="project-image-hero" src="PuddingBack.jpg" alt="Pudding Robot Back" loading="lazy">
+          </div>
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="Slider.png" alt="Pudding Robot Slider" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="pudbot.jpg" alt="Pudding Robot" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="7" id="project-7">
+    <!-- PROJECT 7 -->
+    <section class="section scroll-section" id="project-7">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">7</div>
-          <h2 class="project-title">Forging</h2>
-          <div class="project-meta">Blacksmithing · Hand Tools · Woodworking</div>
-          <p class="project-description"><strong>What?</strong><br>As a hobby, I’ve taken on a handful of forging and knife-making projects.<br><strong> How? </strong><br> Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.<br><strong> Results? </strong><br>I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</p>
-        </div>
+        <div class="project-number fade-line">07</div>
+        <h2 class="project-title type-out">Forging</h2>
+        <div class="project-meta fade-line">Blacksmithing · Hand Tools · Woodworking</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">As a hobby, I’ve taken on a handful of forging and knife-making projects.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">07</div>
         <div class="project-images">
-          <img class="project-image2" src="knife2.JPG" alt="Forged Knife 1">
-          <img class="project-image2" src="knife1.JPG" alt="Forged Knife 2">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="knife2.JPG" alt="Forged Knife 1" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="knife1.JPG" alt="Forged Knife 2" loading="lazy">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="section" data-project="8" id="project-8">
+    <!-- PROJECT 8 -->
+    <section class="section scroll-section alt-bg" id="project-8">
       <div class="section-left">
-        <div class="section-content">
-          <div class="project-number">8</div>
-          <h2 class="project-title">12ft Trebuchet!</h2>
-          <div class="project-meta">Hands-on Design</div>
-          <p class="project-description">
-            <strong>What?</strong><br>
-            Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.<br>
-            <strong>How?</strong><br>
-            Recycled wood from a demolished deck and used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm lengths and counterweight ratios.<br>
-            <strong>Results?</strong><br>
-            Built a fully functional trebuchet that consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering, and effective collaboration.<br>
-          </p>
-        </div>
+        <div class="project-number fade-line">08</div>
+        <h2 class="project-title type-out">12ft Trebuchet!</h2>
+        <div class="project-meta fade-line">Hands-on Design</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Recycled wood from a demolished deck and used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm lengths and counterweight ratios.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Built a fully functional trebuchet that consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering, and effective collaboration.</span>
+        </p>
       </div>
       <div class="section-right">
+        <div class="bg-title">08</div>
         <div class="project-images">
-          <video class="project-image2" autoplay loop muted playsinline>
-            <source src="Trebuchet.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
-          <img class="project-image2" src="Treb.png" alt="Trebuchet">
+          <div class="img-container zoom-target blueprint-target">
+            <video class="project-image-hero" autoplay loop muted playsinline loading="lazy">
+              <source src="Trebuchet.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
       </div>
     </section>
 
+    <!-- Lightbox -->
     <div id="lightbox" class="lightbox">
-      <span class="close-lightbox">&times;</span>
+      <span class="close-lightbox" title="Close (Esc)">&times;</span>
       <img class="lightbox-content" id="lightbox-img" alt="Expanded Image">
       <video class="lightbox-content" id="lightbox-video" controls autoplay loop muted playsinline>
         <source id="lightbox-video-source" type="video/mp4">
-        Your browser does not support the video tag.
       </video>
     </div>
 
-    <section class="contact-section" id="contact">
+    <section class="contact-section scroll-section" id="contact">
       <div class="contact-content">
-        <h2>Get in Touch!</h2>
+        <h2>Get in Touch</h2>
         <p>I'm always interested in new opportunities and connections. Whether you have a project in mind or just want to say hello, I'd greatly appreciate hearing from you.</p>
         <div class="contact-links">
           <a href="mailto:smckim@uwaterloo.ca" class="contact-link">Email Me</a>
@@ -1100,7 +1078,7 @@
     const CONFIG = {
         VIDEO_SRC: "vid.mp4", 
         FREEZE_TIMESTAMP: 0.7, 
-        TITLE_DELAY_MS: 400 
+        TITLE_DELAY_MS: 300 
     };
 
     const preloader = document.getElementById('preloader');
@@ -1108,14 +1086,13 @@
     const loadPercentText = document.getElementById('load-percent');
     const heroVideo = document.getElementById('hero-video');
     const videoOverlay = document.getElementById('video-overlay');
-    const heroContainer = document.getElementById('hero');
     const titleLine1 = document.querySelector('.hero-title');
     const scrollDown = document.getElementById('hero-scroll');
     const header = document.querySelector('header');
 
     if (!preloader || !heroVideo) return;
 
-    // Lock page scrolling while intro is running
+    // Lock scroll during intro
     document.body.style.overflow = 'hidden';
     if (header) {
       header.style.opacity = '0';
@@ -1123,22 +1100,10 @@
     }
 
     let hasFrozen = false; 
-
     heroVideo.src = CONFIG.VIDEO_SRC;
     heroVideo.load();
 
-    let loadProgress = 0;
-    const loadInterval = setInterval(() => {
-        if (loadProgress < 90) {
-            loadProgress += Math.random() * 15;
-            let currentP = Math.min(Math.round(loadProgress), 90);
-            tensionMeter.style.width = `${currentP}%`;
-            loadPercentText.innerText = currentP.toString().padStart(2, '0');
-        }
-    }, 150);
-
     const completeLoad = () => {
-        clearInterval(loadInterval);
         tensionMeter.style.width = '100%';
         loadPercentText.innerText = '100';
         
@@ -1148,13 +1113,16 @@
                 preloader.remove();
                 heroVideo.play().catch(e => console.log("Autoplay prevented:", e));
             }, 400); 
-        }, 500);
+        }, 100);
     };
 
+    // Genuine load detection
     if (heroVideo.readyState >= 3) {
       completeLoad();
     } else {
-      heroVideo.addEventListener('canplaythrough', completeLoad);
+      heroVideo.addEventListener('canplaythrough', completeLoad, { once: true });
+      // Fallback
+      setTimeout(completeLoad, 3000);
     }
 
     heroVideo.addEventListener('timeupdate', () => {
@@ -1165,20 +1133,14 @@
             heroVideo.classList.add('frozen');
             videoOverlay.classList.add('active');
             
-            // Screen Shake
-            heroContainer.classList.add('shake-high');
-            setTimeout(() => heroContainer.classList.remove('shake-high'), 300);
-
-            // Sequence Complete: Title Drop & Unlock Layout
             setTimeout(() => {
                 titleLine1.classList.add('fade-in');
-                document.body.style.overflow = ''; // Unlock scrolling!
+                document.body.style.overflow = ''; // Unlock scrolling
                 
                 if (scrollDown) {
                   scrollDown.style.opacity = '0.6';
                 }
 
-                // Reveal header when the user scrolls (either manually or via auto-scroll)
                 const revealHeader = () => {
                   if (header) {
                     header.style.opacity = '1';
@@ -1187,16 +1149,16 @@
                   window.removeEventListener('scroll', revealHeader);
                 };
                 window.addEventListener('scroll', revealHeader);
+                setTimeout(revealHeader, 1500); // Fallback reveal
 
-                // Auto-scroll to first project after 2 seconds
+                // Auto scroll to first project
                 setTimeout(() => {
                   const firstProject = document.getElementById('project-1');
                   if(firstProject) {
                     firstProject.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
-                  // Failsafe reveal just in case the scroll event doesn't fire as expected
                   revealHeader();
-                }, 2000);
+                }, 2500);
 
             }, CONFIG.TITLE_DELAY_MS);
         }
@@ -1204,201 +1166,177 @@
   }
 
   function initializePortfolio() {
-    // Get DOM elements
-    const sections = document.querySelectorAll('.section');
-    const sectionLefts = document.querySelectorAll('.section-left');
-    const themeToggle = document.getElementById('theme-toggle');
-    const aboutBtn = document.getElementById('about-btn');
-    const projectsBtn = document.getElementById('projects-btn');
-    const contactBtn = document.getElementById('contact-btn');
-    const contactContent = document.querySelector('.contact-content');
-    const aboutContainer = document.querySelector('.about-container');
-
-    console.log(`Portfolio initialized with ${sections.length} sections`);
-
-    if (window.innerWidth > 700) {
-      initCustomCursor();
-    }
-
     // Theme Management
+    const themeToggle = document.getElementById('theme-toggle');
     const currentTheme = localStorage.getItem('theme') || 'light';
     if (currentTheme === 'dark') {
       document.documentElement.setAttribute('data-theme', 'dark');
       if (themeToggle) themeToggle.textContent = '☀️';
     }
 
-    // Reset all sections to initial state
-    sectionLefts.forEach((sectionLeft) => {
-      sectionLeft.classList.remove('visible', 'exit-left');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', () => {
+        const current = document.documentElement.getAttribute('data-theme');
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      });
+    }
+
+    // Smooth Scrolling
+    const smoothScrollTo = (id) => {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    document.getElementById('logo-btn')?.addEventListener('click', () => smoothScrollTo('hero'));
+    document.getElementById('about-btn')?.addEventListener('click', () => smoothScrollTo('about'));
+    document.getElementById('projects-btn')?.addEventListener('click', () => smoothScrollTo('project-1'));
+    document.getElementById('contact-btn')?.addEventListener('click', () => smoothScrollTo('contact'));
+
+    // Dropdown Links
+    document.querySelectorAll('.dropdown-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('data-target');
+        smoothScrollTo(targetId);
+      });
     });
 
-    function smoothScrollTo(element) {
-      if (element) {
-        element.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }
-    }
+    // Mobile Menu
+    const mobileToggle = document.getElementById('mobile-toggle');
+    const mobileClose = document.getElementById('mobile-close');
+    const mobileNav = document.getElementById('mobile-nav');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
 
-    // Navigation handlers
-    if (aboutBtn) {
-      aboutBtn.addEventListener('click', () => {
-         smoothScrollTo(document.getElementById('about'));
+    const openMobileNav = () => mobileNav.classList.add('active');
+    const closeMobileNav = () => mobileNav.classList.remove('active');
+
+    if(mobileToggle) mobileToggle.addEventListener('click', openMobileNav);
+    if(mobileClose) mobileClose.addEventListener('click', closeMobileNav);
+    
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = link.getAttribute('href').substring(1);
+        closeMobileNav();
+        setTimeout(() => smoothScrollTo(targetId), 300);
       });
-    }
+    });
 
-    const projectsDropdown = document.getElementById('projects-dropdown');
-    let dropdownTimeout;
+    // --- NEW INTERACTION OBSERVERS --- //
 
-    if (projectsBtn && projectsDropdown) {
-      projectsBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const isOpen = projectsDropdown.classList.contains('show');
-        if (isOpen) closeDropdown();
-        else openDropdown();
-      });
-
-      projectsDropdown.addEventListener('click', (e) => {
-        if (e.target.tagName === 'A') {
-          e.preventDefault();
-          const targetSection = document.querySelector(`#project-${e.target.dataset.project}`);
-          if (targetSection) {
-            smoothScrollTo(targetSection);
-            closeDropdown();
-          }
-        }
-      });
-
-      projectsBtn.addEventListener('mouseenter', () => {
-        clearTimeout(dropdownTimeout);
-        dropdownTimeout = setTimeout(openDropdown, 200);
-      });
-
-      projectsBtn.addEventListener('mouseleave', () => {
-        clearTimeout(dropdownTimeout);
-        dropdownTimeout = setTimeout(() => {
-          if (!projectsDropdown.matches(':hover') && !projectsBtn.matches(':hover')) {
-            closeDropdown();
-          }
-        }, 300);
-      });
-
-      projectsDropdown.addEventListener('mouseenter', () => clearTimeout(dropdownTimeout));
-      projectsDropdown.addEventListener('mouseleave', () => dropdownTimeout = setTimeout(closeDropdown, 200));
-
-      function openDropdown() {
-        projectsDropdown.classList.add('show');
-        projectsBtn.classList.add('active');
-      }
-
-      function closeDropdown() {
-        projectsDropdown.classList.remove('show');
-        projectsBtn.classList.remove('active');
-      }
-
-      document.addEventListener('click', (e) => {
-        if (!projectsBtn.contains(e.target) && !projectsDropdown.contains(e.target)) closeDropdown();
-      });
-    }
-
-    if (contactBtn) {
-      contactBtn.addEventListener('click', () => {
-        smoothScrollTo(document.getElementById('contact'));
-      });
-    }
-
-    // Intersection Observers for layout snapping
-    const slideObserver = new IntersectionObserver(entries => {
+    // 1. Z-Axis Zoom Observer (Camera scale effect)
+    const zoomObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          if (entry.target.classList.contains('section')) {
-            const sectionLeft = entry.target.querySelector('.section-left');
-            if (sectionLeft) {
-              sectionLeft.classList.add('visible');
-              sectionLeft.classList.remove('exit-left');
-            }
-          } else if (entry.target.classList.contains('contact-content')) {
-            entry.target.classList.add('visible');
-          } else if (entry.target.classList.contains('about-container')) {
-            entry.target.classList.add('visible');
+          entry.target.classList.add('in-view');
+          entry.target.classList.remove('passed');
+        } else {
+          // If bounding box top is less than 0, we scrolled past it
+          if (entry.boundingClientRect.top < 0) {
+            entry.target.classList.add('passed');
+            entry.target.classList.remove('in-view');
+          } else {
+            // We scrolled back up above it
+            entry.target.classList.remove('in-view');
+            entry.target.classList.remove('passed');
           }
         }
       });
-    }, { threshold: 0.3, rootMargin: '0px 0px -20% 0px' });
+    }, { threshold: [0, 0.2, 0.5, 0.8, 1], rootMargin: "0px 0px -10% 0px" });
 
-    const exitObserver = new IntersectionObserver(entries => {
+    document.querySelectorAll('.zoom-target').forEach(el => zoomObserver.observe(el));
+
+    // 2. Blueprint Border Observer (1px border when centered)
+    const blueprintObserver = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        if (entry.target.classList.contains('section')) {
-          const sectionLeft = entry.target.querySelector('.section-left');
-          if (sectionLeft) {
-            if (!entry.isIntersecting && entry.boundingClientRect.top < 0) {
-              sectionLeft.classList.add('exit-left');
-              sectionLeft.classList.remove('visible');
-            } else if (entry.isIntersecting) {
-              sectionLeft.classList.remove('exit-left');
-              sectionLeft.classList.add('visible');
-            } else if (entry.boundingClientRect.top > window.innerHeight) {
-              sectionLeft.classList.remove('visible', 'exit-left');
-            }
+        if (entry.isIntersecting) {
+          entry.target.classList.add('centered');
+        } else {
+          entry.target.classList.remove('centered');
+        }
+      });
+    }, { threshold: 0.6, rootMargin: "-20% 0px -20% 0px" });
+
+    document.querySelectorAll('.blueprint-target').forEach(el => blueprintObserver.observe(el));
+
+    // 3. Text Pacing Observer (Line by line fade-in)
+    const textObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add a small staggered delay based on vertical order
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+
+    document.querySelectorAll('.fade-line, .about-container, .contact-content').forEach(el => textObserver.observe(el));
+
+    // 4. Section Observer (BG Shift & Glitch Reveal Title)
+    const sectionObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+          
+          // Contextual Background Shift
+          if (entry.target.classList.contains('alt-bg')) {
+            document.body.classList.add('bg-shifted');
+          } else {
+            document.body.classList.remove('bg-shifted');
+          }
+          
+          // Trigger type-out title animation
+          const title = entry.target.querySelector('.project-title.type-out');
+          if (title && !title.classList.contains('typed')) {
+            title.classList.add('typed');
           }
         }
       });
-    }, { threshold: [0, 0.1], rootMargin: '-10% 0px -10% 0px' });
+    }, { threshold: 0.15 });
 
-    if (contactContent) slideObserver.observe(contactContent);
-    if (aboutContainer) slideObserver.observe(aboutContainer);
-    
-    sections.forEach((section, index) => {
-      const sectionContent = section.querySelector('.section-content');
-      if (sectionContent) sectionContent.style.transitionDelay = `${index * 0.1}s`;
-      slideObserver.observe(section);
-      exitObserver.observe(section);
-    });
+    document.querySelectorAll('.scroll-section').forEach(el => sectionObserver.observe(el));
 
-    let ticking = false;
-    function updateScroll() {
-      const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const progress = Math.min((window.scrollY / scrollHeight) * 100, 100);
-      const progressBar = document.querySelector('.scroll-progress');
-      if (progressBar) progressBar.style.height = `${progress}%`;
-      ticking = false;
-    }
+    // TOC Scrollspy
+    const sections = document.querySelectorAll('.scroll-section');
+    const tocDots = document.querySelectorAll('.toc-dot');
 
-    window.addEventListener('scroll', () => {
-      if (!ticking) {
-        requestAnimationFrame(updateScroll);
-        ticking = true;
-      }
-    });
-
-    themeToggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const newTheme = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      themeToggle.style.transform = 'scale(0.9)';
-      setTimeout(() => themeToggle.style.transform = 'scale(1)', 150);
-    });
-
-    document.querySelectorAll('.nav-btn, #theme-toggle').forEach(btn => {
-      btn.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          btn.click();
+    const scrollSpyObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          tocDots.forEach(dot => {
+            if (dot.getAttribute('data-target') === entry.target.id) {
+              dot.classList.add('active');
+            } else {
+              dot.classList.remove('active');
+            }
+          });
         }
+      });
+    }, { threshold: 0.3 });
+
+    sections.forEach(sec => scrollSpyObserver.observe(sec));
+
+    // TOC Dot Click Handle
+    tocDots.forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = dot.getAttribute('data-target');
+        smoothScrollTo(targetId);
       });
     });
 
+    // Lightbox Functionality
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightbox-img');
     const lightboxVideo = document.getElementById('lightbox-video');
     const lightboxVideoSource = document.getElementById('lightbox-video-source');
     const closeBtn = document.querySelector('.close-lightbox');
 
-    document.querySelectorAll('.project-image, .project-image2, video').forEach(el => {
-      if(el.id === 'hero-video') return; // Exclude hero video
+    document.querySelectorAll('.project-image-hero, .project-image-secondary, .section-right video').forEach(el => {
+      if(el.id === 'hero-video') return; 
       
       el.addEventListener('click', () => {
         lightbox.style.display = 'flex';
@@ -1408,8 +1346,6 @@
           lightboxImg.style.display = 'block';
           lightboxVideo.style.display = 'none';
           lightboxVideo.pause();
-          lightboxVideoSource.src = '';
-          lightboxVideo.load();
         } else if (el.tagName.toLowerCase() === 'video') {
           const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
           lightboxVideoSource.src = videoSrc;
@@ -1417,54 +1353,33 @@
           lightboxVideo.style.display = 'block';
           lightboxVideo.play();
           lightboxImg.style.display = 'none';
-          lightboxImg.src = '';
         }
       });
     });
 
-    closeBtn.addEventListener('click', () => {
+    const closeLightbox = () => {
       lightbox.style.display = 'none';
       lightboxImg.src = '';
       lightboxVideo.pause();
       lightboxVideoSource.src = '';
       lightboxVideo.load();
-    });
+    };
 
-    lightbox.addEventListener('click', (e) => {
-      if (e.target === lightbox) {
-        lightbox.style.display = 'none';
-        lightboxImg.src = '';
-        lightboxVideo.pause();
-        lightboxVideoSource.src = '';
-        lightboxVideo.load();
+    if(closeBtn) closeBtn.addEventListener('click', closeLightbox);
+    
+    // Close on background click
+    if(lightbox) {
+      lightbox.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+        closeLightbox();
       }
     });
-  }
-
-  function initCustomCursor() {
-    const cursor = document.querySelector('.custom-cursor');
-    if (!cursor) return;
-    
-    let mouseX = 0, mouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      cursor.style.left = mouseX + 'px';
-      cursor.style.top = mouseY + 'px';
-    });
-
-    const hoverElements = document.querySelectorAll('a, button, .project-image, .project-image2, .nav-btn, .skill-item, .contact-link');
-    hoverElements.forEach(element => {
-      element.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      element.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-
-    document.addEventListener('mouseleave', () => cursor.style.opacity = '0');
-    document.addEventListener('mouseenter', () => cursor.style.opacity = '1');
-
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
-      document.body.style.cursor = 'auto';
-      cursor.style.display = 'none';
-    }
   }
 </script>
 </body>
