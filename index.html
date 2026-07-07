@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shay McKim - Portfolio</title>
-  
+
   <link rel="preload" as="video" href="vid.mp4" type="video/mp4">
   <link rel="preload" as="video" href="Trebuchet.mp4" type="video/mp4">
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+    rel="stylesheet">
+
   <style>
     /* CSS Custom Properties - Sleek, monochromatic theme */
     :root {
@@ -25,10 +28,10 @@
       --scroll-bg: #e5e5e5;
       --scroll-progress: #111111;
       --transition: 0.3s ease;
-      
+
       --font-sans: 'Inter', sans-serif;
       --font-mono: 'Space Mono', monospace;
-      
+
       --intro-bg: #050505;
       --intro-text: #f0f0f0;
       --overlay-opacity: 0.8;
@@ -65,7 +68,7 @@
       overflow-x: hidden;
       transition: background-color 0.8s ease, color var(--transition);
     }
-    
+
     body.bg-shifted {
       background-color: var(--primary-bg-alt);
     }
@@ -73,7 +76,10 @@
     /* INTRO SEQUENCE */
     #noise-overlay {
       position: fixed;
-      top: 0; left: 0; width: 100vw; height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       pointer-events: none;
       z-index: 9999;
       opacity: 0.02;
@@ -81,72 +87,108 @@
     }
 
     #preloader {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background-color: var(--intro-bg);
-      display: flex; justify-content: center; align-items: center;
-      z-index: 1000; transition: opacity 0.4s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      transition: opacity 0.4s ease;
     }
-    
+
     .tension-meter-container {
-      width: 200px; height: 1px;
+      width: 200px;
+      height: 1px;
       background-color: rgba(255, 255, 255, 0.2);
-      margin: 0 auto 15px auto; overflow: hidden;
+      margin: 0 auto 15px auto;
+      overflow: hidden;
     }
-    
+
     #tension-meter-fill {
-      height: 100%; width: 0%;
+      height: 100%;
+      width: 0%;
       background-color: var(--intro-text);
       transition: width 0.2s ease;
     }
-    
+
     .loader-text {
-      font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(255,255,255,0.6); text-align: center;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.6);
+      text-align: center;
     }
 
     #hero {
       position: relative;
-      width: 100vw; height: 100vh;
+      width: 100vw;
+      height: 100vh;
       overflow: hidden;
       z-index: 10;
       background-color: var(--intro-bg);
     }
-    
+
     #hero-video {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       transition: filter 0.8s ease;
     }
-    
-    #hero-video.frozen { filter: grayscale(100%) brightness(0.4) contrast(1.2); }
-    
-    #video-overlay {
-      position: absolute; inset: 0;
-      background-color: var(--intro-bg);
-      opacity: 0; transition: opacity 0.8s ease; z-index: 2;
+
+    #hero-video.frozen {
+      filter: grayscale(100%) brightness(0.4) contrast(1.2);
     }
-    
-    #video-overlay.active { opacity: var(--overlay-opacity); }
+
+    #video-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: var(--intro-bg);
+      opacity: 0;
+      transition: opacity 0.8s ease;
+      z-index: 2;
+    }
+
+    #video-overlay.active {
+      opacity: var(--overlay-opacity);
+    }
 
     #titles-container {
-      position: absolute; top: 50%; left: 50%;
+      position: absolute;
+      top: 50%;
+      left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 3; text-align: center; width: 90%;
+      z-index: 3;
+      text-align: center;
+      width: 90%;
     }
-    
+
     .hero-title {
       font-family: var(--font-sans);
       font-size: clamp(1.5rem, 3vw, 3rem);
       line-height: 1.3;
-      font-weight: 300; letter-spacing: 0.15em;
+      font-weight: 300;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--intro-text);
       opacity: 0;
     }
-    
-    .fade-in { animation: fadeInEffect 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+    .fade-in {
+      animation: fadeInEffect 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    }
+
     @keyframes fadeInEffect {
-      0% { transform: translateY(15px); opacity: 0; }
-      100% { transform: translateY(0); opacity: 1; }
+      0% {
+        transform: translateY(15px);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
     }
 
     .scroll-down {
@@ -165,30 +207,45 @@
     }
 
     @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
-      40% { transform: translate(-50%, -10px); }
-      60% { transform: translate(-50%, -5px); }
+
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translate(-50%, 0);
+      }
+
+      40% {
+        transform: translate(-50%, -10px);
+      }
+
+      60% {
+        transform: translate(-50%, -5px);
+      }
     }
 
     /* HEADER & NAV */
     header {
       position: fixed;
-      top: 0; left: 0; width: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
       padding: 20px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255,255,255,0.7);
+      background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       z-index: 100;
-      border-bottom: 1px solid rgba(0,0,0,0.05);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
       transition: background var(--transition), opacity 1s ease;
     }
 
     [data-theme="dark"] header {
-      background: rgba(5,5,5,0.7);
-      border-bottom: 1px solid rgba(255,255,255,0.05);
+      background: rgba(5, 5, 5, 0.7);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .header-logo {
@@ -234,11 +291,11 @@
       left: 50%;
       transform: translateX(-50%) translateY(10px);
       background: var(--accent-bg);
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
       border-radius: 8px;
       padding: 10px 0;
       min-width: 180px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
       opacity: 0;
       visibility: hidden;
       transition: all var(--transition);
@@ -247,8 +304,8 @@
     }
 
     [data-theme="dark"] .nav-dropdown {
-      border: 1px solid rgba(255,255,255,0.05);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .nav-dropdown-wrapper:hover .nav-dropdown {
@@ -300,26 +357,42 @@
     }
 
     .mobile-nav-overlay {
-      position: fixed; inset: 0;
+      position: fixed;
+      inset: 0;
       background: var(--primary-bg);
-      z-index: 200; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      opacity: 0; pointer-events: none; transition: all 0.4s ease;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
     }
 
     .mobile-nav-overlay.active {
-      opacity: 1; pointer-events: auto;
+      opacity: 1;
+      pointer-events: auto;
     }
 
     .mobile-menu-close {
-      position: absolute; top: 20px; right: 30px;
-      font-size: 2.5rem; background: none; border: none;
-      color: var(--primary-text); cursor: pointer;
-      font-family: var(--font-sans); font-weight: 300;
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 2.5rem;
+      background: none;
+      border: none;
+      color: var(--primary-text);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-weight: 300;
     }
 
     .mobile-nav-links {
-      display: flex; flex-direction: column; gap: 40px; text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      text-align: center;
     }
 
     .mobile-link {
@@ -354,7 +427,8 @@
       text-decoration: none;
     }
 
-    .toc-dot.active, .toc-dot:hover {
+    .toc-dot.active,
+    .toc-dot:hover {
       opacity: 1;
       transform: scale(1.5);
       background: var(--nav-hover);
@@ -402,11 +476,11 @@
       display: inline-block;
       margin-bottom: 15px;
       letter-spacing: 0.05em;
-      border: 1px solid rgba(0,0,0,0.05);
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
-    
+
     [data-theme="dark"] .project-number {
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .project-title {
@@ -452,16 +526,17 @@
       line-height: 1.7;
       font-weight: 400;
     }
-    
+
     .project-description dt {
       font-weight: 600;
       color: var(--primary-text);
       margin-top: 15px;
     }
+
     .project-description dd {
       margin-bottom: 10px;
     }
-    
+
     .project-description strong {
       color: var(--primary-text);
       font-weight: 600;
@@ -476,7 +551,7 @@
       display: flex;
       flex-direction: column;
       gap: 80px;
-      margin-top: 0; 
+      margin-top: 0;
     }
 
     .project-images-row {
@@ -484,7 +559,7 @@
       gap: 40px;
       width: 100%;
     }
-    
+
     .img-col {
       flex: 1;
     }
@@ -509,7 +584,7 @@
     [data-theme="dark"] .img-container {
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
     }
-    
+
     .img-container.in-view {
       opacity: 1;
     }
@@ -522,7 +597,8 @@
       border-color: var(--primary-text);
     }
 
-    .project-image-hero, .project-image-secondary {
+    .project-image-hero,
+    .project-image-secondary {
       width: 100%;
       height: auto;
       max-height: 70vh;
@@ -567,8 +643,8 @@
       clip-path: inset(0 0 0 0);
     }
 
-    /* ABOUT & CONTACT SECTIONS */
-    .about-section, .contact-section {
+    /* CONTACT SECTION */
+    .contact-section {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -580,26 +656,26 @@
       position: relative;
     }
 
-    .about-container, .contact-content {
+    .contact-content {
       max-width: 800px;
       opacity: 0;
       transform: translateY(30px);
       transition: all 0.8s ease;
     }
 
-    .about-container.visible, .contact-content.visible {
+    .contact-content.visible {
       opacity: 1;
       transform: translateY(0);
     }
 
-    .about-section h2, .contact-section h2 {
+    .contact-section h2 {
       font-size: clamp(2rem, 4vw, 3rem);
       font-weight: 600;
       margin-bottom: 30px;
       color: var(--primary-text);
     }
 
-    .about-section p, .contact-section p {
+    .contact-section p {
       font-size: 1.1rem;
       line-height: 1.8;
       color: var(--meta-text);
@@ -637,7 +713,10 @@
       display: none;
       position: fixed;
       z-index: 1000;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background-color: rgba(0, 0, 0, 0.9);
       backdrop-filter: blur(5px);
       justify-content: center;
@@ -653,12 +732,16 @@
 
     .close-lightbox {
       position: absolute;
-      top: 30px; right: 40px;
-      color: #fff; font-size: 40px; font-weight: 300;
-      cursor: pointer; font-family: var(--font-sans);
+      top: 30px;
+      right: 40px;
+      color: #fff;
+      font-size: 40px;
+      font-weight: 300;
+      cursor: pointer;
+      font-family: var(--font-sans);
       transition: transform 0.2s;
     }
-    
+
     .close-lightbox:hover {
       transform: scale(1.1);
     }
@@ -671,50 +754,63 @@
         padding: 80px 20px;
         gap: 40px;
       }
+
       .section-left {
         position: relative;
         top: 0;
         padding-right: 0;
       }
+
       .section-right {
         padding-bottom: 40px;
       }
+
       .bg-title {
         display: none;
       }
+
       .project-images {
         gap: 30px;
         margin-top: 0;
       }
+
       .project-images-row {
         flex-direction: column;
         gap: 30px;
       }
+
       .img-col-2 {
         margin-top: 0;
       }
+
       .project-number {
         font-size: 0.85rem;
         margin-bottom: 10px;
       }
+
       .toc-nav {
         display: none;
       }
+
       .nav-desktop {
         display: none;
       }
+
       .mobile-menu-toggle {
         display: block;
       }
     }
   </style>
 </head>
+
 <body>
   <div id="noise-overlay"></div>
 
   <div id="preloader">
     <div>
-      <div class="tension-meter-container"><div id="tension-meter-fill"></div></div>
+      <div class="tension-meter-container">
+        <div id="tension-meter-fill"></div>
+      </div>
       <p class="loader-text">Loading Assets / <span id="load-percent">00</span>%</p>
     </div>
   </div>
@@ -723,7 +819,6 @@
   <div class="mobile-nav-overlay" id="mobile-nav">
     <button class="mobile-menu-close" id="mobile-close">&times;</button>
     <nav class="mobile-nav-links">
-      <a href="#about" class="mobile-link">About</a>
       <a href="#project-1" class="mobile-link">Projects</a>
       <a href="#contact" class="mobile-link">Contact</a>
     </nav>
@@ -733,39 +828,39 @@
     <header>
       <div class="header-logo" id="logo-btn">SM</div>
       <div class="nav-desktop">
-        <button class="nav-btn" id="about-btn" aria-label="View about">About</button>
         <div class="nav-dropdown-wrapper">
           <button class="nav-btn" id="projects-btn" aria-label="View projects">Projects ▾</button>
           <div class="nav-dropdown">
-            <a href="#project-1" class="dropdown-link" data-target="project-1">Calendar Application</a>
-            <a href="#project-2" class="dropdown-link" data-target="project-2">Interactive 4 Axis Robot</a>
-            <a href="#project-3" class="dropdown-link" data-target="project-3">Filtration System</a>
-            <a href="#project-4" class="dropdown-link" data-target="project-4">Drone Capture Device</a>
-            <a href="#project-5" class="dropdown-link" data-target="project-5">Octopus Inspired Gripper</a>
-            <a href="#project-6" class="dropdown-link" data-target="project-6">Automated Culinary Robotics</a>
-            <a href="#project-7" class="dropdown-link" data-target="project-7">Forging</a>
-            <a href="#project-8" class="dropdown-link" data-target="project-8">12ft Trebuchet!</a>
+            <a href="#project-1" class="dropdown-link" data-target="project-1">Interactive 4 Axis Robot</a>
+            <a href="#project-2" class="dropdown-link" data-target="project-2">Octopus Inspired Gripper</a>
+            <a href="#project-3" class="dropdown-link" data-target="project-3">12ft Trebuchet</a>
+            <a href="#project-4" class="dropdown-link" data-target="project-4">Forging</a>
+            <a href="#project-5" class="dropdown-link" data-target="project-5">Calendar Application</a>
+            <a href="#project-6" class="dropdown-link" data-target="project-6">Filtration System</a>
+            <a href="#project-7" class="dropdown-link" data-target="project-7">Drone Capture Device</a>
+            <a href="#project-8" class="dropdown-link" data-target="project-8">Automated Culinary Robotics</a>
           </div>
         </div>
         <button class="nav-btn" id="contact-btn" aria-label="Contact">Contact</button>
         <button id="theme-toggle" aria-label="Toggle dark mode">🌙</button>
       </div>
       <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 12h18M3 6h18M3 18h18" />
+        </svg>
       </button>
     </header>
 
     <nav class="toc-nav">
       <a href="#hero" class="toc-dot" data-target="hero" title="Intro"></a>
-      <a href="#project-1" class="toc-dot" data-target="project-1" title="Calendar"></a>
-      <a href="#project-2" class="toc-dot" data-target="project-2" title="Robot Arm"></a>
-      <a href="#project-3" class="toc-dot" data-target="project-3" title="Filtration"></a>
-      <a href="#about" class="toc-dot" data-target="about" title="About"></a>
-      <a href="#project-4" class="toc-dot" data-target="project-4" title="Drone Net"></a>
-      <a href="#project-5" class="toc-dot" data-target="project-5" title="Gripper"></a>
-      <a href="#project-6" class="toc-dot" data-target="project-6" title="Pudding Bot"></a>
-      <a href="#project-7" class="toc-dot" data-target="project-7" title="Forging"></a>
-      <a href="#project-8" class="toc-dot" data-target="project-8" title="Trebuchet"></a>
+      <a href="#project-1" class="toc-dot" data-target="project-1" title="Robot Arm"></a>
+      <a href="#project-2" class="toc-dot" data-target="project-2" title="Gripper"></a>
+      <a href="#project-3" class="toc-dot" data-target="project-3" title="Trebuchet"></a>
+      <a href="#project-4" class="toc-dot" data-target="project-4" title="Forging"></a>
+      <a href="#project-5" class="toc-dot" data-target="project-5" title="Calendar"></a>
+      <a href="#project-6" class="toc-dot" data-target="project-6" title="Filtration"></a>
+      <a href="#project-7" class="toc-dot" data-target="project-7" title="Drone Net"></a>
+      <a href="#project-8" class="toc-dot" data-target="project-8" title="Pudding Bot"></a>
       <a href="#contact" class="toc-dot" data-target="contact" title="Contact"></a>
     </nav>
 
@@ -782,19 +877,160 @@
     <section class="section scroll-section" id="project-1">
       <div class="section-left">
         <div class="project-number fade-line">01</div>
+        <h2 class="project-title type-out">Interactive<br>4 Axis Robot</h2>
+        <div class="project-meta fade-line">Fusion 360 · Arduino (C++) · Python</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">A 4-axis robotic arm designed completely
+            from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human
+            opponent.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled all components in Fusion 360, then
+            3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in
+            Python.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">The robot processed the user's move,
+            calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically
+            unbeatable.</span>
+        </p>
+      </div>
+      <div class="section-right">
+        <div class="bg-title">01</div>
+        <div class="project-images">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="Tik.jpg" alt="Tic Tac Toe Robot" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="ArmCAD.png" alt="Robot Arm CAD" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT 2 -->
+    <section class="section scroll-section alt-bg" id="project-2">
+      <div class="section-left">
+        <div class="project-number fade-line">02</div>
+        <h2 class="project-title type-out">Octopus Inspired<br>Gripper</h2>
+        <div class="project-meta fade-line">Fusion 360 · 3D Printing · Robotics</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">I'm working on a pulley-actuated robotic
+            gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with
+            ease.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Designed in Fusion 360, and now
+            experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with
+            a stepper motor, and grip force will be measured by load cells.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Coming soon! The final prototype should
+            safely grip delicate objects while applying a controlled amount of force.</span>
+        </p>
+      </div>
+      <div class="section-right">
+        <div class="bg-title">02</div>
+        <div class="project-images">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="gripper1.png" alt="Gripper CAD 1" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="gripper3.png" alt="Gripper CAD 2" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT 3 -->
+    <section class="section scroll-section" id="project-3">
+      <div class="section-left">
+        <div class="project-number fade-line">03</div>
+        <h2 class="project-title type-out">12ft Trebuchet!</h2>
+        <div class="project-meta fade-line">Hands-on Design</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Built a 12-ft, 200 lb trebuchet capable of
+            handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational
+            effort, designed and assembled together with my grandma.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Recycled wood from a demolished deck and
+            used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm
+            lengths and counterweight ratios.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Built a fully functional trebuchet that
+            consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering,
+            and effective collaboration.</span>
+        </p>
+      </div>
+      <div class="section-right">
+        <div class="bg-title">03</div>
+        <div class="project-images">
+          <div class="img-container zoom-target blueprint-target">
+            <video class="project-image-hero" autoplay loop muted playsinline loading="lazy">
+              <source src="Trebuchet.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT 4 -->
+    <section class="section scroll-section alt-bg" id="project-4">
+      <div class="section-left">
+        <div class="project-number fade-line">04</div>
+        <h2 class="project-title type-out">Forging</h2>
+        <div class="project-meta fade-line">Blacksmithing · Hand Tools · Woodworking</div>
+        <p class="project-description">
+          <strong class="fade-line">What?</strong><br><span class="fade-line">As a hobby, I've taken on a handful of
+            forging and knife-making projects.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Built a forge in the ground with a hair
+            dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing
+            and sanding to shape and finish the steel and wood handle.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">I've made about 5 knives so far, each
+            one noticeably better than the last. The final product here is one I'm especially proud of.</span>
+        </p>
+      </div>
+      <div class="section-right">
+        <div class="bg-title">04</div>
+        <div class="project-images">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="knife2.JPG" alt="Forged Knife 1" loading="lazy">
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target">
+                <img class="project-image-secondary" src="knife1.JPG" alt="Forged Knife 2" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT 5 -->
+    <section class="section scroll-section" id="project-5">
+      <div class="section-left">
+        <div class="project-number fade-line">05</div>
         <h2 class="project-title type-out">Calendar<br>Application</h2>
         <div class="project-meta fade-line">JavaScript · HTML/CSS · FullCalendar</div>
         <dl class="project-description">
           <dt class="fade-line">What?</dt>
-          <dd class="fade-line">A web app built as an add-on to the company’s existing website. It schedules use of high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.</dd>
+          <dd class="fade-line">A web app built as an add-on to the company's existing website. It schedules use of
+            high-value machinery like x-ray and manufacturing equipment, helping clients maximize efficiency.</dd>
           <dt class="fade-line">How?</dt>
-          <dd class="fade-line">Developed independently from scratch, adapting to client needs. Built with JavaScript, HTML, CSS, and the FullCalendar library.</dd>
+          <dd class="fade-line">Developed independently from scratch, adapting to client needs. Built with JavaScript,
+            HTML, CSS, and the FullCalendar library.</dd>
           <dt class="fade-line">Results?</dt>
-          <dd class="fade-line">Integrated seamlessly into their website, giving clients a smooth way to reserve equipment time.</dd>
+          <dd class="fade-line">Integrated seamlessly into their website, giving clients a smooth way to reserve
+            equipment time.</dd>
         </dl>
       </div>
       <div class="section-right">
-        <div class="bg-title">01</div>
+        <div class="bg-title">05</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="AddEventView.png" alt="Add Event View" loading="lazy">
@@ -815,51 +1051,25 @@
       </div>
     </section>
 
-    <!-- PROJECT 2 -->
-    <section class="section scroll-section alt-bg" id="project-2">
+    <!-- PROJECT 6 -->
+    <section class="section scroll-section alt-bg" id="project-6">
       <div class="section-left">
-        <div class="project-number fade-line">02</div>
-        <h2 class="project-title type-out">Interactive<br>4 Axis Robot</h2>
-        <div class="project-meta fade-line">Fusion 360 · Arduino (C++) · Python</div>
-        <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">A 4-axis robotic arm designed completely from scratch. As a demo, it placed blocks in a tic-tac-toe grid and played full games against a human opponent.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled all components in Fusion 360, then 3D printed them. Used an Arduino to drive servo motors, with motor control in C++ and game logic in Python.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">The robot processed the user’s move, calculated its own, picked up a block, and placed it accurately. With its programmed logic, it was basically unbeatable.</span>
-        </p>
-      </div>
-      <div class="section-right">
-        <div class="bg-title">02</div>
-        <div class="project-images">
-          <div class="project-images-row">
-            <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="Tik.jpg" alt="Tic Tac Toe Robot" loading="lazy">
-              </div>
-            </div>
-            <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="ArmCAD.png" alt="Robot Arm CAD" loading="lazy">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECT 3 -->
-    <section class="section scroll-section" id="project-3">
-      <div class="section-left">
-        <div class="project-number fade-line">03</div>
+        <div class="project-number fade-line">06</div>
         <h2 class="project-title type-out">Filtration System</h2>
         <div class="project-meta fade-line">Team Leadership · Arduino (C++) · Fusion 360</div>
         <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">Led a team of 5 to design a water filtration system for northern communities, targeting over 100L/day of clean drinking water.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed Arduino-controlled chlorination and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion 360.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">Produced drinkable water from heavily soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort for both efficiency and reliability.</span>
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Led a team of 5 to design a water
+            filtration system for northern communities, targeting over 100L/day of clean drinking water.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed Arduino-controlled chlorination
+            and agitation in C++. Designed and 3D-printed a compact housing for electronics and pumps in Fusion
+            360.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Produced drinkable water from heavily
+            soiled sources, exceeding the 100L/day target. Our design was recognized as the top performer in the cohort
+            for both efficiency and reliability.</span>
         </p>
       </div>
       <div class="section-right">
-        <div class="bg-title">03</div>
+        <div class="bg-title">06</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="elec.jpeg" alt="Electronics" loading="lazy">
@@ -880,32 +1090,25 @@
       </div>
     </section>
 
-    <section class="about-section scroll-section" id="about">
-      <div class="about-container">
-        <h2>About Me</h2>
-        <p>
-         Hi! I’m Shay, a <strong>Mechatronics Engineering</strong> student at the <strong>University of Waterloo</strong>. Over the past five years, I’ve been building, breaking, and rebuilding all kinds of projects, each one teaching me how to bring ideas to life, and just as importantly, how not to.
-        </p>
-        <p>
-         Those trial-and-error experiences shaped how I approach problems: with creativity, persistence, and a drive to try new solutions. I enjoy working at the intersection of mechanical, electrical, and software design, where I can connect disciplines to solve real problems (or just to <strong>build cool stuff</strong>).
-        </p>
-      </div>
-    </section>
-
-    <!-- PROJECT 4 -->
-    <section class="section scroll-section alt-bg" id="project-4">
+    <!-- PROJECT 7 -->
+    <section class="section scroll-section" id="project-7">
       <div class="section-left">
-        <div class="project-number fade-line">04</div>
+        <div class="project-number fade-line">07</div>
         <h2 class="project-title type-out">Drone Capture<br>Device</h2>
         <div class="project-meta fade-line">Fusion 360 · CAD Iteration · Prototyping</div>
         <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">Designed and built a lightweight net gun for portable drone defense, keeping the system under 0.5kg for easy field use.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled 8 custom parts in Fusion 360 optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation smoothness and reliability.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">Achieved consistent net deployment in field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact counter-drone applications.</span>
+          <strong class="fade-line">What?</strong><br><span class="fade-line">Designed and built a lightweight net gun
+            for portable drone defense, keeping the system under 0.5kg for easy field use.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Modeled 8 custom parts in Fusion 360
+            optimized for 3D printing. Iterated the trigger mechanism through 20+ design revisions to improve actuation
+            smoothness and reliability.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Achieved consistent net deployment in
+            field tests, with accuracy and reliability improving in each prototype. Demonstrated feasibility for compact
+            counter-drone applications.</span>
         </p>
       </div>
       <div class="section-right">
-        <div class="bg-title">04</div>
+        <div class="bg-title">07</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="Net1.jpg" alt="Net Gun 1" loading="lazy">
@@ -926,51 +1129,26 @@
       </div>
     </section>
 
-    <!-- PROJECT 5 -->
-    <section class="section scroll-section" id="project-5">
+    <!-- PROJECT 8 -->
+    <section class="section scroll-section alt-bg" id="project-8">
       <div class="section-left">
-        <div class="project-number fade-line">05</div>
-        <h2 class="project-title type-out">Octopus Inspired<br>Gripper</h2>
-        <div class="project-meta fade-line">Fusion 360 · 3D Printing · Robotics</div>
-        <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">I’m working on a pulley-actuated robotic gripper inspired by octopus tentacles. The goal is for it to grip a wide range of oddly shaped objects with ease.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Designed in Fusion 360, and now experimenting with 3D-printed prototypes to fine-tune joint tolerances. The arms will be pulley-driven with a stepper motor, and grip force will be measured by load cells.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">Coming soon! The final prototype should safely grip delicate objects while applying a controlled amount of force.</span>
-        </p>
-      </div>
-      <div class="section-right">
-        <div class="bg-title">05</div>
-        <div class="project-images">
-          <div class="project-images-row">
-            <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="gripper1.png" alt="Gripper CAD 1" loading="lazy">
-              </div>
-            </div>
-            <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="gripper3.png" alt="Gripper CAD 2" loading="lazy">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECT 6 -->
-    <section class="section scroll-section alt-bg" id="project-6">
-      <div class="section-left">
-        <div class="project-number fade-line">06</div>
+        <div class="project-number fade-line">08</div>
         <h2 class="project-title type-out">Automated Culinary<br>Robotics</h2>
         <div class="project-meta fade-line">C++ · Fusion 360 · LEGO Technic</div>
         <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">A robot designed to make custom pudding cups for a quarter by mixing pudding powder, water, and sprinkles. Users select flavors, and the machine handles the rest.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed user input, sensors, and motor control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in Fusion 360.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">Delivered a fully functional system that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was recognized by the professor as the most intricate project in the class.</span>
+          <strong class="fade-line">What?</strong><br><span class="fade-line">A robot designed to make custom pudding
+            cups for a quarter by mixing pudding powder, water, and sprinkles. Users select flavors, and the machine
+            handles the rest.</span><br>
+          <strong class="fade-line">How?</strong><br><span class="fade-line">Programmed user input, sensors, and motor
+            control in C++. Built the machine using LEGO Technic parts and custom 3D-printed components modeled in
+            Fusion 360.</span><br>
+          <strong class="fade-line">Results?</strong><br><span class="fade-line">Delivered a fully functional system
+            that detected coins, processed user selections, moved cups, dispensed ingredients, and mixed pudding. It was
+            recognized by the professor as the most intricate project in the class.</span>
         </p>
       </div>
       <div class="section-right">
-        <div class="bg-title">06</div>
+        <div class="bg-title">08</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="PuddingBack.jpg" alt="Pudding Robot Back" loading="lazy">
@@ -991,60 +1169,6 @@
       </div>
     </section>
 
-    <!-- PROJECT 7 -->
-    <section class="section scroll-section" id="project-7">
-      <div class="section-left">
-        <div class="project-number fade-line">07</div>
-        <h2 class="project-title type-out">Forging</h2>
-        <div class="project-meta fade-line">Blacksmithing · Hand Tools · Woodworking</div>
-        <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">As a hobby, I’ve taken on a handful of forging and knife-making projects.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Built a forge in the ground with a hair dryer for airflow, and used a sledgehammer head as an anvil. Each blade required dozens of hours of filing and sanding to shape and finish the steel and wood handle.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">I’ve made about 5 knives so far, each one noticeably better than the last. The final product here is one I’m especially proud of.</span>
-        </p>
-      </div>
-      <div class="section-right">
-        <div class="bg-title">07</div>
-        <div class="project-images">
-          <div class="project-images-row">
-            <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="knife2.JPG" alt="Forged Knife 1" loading="lazy">
-              </div>
-            </div>
-            <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="knife1.JPG" alt="Forged Knife 2" loading="lazy">
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- PROJECT 8 -->
-    <section class="section scroll-section alt-bg" id="project-8">
-      <div class="section-left">
-        <div class="project-number fade-line">08</div>
-        <h2 class="project-title type-out">12ft Trebuchet!</h2>
-        <div class="project-meta fade-line">Hands-on Design</div>
-        <p class="project-description">
-          <strong class="fade-line">What?</strong><br><span class="fade-line">Built a 12-ft, 200 lb trebuchet capable of handling 150 lb dynamic loads and launching projectiles over 250 ft. The project became a cross-generational effort, designed and assembled together with my grandma.</span><br>
-          <strong class="fade-line">How?</strong><br><span class="fade-line">Recycled wood from a demolished deck and used a mix of hand and power tools to construct the trebuchet, while online simulations helped test arm lengths and counterweight ratios.</span><br>
-          <strong class="fade-line">Results?</strong><br><span class="fade-line">Built a fully functional trebuchet that consistently launched projectiles over 250 ft, showcasing creative problem-solving, resourceful engineering, and effective collaboration.</span>
-        </p>
-      </div>
-      <div class="section-right">
-        <div class="bg-title">08</div>
-        <div class="project-images">
-          <div class="img-container zoom-target blueprint-target">
-            <video class="project-image-hero" autoplay loop muted playsinline loading="lazy">
-              <source src="Trebuchet.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Lightbox -->
     <div id="lightbox" class="lightbox">
@@ -1058,7 +1182,8 @@
     <section class="contact-section scroll-section" id="contact">
       <div class="contact-content">
         <h2>Get in Touch</h2>
-        <p>I'm always interested in new opportunities and connections. Whether you have a project in mind or just want to say hello, I'd greatly appreciate hearing from you.</p>
+        <p>I'm always interested in new opportunities and connections. Whether you have a project in mind or just want
+          to say hello, I'd greatly appreciate hearing from you.</p>
         <div class="contact-links">
           <a href="mailto:smckim@uwaterloo.ca" class="contact-link">Email Me</a>
           <a href="https://linkedin.com/in/shaymckim" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
@@ -1068,319 +1193,319 @@
     </section>
   </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    initializeIntroSequence();
-    initializePortfolio();
-  });
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initializeIntroSequence();
+      initializePortfolio();
+    });
 
-  function initializeIntroSequence() {
-    const CONFIG = {
-        VIDEO_SRC: "vid.mp4", 
-        FREEZE_TIMESTAMP: 0.7, 
-        TITLE_DELAY_MS: 300 
-    };
+    function initializeIntroSequence() {
+      const CONFIG = {
+        VIDEO_SRC: "vid.mp4",
+        FREEZE_TIMESTAMP: 0.7,
+        TITLE_DELAY_MS: 300
+      };
 
-    const preloader = document.getElementById('preloader');
-    const tensionMeter = document.getElementById('tension-meter-fill');
-    const loadPercentText = document.getElementById('load-percent');
-    const heroVideo = document.getElementById('hero-video');
-    const videoOverlay = document.getElementById('video-overlay');
-    const titleLine1 = document.querySelector('.hero-title');
-    const scrollDown = document.getElementById('hero-scroll');
-    const header = document.querySelector('header');
+      const preloader = document.getElementById('preloader');
+      const tensionMeter = document.getElementById('tension-meter-fill');
+      const loadPercentText = document.getElementById('load-percent');
+      const heroVideo = document.getElementById('hero-video');
+      const videoOverlay = document.getElementById('video-overlay');
+      const titleLine1 = document.querySelector('.hero-title');
+      const scrollDown = document.getElementById('hero-scroll');
+      const header = document.querySelector('header');
 
-    if (!preloader || !heroVideo) return;
+      if (!preloader || !heroVideo) return;
 
-    // Lock scroll during intro
-    document.body.style.overflow = 'hidden';
-    if (header) {
-      header.style.opacity = '0';
-      header.style.pointerEvents = 'none';
-    }
+      // Lock scroll during intro
+      document.body.style.overflow = 'hidden';
+      if (header) {
+        header.style.opacity = '0';
+        header.style.pointerEvents = 'none';
+      }
 
-    let hasFrozen = false; 
-    heroVideo.src = CONFIG.VIDEO_SRC;
-    heroVideo.load();
+      let hasFrozen = false;
+      heroVideo.src = CONFIG.VIDEO_SRC;
+      heroVideo.load();
 
-    const completeLoad = () => {
+      const completeLoad = () => {
         tensionMeter.style.width = '100%';
         loadPercentText.innerText = '100';
-        
+
         setTimeout(() => {
-            preloader.style.opacity = '0';
-            setTimeout(() => {
-                preloader.remove();
-                heroVideo.play().catch(e => console.log("Autoplay prevented:", e));
-            }, 400); 
+          preloader.style.opacity = '0';
+          setTimeout(() => {
+            preloader.remove();
+            heroVideo.play().catch(e => console.log("Autoplay prevented:", e));
+          }, 400);
         }, 100);
-    };
+      };
 
-    // Genuine load detection
-    if (heroVideo.readyState >= 3) {
-      completeLoad();
-    } else {
-      heroVideo.addEventListener('canplaythrough', completeLoad, { once: true });
-      // Fallback
-      setTimeout(completeLoad, 3000);
-    }
+      // Genuine load detection
+      if (heroVideo.readyState >= 3) {
+        completeLoad();
+      } else {
+        heroVideo.addEventListener('canplaythrough', completeLoad, { once: true });
+        // Fallback
+        setTimeout(completeLoad, 3000);
+      }
 
-    heroVideo.addEventListener('timeupdate', () => {
+      heroVideo.addEventListener('timeupdate', () => {
         if (heroVideo.currentTime >= CONFIG.FREEZE_TIMESTAMP && !hasFrozen) {
-            hasFrozen = true; 
-            
-            heroVideo.pause();
-            heroVideo.classList.add('frozen');
-            videoOverlay.classList.add('active');
-            
-            setTimeout(() => {
-                titleLine1.classList.add('fade-in');
-                document.body.style.overflow = ''; // Unlock scrolling
-                
-                if (scrollDown) {
-                  scrollDown.style.opacity = '0.6';
-                }
+          hasFrozen = true;
 
-                const revealHeader = () => {
-                  if (header) {
-                    header.style.opacity = '1';
-                    header.style.pointerEvents = 'auto';
-                  }
-                  window.removeEventListener('scroll', revealHeader);
-                };
-                window.addEventListener('scroll', revealHeader);
-                setTimeout(revealHeader, 1500); // Fallback reveal
+          heroVideo.pause();
+          heroVideo.classList.add('frozen');
+          videoOverlay.classList.add('active');
 
-                // Auto scroll to first project
-                setTimeout(() => {
-                  const firstProject = document.getElementById('project-1');
-                  if(firstProject) {
-                    firstProject.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                  revealHeader();
-                }, 2500);
+          setTimeout(() => {
+            titleLine1.classList.add('fade-in');
+            document.body.style.overflow = ''; // Unlock scrolling
 
-            }, CONFIG.TITLE_DELAY_MS);
-        }
-    });
-  }
-
-  function initializePortfolio() {
-    // Theme Management
-    const themeToggle = document.getElementById('theme-toggle');
-    const currentTheme = localStorage.getItem('theme') || 'light';
-    if (currentTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-      if (themeToggle) themeToggle.textContent = '☀️';
-    }
-
-    if (themeToggle) {
-      themeToggle.addEventListener('click', () => {
-        const current = document.documentElement.getAttribute('data-theme');
-        const newTheme = current === 'dark' ? 'light' : 'dark';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
-      });
-    }
-
-    // Smooth Scrolling
-    const smoothScrollTo = (id) => {
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    };
-
-    document.getElementById('logo-btn')?.addEventListener('click', () => smoothScrollTo('hero'));
-    document.getElementById('about-btn')?.addEventListener('click', () => smoothScrollTo('about'));
-    document.getElementById('projects-btn')?.addEventListener('click', () => smoothScrollTo('project-1'));
-    document.getElementById('contact-btn')?.addEventListener('click', () => smoothScrollTo('contact'));
-
-    // Dropdown Links
-    document.querySelectorAll('.dropdown-link').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('data-target');
-        smoothScrollTo(targetId);
-      });
-    });
-
-    // Mobile Menu
-    const mobileToggle = document.getElementById('mobile-toggle');
-    const mobileClose = document.getElementById('mobile-close');
-    const mobileNav = document.getElementById('mobile-nav');
-    const mobileLinks = document.querySelectorAll('.mobile-link');
-
-    const openMobileNav = () => mobileNav.classList.add('active');
-    const closeMobileNav = () => mobileNav.classList.remove('active');
-
-    if(mobileToggle) mobileToggle.addEventListener('click', openMobileNav);
-    if(mobileClose) mobileClose.addEventListener('click', closeMobileNav);
-    
-    mobileLinks.forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href').substring(1);
-        closeMobileNav();
-        setTimeout(() => smoothScrollTo(targetId), 300);
-      });
-    });
-
-    // --- NEW INTERACTION OBSERVERS --- //
-
-    // 1. Z-Axis Zoom Observer (Camera scale effect)
-    const zoomObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in-view');
-          entry.target.classList.remove('passed');
-        } else {
-          // If bounding box top is less than 0, we scrolled past it
-          if (entry.boundingClientRect.top < 0) {
-            entry.target.classList.add('passed');
-            entry.target.classList.remove('in-view');
-          } else {
-            // We scrolled back up above it
-            entry.target.classList.remove('in-view');
-            entry.target.classList.remove('passed');
-          }
-        }
-      });
-    }, { threshold: [0, 0.2, 0.5, 0.8, 1], rootMargin: "0px 0px -10% 0px" });
-
-    document.querySelectorAll('.zoom-target').forEach(el => zoomObserver.observe(el));
-
-    // 2. Blueprint Border Observer (1px border when centered)
-    const blueprintObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('centered');
-        } else {
-          entry.target.classList.remove('centered');
-        }
-      });
-    }, { threshold: 0.6, rootMargin: "-20% 0px -20% 0px" });
-
-    document.querySelectorAll('.blueprint-target').forEach(el => blueprintObserver.observe(el));
-
-    // 3. Text Pacing Observer (Line by line fade-in)
-    const textObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          // Add a small staggered delay based on vertical order
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
-
-    document.querySelectorAll('.fade-line, .about-container, .contact-content').forEach(el => textObserver.observe(el));
-
-    // 4. Section Observer (BG Shift & Glitch Reveal Title)
-    const sectionObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
-          
-          // Contextual Background Shift
-          if (entry.target.classList.contains('alt-bg')) {
-            document.body.classList.add('bg-shifted');
-          } else {
-            document.body.classList.remove('bg-shifted');
-          }
-          
-          // Trigger type-out title animation
-          const title = entry.target.querySelector('.project-title.type-out');
-          if (title && !title.classList.contains('typed')) {
-            title.classList.add('typed');
-          }
-        }
-      });
-    }, { threshold: 0.15 });
-
-    document.querySelectorAll('.scroll-section').forEach(el => sectionObserver.observe(el));
-
-    // TOC Scrollspy
-    const sections = document.querySelectorAll('.scroll-section');
-    const tocDots = document.querySelectorAll('.toc-dot');
-
-    const scrollSpyObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          tocDots.forEach(dot => {
-            if (dot.getAttribute('data-target') === entry.target.id) {
-              dot.classList.add('active');
-            } else {
-              dot.classList.remove('active');
+            if (scrollDown) {
+              scrollDown.style.opacity = '0.6';
             }
-          });
+
+            const revealHeader = () => {
+              if (header) {
+                header.style.opacity = '1';
+                header.style.pointerEvents = 'auto';
+              }
+              window.removeEventListener('scroll', revealHeader);
+            };
+            window.addEventListener('scroll', revealHeader);
+            setTimeout(revealHeader, 1500); // Fallback reveal
+
+            // Auto scroll to first project
+            setTimeout(() => {
+              const firstProject = document.getElementById('project-1');
+              if (firstProject) {
+                firstProject.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+              revealHeader();
+            }, 2500);
+
+          }, CONFIG.TITLE_DELAY_MS);
         }
-      });
-    }, { threshold: 0.3 });
-
-    sections.forEach(sec => scrollSpyObserver.observe(sec));
-
-    // TOC Dot Click Handle
-    tocDots.forEach(dot => {
-      dot.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = dot.getAttribute('data-target');
-        smoothScrollTo(targetId);
-      });
-    });
-
-    // Lightbox Functionality
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const lightboxVideo = document.getElementById('lightbox-video');
-    const lightboxVideoSource = document.getElementById('lightbox-video-source');
-    const closeBtn = document.querySelector('.close-lightbox');
-
-    document.querySelectorAll('.project-image-hero, .project-image-secondary, .section-right video').forEach(el => {
-      if(el.id === 'hero-video') return; 
-      
-      el.addEventListener('click', () => {
-        lightbox.style.display = 'flex';
-        if (el.tagName.toLowerCase() === 'img') {
-          lightboxImg.src = el.src;
-          lightboxImg.alt = el.alt;
-          lightboxImg.style.display = 'block';
-          lightboxVideo.style.display = 'none';
-          lightboxVideo.pause();
-        } else if (el.tagName.toLowerCase() === 'video') {
-          const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
-          lightboxVideoSource.src = videoSrc;
-          lightboxVideo.load();
-          lightboxVideo.style.display = 'block';
-          lightboxVideo.play();
-          lightboxImg.style.display = 'none';
-        }
-      });
-    });
-
-    const closeLightbox = () => {
-      lightbox.style.display = 'none';
-      lightboxImg.src = '';
-      lightboxVideo.pause();
-      lightboxVideoSource.src = '';
-      lightboxVideo.load();
-    };
-
-    if(closeBtn) closeBtn.addEventListener('click', closeLightbox);
-    
-    // Close on background click
-    if(lightbox) {
-      lightbox.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox();
       });
     }
 
-    // Close on Escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.style.display === 'flex') {
-        closeLightbox();
+    function initializePortfolio() {
+      // Theme Management
+      const themeToggle = document.getElementById('theme-toggle');
+      const currentTheme = localStorage.getItem('theme') || 'light';
+      if (currentTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (themeToggle) themeToggle.textContent = '☀️';
       }
-    });
-  }
-</script>
+
+      if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+          const current = document.documentElement.getAttribute('data-theme');
+          const newTheme = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        });
+      }
+
+      // Smooth Scrolling
+      const smoothScrollTo = (id) => {
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+      document.getElementById('logo-btn')?.addEventListener('click', () => smoothScrollTo('hero'));
+      document.getElementById('projects-btn')?.addEventListener('click', () => smoothScrollTo('project-1'));
+      document.getElementById('contact-btn')?.addEventListener('click', () => smoothScrollTo('contact'));
+
+      // Dropdown Links
+      document.querySelectorAll('.dropdown-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-target');
+          smoothScrollTo(targetId);
+        });
+      });
+
+      // Mobile Menu
+      const mobileToggle = document.getElementById('mobile-toggle');
+      const mobileClose = document.getElementById('mobile-close');
+      const mobileNav = document.getElementById('mobile-nav');
+      const mobileLinks = document.querySelectorAll('.mobile-link');
+
+      const openMobileNav = () => mobileNav.classList.add('active');
+      const closeMobileNav = () => mobileNav.classList.remove('active');
+
+      if (mobileToggle) mobileToggle.addEventListener('click', openMobileNav);
+      if (mobileClose) mobileClose.addEventListener('click', closeMobileNav);
+
+      mobileLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = link.getAttribute('href').substring(1);
+          closeMobileNav();
+          setTimeout(() => smoothScrollTo(targetId), 300);
+        });
+      });
+
+      // --- NEW INTERACTION OBSERVERS --- //
+
+      // 1. Z-Axis Zoom Observer (Camera scale effect)
+      const zoomObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            entry.target.classList.remove('passed');
+          } else {
+            // If bounding box top is less than 0, we scrolled past it
+            if (entry.boundingClientRect.top < 0) {
+              entry.target.classList.add('passed');
+              entry.target.classList.remove('in-view');
+            } else {
+              // We scrolled back up above it
+              entry.target.classList.remove('in-view');
+              entry.target.classList.remove('passed');
+            }
+          }
+        });
+      }, { threshold: [0, 0.2, 0.5, 0.8, 1], rootMargin: "0px 0px -10% 0px" });
+
+      document.querySelectorAll('.zoom-target').forEach(el => zoomObserver.observe(el));
+
+      // 2. Blueprint Border Observer (1px border when centered)
+      const blueprintObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('centered');
+          } else {
+            entry.target.classList.remove('centered');
+          }
+        });
+      }, { threshold: 0.6, rootMargin: "-20% 0px -20% 0px" });
+
+      document.querySelectorAll('.blueprint-target').forEach(el => blueprintObserver.observe(el));
+
+      // 3. Text Pacing Observer (Line by line fade-in)
+      const textObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Add a small staggered delay based on vertical order
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1, rootMargin: "0px 0px -10% 0px" });
+
+      document.querySelectorAll('.fade-line, .contact-content').forEach(el => textObserver.observe(el));
+
+      // 4. Section Observer (BG Shift & Glitch Reveal Title)
+      const sectionObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.1) {
+
+            // Contextual Background Shift
+            if (entry.target.classList.contains('alt-bg')) {
+              document.body.classList.add('bg-shifted');
+            } else {
+              document.body.classList.remove('bg-shifted');
+            }
+
+            // Trigger type-out title animation
+            const title = entry.target.querySelector('.project-title.type-out');
+            if (title && !title.classList.contains('typed')) {
+              title.classList.add('typed');
+            }
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.scroll-section').forEach(el => sectionObserver.observe(el));
+
+      // TOC Scrollspy
+      const sections = document.querySelectorAll('.scroll-section');
+      const tocDots = document.querySelectorAll('.toc-dot');
+
+      const scrollSpyObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            tocDots.forEach(dot => {
+              if (dot.getAttribute('data-target') === entry.target.id) {
+                dot.classList.add('active');
+              } else {
+                dot.classList.remove('active');
+              }
+            });
+          }
+        });
+      }, { threshold: 0.3 });
+
+      sections.forEach(sec => scrollSpyObserver.observe(sec));
+
+      // TOC Dot Click Handle
+      tocDots.forEach(dot => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          const targetId = dot.getAttribute('data-target');
+          smoothScrollTo(targetId);
+        });
+      });
+
+      // Lightbox Functionality
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxVideo = document.getElementById('lightbox-video');
+      const lightboxVideoSource = document.getElementById('lightbox-video-source');
+      const closeBtn = document.querySelector('.close-lightbox');
+
+      document.querySelectorAll('.project-image-hero, .project-image-secondary, .section-right video').forEach(el => {
+        if (el.id === 'hero-video') return;
+
+        el.addEventListener('click', () => {
+          lightbox.style.display = 'flex';
+          if (el.tagName.toLowerCase() === 'img') {
+            lightboxImg.src = el.src;
+            lightboxImg.alt = el.alt;
+            lightboxImg.style.display = 'block';
+            lightboxVideo.style.display = 'none';
+            lightboxVideo.pause();
+          } else if (el.tagName.toLowerCase() === 'video') {
+            const videoSrc = el.querySelector('source') ? el.querySelector('source').src : el.src;
+            lightboxVideoSource.src = videoSrc;
+            lightboxVideo.load();
+            lightboxVideo.style.display = 'block';
+            lightboxVideo.play();
+            lightboxImg.style.display = 'none';
+          }
+        });
+      });
+
+      const closeLightbox = () => {
+        lightbox.style.display = 'none';
+        lightboxImg.src = '';
+        lightboxVideo.pause();
+        lightboxVideoSource.src = '';
+        lightboxVideo.load();
+      };
+
+      if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+
+      // Close on background click
+      if (lightbox) {
+        lightbox.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox();
+        });
+      }
+
+      // Close on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+          closeLightbox();
+        }
+      });
+    }
+  </script>
 </body>
+
 </html>
