@@ -834,6 +834,32 @@
       transform: scale(1.1);
     }
 
+    /* ─── PORTRAIT MEDIA ────────────────────────────────────────────── */
+    /* Phone-shot (tall) video and photos. The default .project-image-* rules
+       set width:100% + object-fit:contain, which on a portrait asset stretches
+       the container to the full column width and letterboxes the content with
+       empty bars either side. Here height drives the size and the container
+       shrinks to match. */
+    .img-container.portrait {
+      max-width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .img-container.portrait .project-image-hero,
+    .img-container.portrait .project-image-secondary {
+      width: auto;
+      max-width: 100%;
+      max-height: 68vh;
+    }
+
+    @media (max-width: 860px) {
+      .img-container.portrait .project-image-hero,
+      .img-container.portrait .project-image-secondary {
+        max-height: 74vh;
+      }
+    }
+
     /* ─── TITLE CLIP ANIMATION ──────────────────────────────────────── */
     .project-title.type-out {
       clip-path: inset(0 100% 0 0);
@@ -1147,20 +1173,22 @@
           <button class="nav-btn" id="projects-btn">Projects ▾</button>
           <div class="nav-dropdown">
             <a href="#project-1" class="dropdown-link" data-target="project-1"><span class="num">01</span>QuickStep</a>
-            <a href="#project-2" class="dropdown-link" data-target="project-2"><span class="num">02</span>4 Axis
+            <a href="#project-2" class="dropdown-link" data-target="project-2"><span class="num">02</span>OptiTrack
+              Mounts</a>
+            <a href="#project-3" class="dropdown-link" data-target="project-3"><span class="num">03</span>4 Axis
               Robot</a>
-            <a href="#project-3" class="dropdown-link" data-target="project-3"><span class="num">03</span>Octopus
+            <a href="#project-4" class="dropdown-link" data-target="project-4"><span class="num">04</span>Octopus
               Gripper</a>
-            <a href="#project-4" class="dropdown-link" data-target="project-4"><span class="num">04</span>12ft
+            <a href="#project-5" class="dropdown-link" data-target="project-5"><span class="num">05</span>12ft
               Trebuchet</a>
-            <a href="#project-5" class="dropdown-link" data-target="project-5"><span class="num">05</span>Forging</a>
-            <a href="#project-6" class="dropdown-link" data-target="project-6"><span class="num">06</span>Calendar
+            <a href="#project-6" class="dropdown-link" data-target="project-6"><span class="num">06</span>Forging</a>
+            <a href="#project-7" class="dropdown-link" data-target="project-7"><span class="num">07</span>Calendar
               App</a>
-            <a href="#project-7" class="dropdown-link" data-target="project-7"><span class="num">07</span>Filtration
+            <a href="#project-8" class="dropdown-link" data-target="project-8"><span class="num">08</span>Filtration
               System</a>
-            <a href="#project-8" class="dropdown-link" data-target="project-8"><span class="num">08</span>Drone
+            <a href="#project-9" class="dropdown-link" data-target="project-9"><span class="num">09</span>Drone
               Capture</a>
-            <a href="#project-9" class="dropdown-link" data-target="project-9"><span class="num">09</span>Culinary
+            <a href="#project-10" class="dropdown-link" data-target="project-10"><span class="num">10</span>Culinary
               Robotics</a>
           </div>
         </div>
@@ -1178,14 +1206,15 @@
     <nav class="toc-nav">
       <a href="#hero" class="toc-dot" data-target="hero" title="Intro"></a>
       <a href="#project-1" class="toc-dot" data-target="project-1" title="QuickStep"></a>
-      <a href="#project-2" class="toc-dot" data-target="project-2" title="Robot Arm"></a>
-      <a href="#project-3" class="toc-dot" data-target="project-3" title="Gripper"></a>
-      <a href="#project-4" class="toc-dot" data-target="project-4" title="Trebuchet"></a>
-      <a href="#project-5" class="toc-dot" data-target="project-5" title="Forging"></a>
-      <a href="#project-6" class="toc-dot" data-target="project-6" title="Calendar"></a>
-      <a href="#project-7" class="toc-dot" data-target="project-7" title="Filtration"></a>
-      <a href="#project-8" class="toc-dot" data-target="project-8" title="Drone Net"></a>
-      <a href="#project-9" class="toc-dot" data-target="project-9" title="Pudding Bot"></a>
+      <a href="#project-2" class="toc-dot" data-target="project-2" title="OptiTrack"></a>
+      <a href="#project-3" class="toc-dot" data-target="project-3" title="Robot Arm"></a>
+      <a href="#project-4" class="toc-dot" data-target="project-4" title="Gripper"></a>
+      <a href="#project-5" class="toc-dot" data-target="project-5" title="Trebuchet"></a>
+      <a href="#project-6" class="toc-dot" data-target="project-6" title="Forging"></a>
+      <a href="#project-7" class="toc-dot" data-target="project-7" title="Calendar"></a>
+      <a href="#project-8" class="toc-dot" data-target="project-8" title="Filtration"></a>
+      <a href="#project-9" class="toc-dot" data-target="project-9" title="Drone Net"></a>
+      <a href="#project-10" class="toc-dot" data-target="project-10" title="Pudding Bot"></a>
       <a href="#contact" class="toc-dot" data-target="contact" title="Contact"></a>
     </nav>
 
@@ -1242,7 +1271,7 @@
         <div class="bg-title">01</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <video class="project-image-hero" autoplay loop muted playsinline loading="lazy">
+            <video class="project-image-hero" autoplay loop muted playsinline preload="metadata">
               <source src="QuickStep.mp4" type="video/mp4">
             </video>
           </div>
@@ -1255,6 +1284,59 @@
     <section class="section scroll-section alt-bg" id="project-2">
       <div class="section-left">
         <div class="project-number fade-line">02</div>
+        <h2 class="project-title type-out">OptiTrack<br>Marker Mounts</h2>
+        <div class="project-meta">
+          <span class="tag fade-line">SolidWorks</span>
+          <span class="tag fade-line">3D Printing</span>
+          <span class="tag fade-line">Biomechanics</span>
+        </div>
+        <div class="project-description">
+          <div class="desc-block">
+            <span class="desc-label fade-line">What?</span>
+            <p class="desc-text fade-line">Custom 3D-printed mounts that hold OptiTrack motion capture markers to bone
+              during cadaveric testing of an SI joint implant. Two mounted to the ilium and one to the sacrum, so each
+              rigid body could be tracked separately through the test.</p>
+          </div>
+          <div class="desc-block">
+            <span class="desc-label fade-line">How?</span>
+            <p class="desc-text fade-line">Modeled in SolidWorks and 3D printed. Each mount uses two ball joints so
+              the markers can be aimed correctly for a unique specimen, then locked down with two screws driven into
+              each ball. Rigidity was the whole challenge: any slip or flex would corrupt the tracking data. Took a
+              few design iterations before landing on one that stayed locked over hours of testing.</p>
+          </div>
+          <div class="desc-block">
+            <span class="desc-label fade-line">Results?</span>
+            <p class="desc-text fade-line">The mounts held position through the full test with no drift, keeping the
+              OptiTrack data clean from start to finish.</p>
+          </div>
+        </div>
+      </div>
+      <div class="section-right">
+        <div class="bg-title">02</div>
+        <div class="project-images">
+          <div class="project-images-row">
+            <div class="img-col img-col-1">
+              <div class="img-container zoom-target blueprint-target portrait">
+                <video class="project-image-hero" autoplay loop muted playsinline preload="metadata">
+                  <source src="OptiTrack.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <div class="img-col img-col-2">
+              <div class="img-container zoom-target blueprint-target portrait">
+                <img class="project-image-secondary" src="OptiTrackMount.jpg" alt="OptiTrack marker mount" loading="lazy">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROJECT 3 -->
+    <div class="section-divider"></div>
+    <section class="section scroll-section" id="project-3">
+      <div class="section-left">
+        <div class="project-number fade-line">03</div>
         <h2 class="project-title type-out">Interactive<br>4 Axis Robot</h2>
         <div class="project-meta">
           <span class="tag fade-line">Fusion 360</span>
@@ -1280,7 +1362,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">02</div>
+        <div class="bg-title">03</div>
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
@@ -1298,11 +1380,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 3 -->
+    <!-- PROJECT 4 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section" id="project-3">
+    <section class="section scroll-section alt-bg" id="project-4">
       <div class="section-left">
-        <div class="project-number fade-line">03</div>
+        <div class="project-number fade-line">04</div>
         <h2 class="project-title type-out">Octopus Inspired<br>Gripper</h2>
         <div class="project-meta">
           <span class="tag fade-line">Fusion 360</span>
@@ -1329,7 +1411,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">03</div>
+        <div class="bg-title">04</div>
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
@@ -1347,11 +1429,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 4 -->
+    <!-- PROJECT 5 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section alt-bg" id="project-4">
+    <section class="section scroll-section" id="project-5">
       <div class="section-left">
-        <div class="project-number fade-line">04</div>
+        <div class="project-number fade-line">05</div>
         <h2 class="project-title type-out">12ft Trebuchet!</h2>
         <div class="project-meta">
           <span class="tag fade-line">Hands-on Design</span>
@@ -1378,10 +1460,10 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">04</div>
+        <div class="bg-title">05</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <video class="project-image-hero" autoplay loop muted playsinline loading="lazy">
+            <video class="project-image-hero" autoplay loop muted playsinline preload="metadata">
               <source src="Trebuchet.mp4" type="video/mp4">
             </video>
           </div>
@@ -1389,11 +1471,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 5 -->
+    <!-- PROJECT 6 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section" id="project-5">
+    <section class="section scroll-section alt-bg" id="project-6">
       <div class="section-left">
-        <div class="project-number fade-line">05</div>
+        <div class="project-number fade-line">06</div>
         <h2 class="project-title type-out">Forging</h2>
         <div class="project-meta">
           <span class="tag fade-line">Blacksmithing</span>
@@ -1419,7 +1501,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">05</div>
+        <div class="bg-title">06</div>
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
@@ -1437,11 +1519,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 6 -->
+    <!-- PROJECT 7 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section alt-bg" id="project-6">
+    <section class="section scroll-section" id="project-7">
       <div class="section-left">
-        <div class="project-number fade-line">06</div>
+        <div class="project-number fade-line">07</div>
         <h2 class="project-title type-out">Calendar<br>Application</h2>
         <div class="project-meta">
           <span class="tag fade-line">JavaScript</span>
@@ -1468,7 +1550,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">06</div>
+        <div class="bg-title">07</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="AddEventView.png" alt="Add Event View" loading="lazy">
@@ -1489,11 +1571,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 7 -->
+    <!-- PROJECT 8 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section" id="project-7">
+    <section class="section scroll-section alt-bg" id="project-8">
       <div class="section-left">
-        <div class="project-number fade-line">07</div>
+        <div class="project-number fade-line">08</div>
         <h2 class="project-title type-out">Filtration System</h2>
         <div class="project-meta">
           <span class="tag fade-line">Team Leadership</span>
@@ -1520,7 +1602,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">07</div>
+        <div class="bg-title">08</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="elec.jpeg" alt="Electronics" loading="lazy">
@@ -1541,11 +1623,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 8 -->
+    <!-- PROJECT 9 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section alt-bg" id="project-8">
+    <section class="section scroll-section" id="project-9">
       <div class="section-left">
-        <div class="project-number fade-line">08</div>
+        <div class="project-number fade-line">09</div>
         <h2 class="project-title type-out">Drone Capture<br>Device</h2>
         <div class="project-meta">
           <span class="tag fade-line">Fusion 360</span>
@@ -1572,7 +1654,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">08</div>
+        <div class="bg-title">09</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="Net1.jpg" alt="Net Gun 1" loading="lazy">
@@ -1593,11 +1675,11 @@
       </div>
     </section>
 
-    <!-- PROJECT 9 -->
+    <!-- PROJECT 10 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section" id="project-9">
+    <section class="section scroll-section alt-bg" id="project-10">
       <div class="section-left">
-        <div class="project-number fade-line">09</div>
+        <div class="project-number fade-line">10</div>
         <h2 class="project-title type-out">Automated Culinary<br>Robotics</h2>
         <div class="project-meta">
           <span class="tag fade-line">C++</span>
@@ -1624,7 +1706,7 @@
         </div>
       </div>
       <div class="section-right">
-        <div class="bg-title">09</div>
+        <div class="bg-title">10</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
             <img class="project-image-hero" src="PuddingBack.jpg" alt="Pudding Robot Back" loading="lazy">
