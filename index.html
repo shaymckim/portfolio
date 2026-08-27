@@ -49,19 +49,6 @@
       --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.14);
     }
 
-    [data-theme="dark"] {
-      --bg: #0c0c0b;
-      --bg-alt: #111110;
-      --surface: #161614;
-      --text: #f0ede8;
-      --text-muted: #8a8a84;
-      --text-faint: #555550;
-      --border: rgba(255, 255, 255, 0.07);
-      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.5);
-      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.7);
-    }
-
     /* ─── RESET & BASE ──────────────────────────────────────────────── */
     *,
     *::before,
@@ -314,10 +301,6 @@
       transition: background var(--t), opacity 0.8s ease, border-color var(--t);
     }
 
-    [data-theme="dark"] header {
-      background: rgba(12, 12, 11, 0.82);
-    }
-
     .header-logo {
       font-family: var(--font-mono);
       font-weight: 700;
@@ -419,25 +402,6 @@
       font-size: 0.6rem;
       color: var(--accent);
       min-width: 18px;
-    }
-
-    #theme-toggle {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      color: var(--text-muted);
-      font-family: var(--font-mono);
-      letter-spacing: 0.04em;
-      transition: all var(--t);
-      margin-left: 4px;
-    }
-
-    #theme-toggle:hover {
-      border-color: var(--accent);
-      color: var(--text);
     }
 
     /* Mobile nav */
@@ -595,6 +559,17 @@
       padding-bottom: 18vh;
     }
 
+    /* Keep a visual anchor beside the longest desktop write-ups. */
+    @media (min-width: 861px) {
+      .section.media-sticky .section-right {
+        position: sticky;
+        top: calc(var(--nav-h) + 40px);
+        align-self: start;
+        height: fit-content;
+        padding-bottom: 0;
+      }
+    }
+
     /* ─── PROJECT TYPOGRAPHY ────────────────────────────────────────── */
     .project-number {
       font-family: var(--font-mono);
@@ -638,8 +613,9 @@
     }
 
     .bg-title {
-      position: sticky;
-      top: 20vh;
+      position: absolute;
+      top: 4vh;
+      left: 0;
       font-family: var(--font-sans);
       font-size: 9vw;
       font-weight: 800;
@@ -672,10 +648,6 @@
       padding: 4px 10px;
       border-radius: 20px;
       transition: all var(--t);
-    }
-
-    [data-theme="dark"] .tag {
-      background: rgba(255, 255, 255, 0.04);
     }
 
     .tag:hover {
@@ -764,7 +736,7 @@
       border-radius: var(--r-md);
       overflow: hidden;
       width: 100%;
-      background: var(--bg-alt);
+      background: transparent;
       box-shadow: var(--shadow-md);
       opacity: 0;
       transition: opacity 0.9s var(--ease-out),
@@ -772,7 +744,7 @@
         box-shadow 0.4s ease,
         border-color 0.3s ease;
       will-change: opacity, transform;
-      border: 1px solid transparent;
+      border: 1px solid var(--border);
       position: relative;
     }
 
@@ -803,14 +775,55 @@
       transform: scale(1.06);
     }
 
-    .img-container.centered {
-      border-color: var(--accent);
-      box-shadow: var(--shadow-lg), 0 0 0 1px var(--accent);
-    }
-
     .img-container:hover {
       box-shadow: var(--shadow-lg);
       transform: translateY(-3px) scale(1.005);
+    }
+
+    .video-status {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      bottom: 12px;
+      left: 12px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .video-status-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: fit-content;
+      padding: 3px 6px;
+      border-radius: 3px;
+      background: rgba(12, 12, 11, 0.62);
+      color: rgba(255, 255, 255, 0.9);
+      font-family: var(--font-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.08em;
+    }
+
+    .video-progress-track {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      height: 4px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .video-progress-fill {
+      display: block;
+      width: 100%;
+      height: 100%;
+      transform: scaleX(0);
+      transform-origin: left;
+      background: var(--accent);
+      transition: transform 0.15s linear;
     }
 
     .project-image-hero,
@@ -983,45 +996,6 @@
       border-color: #d4b87a;
     }
 
-    /* ─── FOOTER ────────────────────────────────────────────────────── */
-    footer {
-      background: var(--bg-dark);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      padding: 28px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .footer-copy {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.2);
-    }
-
-    .footer-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .footer-link {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.25);
-      text-decoration: none;
-      transition: color var(--t);
-    }
-
-    .footer-link:hover {
-      color: var(--accent);
-    }
-
     /* ─── LIGHTBOX ──────────────────────────────────────────────────── */
     .lightbox {
       display: none;
@@ -1135,10 +1109,12 @@
         padding: 80px 24px;
       }
 
-      footer {
-        padding: 24px;
-        flex-direction: column;
-        align-items: flex-start;
+    }
+
+    /* Match the compact desktop presentation without affecting mobile. */
+    @media (min-width: 861px) {
+      body {
+        zoom: 0.9;
       }
     }
   </style>
@@ -1199,7 +1175,6 @@
           </div>
         </div>
         <button class="nav-btn" id="contact-btn">Contact</button>
-        <button id="theme-toggle" aria-label="Toggle dark mode">🌙 Dark</button>
       </div>
       <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -1235,13 +1210,13 @@
       </div>
       <div class="scroll-cue" id="hero-scroll">
         <span class="scroll-cue-line"></span>
-        Scroll to explore
+        <span id="project-count">12</span> projects · Scroll to explore
       </div>
     </section>
 
     <!-- PROJECT 1 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section" id="project-1">
+    <section class="section scroll-section media-sticky" id="project-1">
       <div class="section-left">
         <div class="project-number fade-line">01</div>
         <h2 class="project-title type-out">Robotic Tissue<br>Stimulator &amp; Test Frame</h2>
@@ -1271,12 +1246,12 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="tissue.jpeg" alt="Robotic tissue stimulator test frame" loading="eager" fetchpriority="high" decoding="async" width="5712" height="4284">
+              <div class="img-container zoom-target blueprint-target portrait">
+                <img class="project-image-secondary" src="tissue.jpeg" alt="Robotic tissue stimulator test frame" loading="eager" fetchpriority="high" decoding="async" width="4284" height="5712">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <video class="project-image-secondary" autoplay loop muted playsinline preload="metadata">
                   <source src="tissue.mp4" type="video/mp4">
                 </video>
@@ -1289,7 +1264,7 @@
 
     <!-- PROJECT 2 -->
     <div class="section-divider"></div>
-    <section class="section scroll-section alt-bg" id="project-2">
+    <section class="section scroll-section alt-bg media-sticky" id="project-2">
       <div class="section-left">
         <div class="project-number fade-line">02</div>
         <h2 class="project-title type-out">QuickStep<br>STEP File Trimmer</h2>
@@ -1369,12 +1344,12 @@
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="16ft_1.jpeg" alt="16-foot whipper trebuchet" loading="lazy">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <video class="project-image-secondary" autoplay loop muted playsinline preload="metadata">
                   <source src="16ft.mov" type="video/mp4">
                 </video>
@@ -1477,7 +1452,7 @@
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="ArmCAD.png" alt="Robot Arm CAD" loading="lazy">
               </div>
             </div>
@@ -1521,12 +1496,12 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="gripper1.png" alt="Gripper CAD 1" loading="lazy">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="gripper3.png" alt="Gripper CAD 2" loading="lazy">
               </div>
             </div>
@@ -1611,12 +1586,12 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="knife2.JPG" alt="Forged Knife 1" loading="lazy">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="knife1.JPG" alt="Forged Knife 2" loading="lazy">
               </div>
             </div>
@@ -1710,7 +1685,7 @@
       <div class="section-right">
         <div class="bg-title">10</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target">
+          <div class="img-container zoom-target blueprint-target portrait">
             <img class="project-image-hero" src="elec.jpeg" alt="Electronics" loading="lazy">
           </div>
           <div class="project-images-row">
@@ -1720,7 +1695,7 @@
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="test.jpeg" alt="Water Test" loading="lazy">
               </div>
             </div>
@@ -1762,17 +1737,17 @@
       <div class="section-right">
         <div class="bg-title">11</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target">
+          <div class="img-container zoom-target blueprint-target portrait">
             <img class="project-image-hero" src="Net1.jpg" alt="Net Gun 1" loading="lazy">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="Net3.jpg" alt="Net Gun 2" loading="lazy">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="Net2.jpg" alt="Net Gun 3" loading="lazy">
               </div>
             </div>
@@ -1790,7 +1765,6 @@
         <div class="project-meta">
           <span class="tag fade-line">C++</span>
           <span class="tag fade-line">Fusion 360</span>
-          <span class="tag fade-line">LEGO Technic</span>
         </div>
         <div class="project-description">
           <div class="desc-block">
@@ -1814,7 +1788,7 @@
       <div class="section-right">
         <div class="bg-title">12</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target">
+          <div class="img-container zoom-target blueprint-target portrait">
             <img class="project-image-hero" src="PuddingBack.jpg" alt="Pudding Robot Back" loading="lazy">
           </div>
           <div class="project-images-row">
@@ -1824,7 +1798,7 @@
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target">
+              <div class="img-container zoom-target blueprint-target portrait">
                 <img class="project-image-secondary" src="pudbot.jpg" alt="Pudding Robot" loading="lazy">
               </div>
             </div>
@@ -1855,16 +1829,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Footer -->
-    <footer>
-      <span class="footer-copy">© 2025 Shay McKim — All rights reserved</span>
-      <div class="footer-links">
-        <a href="mailto:smckim@uwaterloo.ca" class="footer-link">Email</a>
-        <a href="https://linkedin.com/in/shaymckim" target="_blank" rel="noopener" class="footer-link">LinkedIn</a>
-        <a href="ShayMcKimResume.pdf" download class="footer-link">Resume</a>
-      </div>
-    </footer>
 
   </div><!-- /#main-content -->
 
@@ -1951,7 +1915,19 @@
 
             setTimeout(() => {
               const first = document.getElementById('project-1');
+              const firstMedia = first?.querySelector('.project-images');
+              const isDesktop = window.matchMedia('(min-width: 861px)').matches;
+
               if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+              if (isDesktop && firstMedia) {
+                setTimeout(() => {
+                  const rect = firstMedia.getBoundingClientRect();
+                  const targetTop = Math.max(88, (window.innerHeight - rect.height) / 2);
+                  window.scrollBy({ top: rect.top - targetTop, behavior: 'smooth' });
+                }, 650);
+              }
+
               revealHeader();
             }, 2800);
           }, 300);
@@ -1962,22 +1938,8 @@
     /* ─── PORTFOLIO INTERACTIONS ─────────────────────────────────── */
     function initPortfolio() {
 
-      /* Theme */
-      const toggle = document.getElementById('theme-toggle');
-      const saved = localStorage.getItem('theme') || 'light';
-      if (saved === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        if (toggle) toggle.textContent = '☀️ Light';
-      }
-      if (toggle) {
-        toggle.addEventListener('click', () => {
-          const cur = document.documentElement.getAttribute('data-theme');
-          const next = cur === 'dark' ? 'light' : 'dark';
-          document.documentElement.setAttribute('data-theme', next);
-          localStorage.setItem('theme', next);
-          toggle.textContent = next === 'dark' ? '☀️ Light' : '🌙 Dark';
-        });
-      }
+      const projectCount = document.getElementById('project-count');
+      if (projectCount) projectCount.textContent = document.querySelectorAll('.dropdown-link').length;
 
       /* Smooth scroll helpers */
       const scrollTo = id => {
@@ -2011,6 +1973,12 @@
       /* Image zoom observer */
       const zoomObs = new IntersectionObserver(entries => {
         entries.forEach(e => {
+          if (e.target.closest('.media-sticky')) {
+            e.target.classList.add('in-view');
+            e.target.classList.remove('passed');
+            return;
+          }
+
           if (e.isIntersecting) {
             e.target.classList.add('in-view');
             e.target.classList.remove('passed');
@@ -2027,12 +1995,43 @@
 
       document.querySelectorAll('.zoom-target').forEach(el => zoomObs.observe(el));
 
-      /* Blueprint border observer */
-      const bpObs = new IntersectionObserver(entries => {
-        entries.forEach(e => e.target.classList.toggle('centered', e.isIntersecting));
-      }, { threshold: 0.6, rootMargin: '-20% 0px -20% 0px' });
+      /* Autoplay video progress */
+      document.querySelectorAll('.section-right video').forEach(video => {
+        const container = video.closest('.img-container');
+        if (!container) return;
 
-      document.querySelectorAll('.blueprint-target').forEach(el => bpObs.observe(el));
+        const status = document.createElement('div');
+        status.className = 'video-status';
+        status.setAttribute('aria-hidden', 'true');
+
+        const label = document.createElement('span');
+        label.className = 'video-status-label';
+        label.textContent = 'VIDEO';
+
+        const track = document.createElement('span');
+        track.className = 'video-progress-track';
+        const fill = document.createElement('span');
+        fill.className = 'video-progress-fill';
+        track.appendChild(fill);
+        status.append(label, track);
+        container.appendChild(status);
+
+        const updateProgress = () => {
+          const duration = video.duration;
+          const progress = Number.isFinite(duration) && duration > 0
+            ? Math.min(video.currentTime / duration, 1)
+            : 0;
+          fill.style.transform = `scaleX(${progress})`;
+          label.textContent = Number.isFinite(duration) && duration > 0
+            ? `VIDEO · ${Math.round(progress * 100)}%`
+            : 'VIDEO';
+        };
+
+        video.addEventListener('loadedmetadata', updateProgress);
+        video.addEventListener('timeupdate', updateProgress);
+        video.addEventListener('durationchange', updateProgress);
+        updateProgress();
+      });
 
       /* Text fade observer */
       const textObs = new IntersectionObserver(entries => {
