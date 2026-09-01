@@ -1111,10 +1111,12 @@
 
     }
 
-    /* Match the compact desktop presentation without affecting mobile. */
+    /* Keep desktop typography compact without scaling the page itself.
+       CSS zoom makes full-viewport sections render at only 90% of the window,
+       leaving a blank strip beside the intro video. */
     @media (min-width: 861px) {
-      body {
-        zoom: 0.9;
+      html {
+        font-size: 14.4px;
       }
     }
   </style>
