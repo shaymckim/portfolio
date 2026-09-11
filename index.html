@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shay McKim — Portfolio</title>
 
-  <link rel="preload" as="video" href="vid.mp4" type="video/mp4">
+  <link rel="preload" as="image" href="hero-poster.jpg" fetchpriority="high">
   <link rel="preload" as="image" href="tissue.jpeg" fetchpriority="high">
   <link rel="preload" as="video" href="tissue.mp4" type="video/mp4">
   <link rel="preload" as="video" href="Trebuchet.mp4" type="video/mp4">
@@ -87,61 +87,20 @@
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
-    /* ─── PRELOADER ─────────────────────────────────────────────────── */
-    #preloader {
-      position: fixed;
-      inset: 0;
-      background: var(--bg-dark);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 2000;
-      transition: opacity 0.5s var(--ease-out);
-    }
-
-    .preloader-name {
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.3);
-      margin-bottom: 28px;
-    }
-
-    .tension-track {
-      width: 180px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.12);
-      overflow: hidden;
-      margin-bottom: 14px;
-    }
-
-    #tension-meter-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), #fff);
-      transition: width 0.2s ease;
-    }
-
-    .loader-text {
-      font-family: var(--font-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.35);
-    }
 
     /* ─── HERO ──────────────────────────────────────────────────────── */
     #hero {
       position: relative;
-      width: 100vw;
+      width: 100%;
       height: 100vh;
+      height: 100svh;
+      min-height: 520px;
       overflow: hidden;
       background: var(--bg-dark);
     }
 
     #hero-video {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -149,17 +108,17 @@
     }
 
     #hero-video.frozen {
-      filter: grayscale(100%) brightness(0.35) contrast(1.3);
+      filter: saturate(0.7) brightness(0.85);
     }
 
     #video-overlay {
       position: absolute;
       inset: 0;
       background: linear-gradient(160deg,
-          rgba(12, 12, 11, 0.0) 0%,
-          rgba(12, 12, 11, 0.55) 60%,
-          rgba(12, 12, 11, 0.92) 100%);
-      opacity: 0;
+          rgba(12, 12, 11, 0.05) 0%,
+          rgba(12, 12, 11, 0.25) 50%,
+          rgba(12, 12, 11, 0.78) 100%);
+      opacity: 1;
       transition: opacity 1s var(--ease-out);
       z-index: 2;
     }
@@ -173,15 +132,16 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.45) 100%);
+      background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.2) 100%);
       z-index: 2;
       pointer-events: none;
     }
 
     #titles-container {
       position: absolute;
-      bottom: 12vh;
+      bottom: 116px;
       left: 8vw;
+      right: 8vw;
       z-index: 4;
       max-width: 700px;
     }
@@ -191,21 +151,21 @@
       font-size: 0.7rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--accent);
-      opacity: 0;
+      color: #e0c393;
+      animation: fadeUp 0.9s var(--ease-out) both;
       margin-bottom: 16px;
       display: block;
     }
 
     .hero-title {
       font-family: var(--font-mono);
-      font-size: 1rem;
+      font-size: clamp(1.15rem, 2.2vw, 1.8rem);
       font-weight: 400;
       line-height: 1.5;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
-      color: rgba(240, 237, 232, 0.5);
-      opacity: 0;
+      color: #f4f1ea;
+      animation: fadeUp 1.1s 0.2s var(--ease-out) both;
     }
 
     .hero-title em {
@@ -259,9 +219,29 @@
       font-size: 0.65rem;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: rgba(240, 237, 232, 0.4);
-      opacity: 0;
+      color: rgba(240, 237, 232, 0.85);
+      opacity: 1;
       transition: opacity 0.8s ease;
+    }
+
+    .hero-projects {
+      position: absolute;
+      right: 8vw;
+      bottom: 28px;
+      z-index: 4;
+      padding: 13px 18px;
+      color: #f4f1ea;
+      background: rgba(12, 12, 11, 0.42);
+      border: 1px solid rgba(244, 241, 234, 0.55);
+      border-radius: var(--r-sm);
+      font: 0.75rem var(--font-mono);
+      cursor: pointer;
+      transition: background var(--t), border-color var(--t);
+    }
+
+    .hero-projects:hover {
+      background: rgba(12, 12, 11, 0.7);
+      border-color: var(--accent);
     }
 
     .scroll-cue-line {
@@ -348,61 +328,6 @@
       background: var(--accent-dim);
     }
 
-    /* Dropdown */
-    .nav-dropdown-wrapper {
-      position: relative;
-    }
-
-    .nav-dropdown {
-      position: absolute;
-      top: calc(100% + 10px);
-      left: 50%;
-      transform: translateX(-50%) translateY(6px);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r-md);
-      padding: 8px;
-      min-width: 220px;
-      box-shadow: var(--shadow-lg);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.25s var(--ease-out);
-      z-index: 600;
-      pointer-events: none;
-    }
-
-    .nav-dropdown-wrapper:hover .nav-dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateX(-50%) translateY(0);
-      pointer-events: auto;
-    }
-
-    .dropdown-link {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 12px;
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      border-radius: var(--r-sm);
-      transition: all 0.2s ease;
-    }
-
-    .dropdown-link:hover {
-      background: var(--accent-dim);
-      color: var(--text);
-    }
-
-    .dropdown-link .num {
-      font-size: 0.6rem;
-      color: var(--accent);
-      min-width: 18px;
-    }
 
     /* Mobile nav */
     .mobile-menu-toggle {
@@ -1102,8 +1027,13 @@
 
       #titles-container {
         left: 6vw;
-        bottom: 10vh;
+        right: 6vw;
+        bottom: 170px;
       }
+
+      .hero-eyebrow { letter-spacing: 0.12em; font-size: 0.65rem; }
+      .hero-projects { left: 6vw; right: auto; bottom: 28px; }
+      .scroll-cue { left: 6vw; bottom: 104px; font-size: 0.6rem; letter-spacing: 0.1em; }
 
       .contact-section {
         padding: 80px 24px;
@@ -1119,26 +1049,23 @@
         font-size: 14.4px;
       }
     }
+    @media (prefers-reduced-motion: reduce) {
+      #hero .hero-title, #hero .hero-eyebrow, #hero .scroll-cue-line { animation: none; }
+      #hero-video { transition: none; }
+    }
   </style>
+  <link rel="stylesheet" href="project-index.css">
 </head>
 
 <body>
   <div id="noise-overlay"></div>
 
-  <!-- Preloader -->
-  <div id="preloader">
-    <p class="preloader-name">Shay McKim</p>
-    <div class="tension-track">
-      <div id="tension-meter-fill"></div>
-    </div>
-    <p class="loader-text">Loading / <span id="load-percent">00</span>%</p>
-  </div>
 
   <!-- Mobile Nav -->
   <div class="mobile-nav-overlay" id="mobile-nav">
     <button class="mobile-menu-close" id="mobile-close">&times;</button>
     <nav class="mobile-nav-links">
-      <a href="#project-1" class="mobile-link">Projects</a>
+      <button class="index-mobile-trigger" data-open-project-index>View all projects</button>
       <a href="#contact" class="mobile-link">Contact</a>
     </nav>
   </div>
@@ -1149,33 +1076,7 @@
     <header>
       <div class="header-logo" id="logo-btn">SM</div>
       <div class="nav-desktop">
-        <div class="nav-dropdown-wrapper">
-          <button class="nav-btn" id="projects-btn">Projects ▾</button>
-          <div class="nav-dropdown">
-            <a href="#project-1" class="dropdown-link" data-target="project-1"><span class="num">01</span>Robotic Tissue
-              Stimulator</a>
-            <a href="#project-2" class="dropdown-link" data-target="project-2"><span class="num">02</span>QuickStep</a>
-            <a href="#project-3" class="dropdown-link" data-target="project-3"><span class="num">03</span>16ft
-              Trebuchet</a>
-            <a href="#project-4" class="dropdown-link" data-target="project-4"><span class="num">04</span>OptiTrack
-              Mounts</a>
-            <a href="#project-5" class="dropdown-link" data-target="project-5"><span class="num">05</span>4 Axis
-              Robot</a>
-            <a href="#project-6" class="dropdown-link" data-target="project-6"><span class="num">06</span>Octopus
-              Gripper</a>
-            <a href="#project-7" class="dropdown-link" data-target="project-7"><span class="num">07</span>12ft
-              Trebuchet</a>
-            <a href="#project-8" class="dropdown-link" data-target="project-8"><span class="num">08</span>Forging</a>
-            <a href="#project-9" class="dropdown-link" data-target="project-9"><span class="num">09</span>Calendar
-              App</a>
-            <a href="#project-10" class="dropdown-link" data-target="project-10"><span class="num">10</span>Filtration
-              System</a>
-            <a href="#project-11" class="dropdown-link" data-target="project-11"><span class="num">11</span>Drone
-              Capture</a>
-            <a href="#project-12" class="dropdown-link" data-target="project-12"><span class="num">12</span>Culinary
-              Robotics</a>
-          </div>
-        </div>
+        <button class="nav-btn" data-open-project-index aria-haspopup="dialog">View all projects ↗</button>
         <button class="nav-btn" id="contact-btn">Contact</button>
       </div>
       <button class="mobile-menu-toggle" id="mobile-toggle" aria-label="Toggle mobile menu">
@@ -1205,15 +1106,17 @@
 
     <!-- HERO -->
     <section id="hero" class="scroll-section">
-      <video id="hero-video" muted playsinline></video>
+      <video id="hero-video" poster="hero-poster.jpg" muted playsinline preload="none" aria-hidden="true"></video>
       <div id="video-overlay"></div>
       <div id="titles-container">
+        <p class="hero-eyebrow">Shay McKim · Engineering Portfolio</p>
         <h1 class="hero-title">Welcome to my personal project portfolio</h1>
       </div>
       <div class="scroll-cue" id="hero-scroll">
         <span class="scroll-cue-line"></span>
         <span id="project-count">12</span> projects · Scroll to explore
       </div>
+      <button class="hero-projects" data-open-project-index aria-haspopup="dialog">View all <span id="hero-project-count">12</span> projects ↗</button>
     </section>
 
     <!-- PROJECT 1 -->
@@ -1842,106 +1745,93 @@
 
     /* ─── INTRO SEQUENCE ─────────────────────────────────────────── */
     function initIntro() {
-      const preloader = document.getElementById('preloader');
-      const fill = document.getElementById('tension-meter-fill');
-      const pct = document.getElementById('load-percent');
-      const heroVideo = document.getElementById('hero-video');
-      const overlay = document.getElementById('video-overlay');
-      const eyebrow = document.querySelector('.hero-eyebrow');
-      const titleEl = document.querySelector('.hero-title');
-      const subEl = document.querySelector('.hero-sub');
-      const scrollCue = document.getElementById('hero-scroll');
-      const header = document.querySelector('header');
+      const video = document.getElementById('hero-video');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      if (!video) return;
 
-      if (!preloader || !heroVideo) return;
+      let finished = false;
+      let cancelled = Boolean(location.hash) || window.scrollY > 20;
+      let automaticScroll = false;
+      let scrollTimer;
+      let centerTimer;
+      let loadTimer;
 
-      document.body.style.overflow = 'hidden';
-      if (header) { header.style.opacity = '0'; header.style.pointerEvents = 'none'; }
-
-      let frozen = false;
-      heroVideo.src = 'vid.mp4';
-      heroVideo.load();
-
-      const done = () => {
-        fill.style.width = '100%';
-        pct.textContent = '100';
-        setTimeout(() => {
-          preloader.style.opacity = '0';
-          setTimeout(() => {
-            preloader.remove();
-            heroVideo.play().catch(() => { });
-          }, 500);
-        }, 120);
+      const cancelAutoScroll = () => {
+        cancelled = true;
+        clearTimeout(scrollTimer);
+        clearTimeout(centerTimer);
       };
-
-      if (heroVideo.readyState >= 3) { done(); }
-      else {
-        heroVideo.addEventListener('canplaythrough', done, { once: true });
-        setTimeout(done, 3500);
-      }
-
-      /* Fake progress */
-      let p = 0;
-      const ticker = setInterval(() => {
-        p = Math.min(p + Math.random() * 12, 90);
-        fill.style.width = p + '%';
-        pct.textContent = String(Math.floor(p)).padStart(2, '0');
-        if (p >= 90) clearInterval(ticker);
-      }, 200);
-
-      heroVideo.addEventListener('timeupdate', () => {
-        if (heroVideo.currentTime >= 0.7 && !frozen) {
-          frozen = true;
-          heroVideo.pause();
-          heroVideo.classList.add('frozen');
-          overlay.classList.add('active');
-
-          setTimeout(() => {
-            if (eyebrow) eyebrow.classList.add('fade-in');
-            setTimeout(() => {
-              if (titleEl) titleEl.classList.add('fade-in-delay-1');
-              setTimeout(() => {
-                if (subEl) subEl.classList.add('fade-in-delay-2');
-              }, 300);
-            }, 200);
-
-            document.body.style.overflow = '';
-            if (scrollCue) scrollCue.style.opacity = '1';
-
-            const revealHeader = () => {
-              if (header) { header.style.opacity = '1'; header.style.pointerEvents = 'auto'; }
-              window.removeEventListener('scroll', revealHeader);
-            };
-            window.addEventListener('scroll', revealHeader);
-            setTimeout(revealHeader, 1600);
-
-            setTimeout(() => {
-              const first = document.getElementById('project-1');
-              const firstMedia = first?.querySelector('.project-images');
-              const isDesktop = window.matchMedia('(min-width: 861px)').matches;
-
-              if (first) first.scrollIntoView({ behavior: 'smooth', block: 'start' });
-
-              if (isDesktop && firstMedia) {
-                setTimeout(() => {
-                  const rect = firstMedia.getBoundingClientRect();
-                  const targetTop = Math.max(88, (window.innerHeight - rect.height) / 2);
-                  window.scrollBy({ top: rect.top - targetTop, behavior: 'smooth' });
-                }, 650);
-              }
-
-              revealHeader();
-            }, 2800);
-          }, 300);
+      ['pointerdown', 'wheel', 'touchstart', 'keydown'].forEach(type => {
+        window.addEventListener(type, cancelAutoScroll, { passive: true, once: true });
+      });
+      window.addEventListener('scroll', () => {
+        if (!automaticScroll && window.scrollY > 20) cancelAutoScroll();
+      }, { passive: true });
+      window.addEventListener('hashchange', cancelAutoScroll);
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          cancelAutoScroll();
+          video.pause();
         }
       });
+      reducedMotion.addEventListener('change', event => {
+        if (event.matches) {
+          cancelAutoScroll();
+          finish(false);
+        }
+      });
+
+      function finish(playedHook) {
+        if (finished) return;
+        finished = true;
+        clearTimeout(loadTimer);
+        video.pause();
+        video.classList.add('frozen');
+        if (!playedHook) {
+          // Return to the poster if loading fails or playback is disallowed.
+          video.removeAttribute('src');
+          video.load();
+        }
+        document.getElementById('hero').dataset.introState = playedHook ? 'complete' : 'still';
+        if (!playedHook || reducedMotion.matches || cancelled) return;
+
+        scrollTimer = setTimeout(() => {
+          if (cancelled || document.hidden || document.body.dataset.projectIndexUsed || window.scrollY > 20) return;
+          const first = document.getElementById('project-1');
+          const firstMedia = first?.querySelector('.project-images');
+          automaticScroll = true;
+          first?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          if (window.matchMedia('(min-width: 861px)').matches && firstMedia) {
+            centerTimer = setTimeout(() => {
+              if (cancelled || document.hidden || document.body.dataset.projectIndexUsed) return;
+              const rect = firstMedia.getBoundingClientRect();
+              const targetTop = Math.max(88, (window.innerHeight - rect.height) / 2);
+              window.scrollBy({ top: rect.top - targetTop, behavior: 'smooth' });
+            }, 650);
+          }
+        }, 3600);
+      }
+
+      // Navigation and text are usable immediately, even without video or JavaScript.
+      if (reducedMotion.matches || cancelled) {
+        finish(false);
+        return;
+      }
+      video.addEventListener('timeupdate', () => {
+        if (video.currentTime >= 0.7) finish(true);
+      });
+      video.addEventListener('error', () => finish(false), { once: true });
+      video.addEventListener('playing', () => { if (finished) video.pause(); });
+      loadTimer = setTimeout(() => finish(false), 2500);
+      video.src = 'vid.mp4';
+      video.play().catch(() => finish(false));
     }
 
     /* ─── PORTFOLIO INTERACTIONS ─────────────────────────────────── */
     function initPortfolio() {
 
       const projectCount = document.getElementById('project-count');
-      if (projectCount) projectCount.textContent = document.querySelectorAll('.dropdown-link').length;
+      if (projectCount) projectCount.textContent = document.querySelectorAll('.section').length;
 
       /* Smooth scroll helpers */
       const scrollTo = id => {
@@ -1950,15 +1840,8 @@
       };
 
       document.getElementById('logo-btn')?.addEventListener('click', () => scrollTo('hero'));
-      document.getElementById('projects-btn')?.addEventListener('click', () => scrollTo('project-1'));
       document.getElementById('contact-btn')?.addEventListener('click', () => scrollTo('contact'));
 
-      document.querySelectorAll('.dropdown-link').forEach(l => {
-        l.addEventListener('click', e => {
-          e.preventDefault();
-          scrollTo(l.getAttribute('data-target'));
-        });
-      });
 
       /* Mobile menu */
       const mobileNav = document.getElementById('mobile-nav');
@@ -2110,6 +1993,14 @@
       document.addEventListener('keydown', e => { if (e.key === 'Escape' && lb.style.display === 'flex') closeLB(); });
     }
   </script>
+  <dialog class="project-index" id="project-index" aria-labelledby="index-title">
+    <div class="index-header">
+      <div><span class="index-eyebrow">The project collection / <span id="index-count">12</span></span><h2 id="index-title">All projects.</h2></div>
+      <button class="index-close" aria-label="Close project overview">Close ×</button>
+    </div>
+    <nav class="index-grid" aria-label="All projects"></nav>
+  </dialog>
+  <script src="project-index.js" defer></script>
 </body>
 
 </html>
