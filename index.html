@@ -9,19 +9,24 @@
     // Gate the first paint, including reloads and visits to project links.
     document.documentElement.classList.add('intro-pending');
     // Start the one prioritized download before styles, fonts, and project media.
-    function downloadIntroVideo() {
+    function downloadIntroVideo(reload = false) {
       const controller = new AbortController();
-      const promise = fetch('intro-video.mp4', { priority: 'high', signal: controller.signal })
+      const url = new URL('intro-video.mp4', document.baseURI).href;
+      // fetch() cannot read file:// URLs. Native video loading can.
+      if (location.protocol === 'file:') {
+        return { controller, promise: Promise.resolve({ nativeUrl: url }) };
+      }
+      const promise = fetch(url, { priority: 'high', cache: reload ? 'reload' : 'default', signal: controller.signal })
         .then(response => {
           if (!response.ok) throw new Error('Intro download failed');
           return response.blob();
         })
-        .then(blob => ({ blob }), error => ({ error }));
+        .then(blob => ({ blob }), error => ({ nativeUrl: url, error }));
       return { controller, promise };
     }
     window.introDownload = downloadIntroVideo();
   </script>
-  <script src="intro.js" defer></script>
+  <script src="intro.js?v=3" defer></script>
 
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;700&display=swap"

@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const { pathToFileURL } = require('node:url');
 const { chromium } = require('playwright');
 
 const root = path.resolve(__dirname, '..');
@@ -314,4 +315,82 @@ test('slow fonts do not delay playback or move the loading screen', async () => 
     await expectComplete(page);
     assert.deepEqual(errors, []);
   } finally { release(); releaseFonts(); await context.close(); }
+});
+
+test('opening index.html directly plays the intro without using fetch on local files', async () => {
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  const errors = [];
+  const localFetches = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    if (request.url().startsWith('file:') && request.resourceType() === 'fetch') localFetches.push(request.url());
+  });
+  await page.route('https://**', route => route.fulfill({ body: '' }));
+  try {
+    await page.goto(pathToFileURL(path.join(root, 'index.html')).href, { waitUntil: 'domcontentloaded' });
+    await expectComplete(page);
+    assert.match(await page.locator('#hero-video').evaluate(video => video.currentSrc), /^file:.*intro-video\.mp4$/);
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await expectComplete(page);
+    assert.deepEqual(localFetches, []);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('a blocked fetch falls back to native media and still waits for the complete file', async () => {
+  const { page, context, errors } = await openPage();
+  let release;
+  introStreamGate = new Promise(resolve => { release = resolve; });
+  await page.route('**/intro-video.mp4', route => route.request().resourceType() === 'fetch' ? route.abort('failed') : route.continue());
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(1000);
+    await expectGate(page);
+    assert.equal(await page.locator('#intro-loader').getAttribute('data-state'), 'loading');
+    assert.equal(await page.locator('#hero-video').evaluate(video => video.currentTime), 0);
+    release();
+    await expectComplete(page);
+    assert.equal(await page.locator('#hero-video').evaluate(video => video.currentSrc), `${origin}/intro-video.mp4`);
+    assert.deepEqual(errors, []);
+  } finally { release(); introStreamGate = null; await context.close(); }
+});
+
+test('a browser that rejects blob playback falls back to the normal video URL', async () => {
+  const { page, context, errors } = await openPage();
+  await page.addInitScript(() => {
+    const play = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function () {
+      if (this.id === 'hero-video' && this.src.startsWith('blob:')) {
+        return Promise.reject(new DOMException('Blob playback unavailable', 'NotSupportedError'));
+      }
+      return play.call(this);
+    };
+  });
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await expectComplete(page);
+    assert.equal(await page.locator('#hero-video').evaluate(video => video.currentSrc), `${origin}/intro-video.mp4`);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('retry discards a failed media source and downloads a fresh copy', async () => {
+  const { page, context, errors } = await openPage();
+  let corrupt = true;
+  let fetches = 0;
+  await page.route('**/intro-video.mp4', route => {
+    if (route.request().resourceType() === 'fetch') fetches++;
+    return corrupt ? route.fulfill({ contentType: 'video/mp4', body: 'Invalid cached video' }) : route.continue();
+  });
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await page.locator('#intro-retry').waitFor({ state: 'visible' });
+    await expectGate(page);
+    corrupt = false;
+    await page.locator('#intro-retry').click();
+    await expectComplete(page);
+    assert.equal(fetches, 2);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
 });

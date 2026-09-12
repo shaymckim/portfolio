@@ -27,6 +27,8 @@ function initIntro(onComplete) {
   let download;
   let assetUrl;
   let wantPlayback = !reducedMotion;
+  let nativeSource = false;
+  const videoUrl = new URL('intro-video.mp4', document.baseURI).href;
 
   history.scrollRestoration = 'manual';
   main.inert = true;
@@ -61,6 +63,8 @@ function initIntro(onComplete) {
       slowTimer = setTimeout(() => {
         detail.textContent = 'Still loading. Thanks for your patience.';
         retryButton.hidden = false;
+        // Some mobile browsers need a gesture before buffering native video.
+        if (nativeSource) playButton.hidden = false;
       }, 12000);
     }
   }
@@ -103,8 +107,37 @@ function initIntro(onComplete) {
   }
 
   function showError() {
+    if (finished) return;
     if (hasPlayed) showPlaybackControls(true);
+    else if (assetUrl && !nativeSource) useNativeVideo(videoUrl);
     else showLoader('error', 'The intro couldn’t load.', 'Try again, or head straight to the projects.');
+  }
+
+  function releaseSource() {
+    if (assetUrl && !nativeSource) URL.revokeObjectURL(assetUrl);
+    assetUrl = undefined;
+  }
+
+  function useNativeVideo(url) {
+    ++playAttempt;
+    releaseSource();
+    nativeSource = true;
+    assetUrl = url;
+    video.src = url;
+    video.load();
+  }
+
+  function nativeVideoReady() {
+    if (!nativeSource || !wantPlayback || finished || hasPlayed || !video.paused || state === 'blocked' || state === 'error') return;
+    // Keep the same steady loader until the entire short native clip is buffered.
+    const duration = video.duration;
+    if (!Number.isFinite(duration) || duration <= 0 || video.readyState < 2) return;
+    for (let i = 0; i < video.buffered.length; i++) {
+      if (video.buffered.start(i) <= video.currentTime && video.buffered.end(i) >= duration - 0.01) {
+        tryPlay();
+        break;
+      }
+    }
   }
 
   async function prepareVideo(nextDownload) {
@@ -112,11 +145,12 @@ function initIntro(onComplete) {
     download = nextDownload;
     const result = await nextDownload.promise;
     if (finished || download !== nextDownload) return;
-    if (result.error) {
-      showError();
+    if (result.nativeUrl || result.error) {
+      useNativeVideo(result.nativeUrl || videoUrl);
       return;
     }
-    if (assetUrl) URL.revokeObjectURL(assetUrl);
+    releaseSource();
+    nativeSource = false;
     // All bytes are local before play(): no partial-download flash or rebuffering.
     assetUrl = URL.createObjectURL(result.blob);
     video.src = assetUrl;
@@ -212,6 +246,9 @@ function initIntro(onComplete) {
   }
 
   video.addEventListener('playing', handlePlaying);
+  ['progress', 'loadeddata', 'canplaythrough', 'durationchange'].forEach(type => {
+    video.addEventListener(type, nativeVideoReady);
+  });
   video.addEventListener('waiting', () => {
     if (finished || !hasPlayed) return;
     // Retain the last frame if the decoder stalls; never cover it with loading UI.
@@ -246,12 +283,10 @@ function initIntro(onComplete) {
   retryButton.addEventListener('click', () => {
     ++playAttempt;
     wantPlayback = true;
-    if (assetUrl) {
-      video.load();
-    } else {
-      prepareVideo(downloadIntroVideo());
-    }
-    tryPlay();
+    releaseSource();
+    nativeSource = false;
+    showLoader('loading', 'Loading the intro.', 'A little motion before the projects.');
+    prepareVideo(downloadIntroVideo(true));
   });
   resumeButton.addEventListener('click', () => {
     if (video.error) video.load();
