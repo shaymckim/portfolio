@@ -8,13 +8,24 @@
   <script>
     // Gate the first paint, including reloads and visits to project links.
     document.documentElement.classList.add('intro-pending');
+    // Start the one prioritized download before styles, fonts, and project media.
+    function downloadIntroVideo() {
+      const controller = new AbortController();
+      const promise = fetch('intro-video.mp4', { priority: 'high', signal: controller.signal })
+        .then(response => {
+          if (!response.ok) throw new Error('Intro download failed');
+          return response.blob();
+        })
+        .then(blob => ({ blob }), error => ({ error }));
+      return { controller, promise };
+    }
+    window.introDownload = downloadIntroVideo();
   </script>
-
-  <link rel="preload" as="image" href="hero-poster.jpg" fetchpriority="high">
+  <script src="intro.js" defer></script>
 
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;700&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" media="print" fetchpriority="low" onload="this.media='all'">
 
   <style>
     /* ─── DESIGN TOKENS ─────────────────────────────────────────────── */
@@ -97,6 +108,10 @@
       visibility: hidden;
     }
 
+    .intro-pending #main-content > :not(#hero) {
+      display: none;
+    }
+
     .intro-pending #hero {
       position: fixed;
       inset: 0;
@@ -122,6 +137,8 @@
       color: #f4f1ea;
       background: radial-gradient(ellipse at 50% 42%, #202019 0%, var(--bg-dark) 65%);
       text-align: center;
+      font-family: system-ui, sans-serif;
+      --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
     }
 
     .intro-pending #intro-loader:not([hidden]) {
@@ -160,6 +177,7 @@
 
     #intro-detail {
       margin-top: 8px;
+      min-height: 3.3em;
       color: rgba(244, 241, 234, 0.6);
       font-size: 0.85rem;
     }
@@ -188,7 +206,26 @@
 
     #intro-loader[data-state="blocked"] .intro-loading-track,
     #intro-loader[data-state="error"] .intro-loading-track {
-      display: none;
+      visibility: hidden;
+    }
+
+    .intro-actions {
+      min-height: 140px;
+    }
+
+    #intro-playback-controls {
+      position: fixed;
+      z-index: 10001;
+      left: 50%;
+      bottom: 32px;
+      transform: translateX(-50%);
+      width: min(420px, calc(100% - 48px));
+      padding: 20px;
+      border: 1px solid rgba(200, 169, 110, 0.4);
+      border-radius: var(--r-sm);
+      background: rgba(12, 12, 11, 0.88);
+      color: #f4f1ea;
+      text-align: center;
     }
 
     .intro-action {
@@ -1232,10 +1269,17 @@
         <p id="intro-detail">A little motion before the projects.</p>
       </div>
       <div class="intro-loading-track" aria-hidden="true"></div>
-      <button id="intro-play" class="intro-action" hidden>Play intro ↗</button>
-      <button id="intro-retry" class="intro-action" hidden>Retry intro ↗</button>
-      <button id="intro-continue" class="intro-action" hidden>Continue to portfolio ↗</button>
+      <div class="intro-actions">
+        <button id="intro-play" class="intro-action" hidden>Play intro ↗</button>
+        <button id="intro-retry" class="intro-action" hidden>Retry intro ↗</button>
+        <button id="intro-continue" class="intro-action" hidden>Continue to portfolio ↗</button>
+      </div>
     </div>
+  </div>
+  <div id="intro-playback-controls" hidden>
+    <p id="intro-playback-status" role="status">Press play to continue the intro.</p>
+    <button id="intro-resume" class="intro-action">Resume intro ↗</button>
+    <button id="intro-finish" class="intro-action" hidden>Continue to portfolio ↗</button>
   </div>
 
 
@@ -1284,7 +1328,7 @@
 
     <!-- HERO -->
     <section id="hero" class="scroll-section">
-      <video id="hero-video" src="vid.mp4" poster="hero-poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="hero-video" poster="hero-poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
       <div id="video-overlay"></div>
       <div id="titles-container">
         <p class="hero-eyebrow">Shay McKim · Engineering Portfolio</p>
@@ -2096,7 +2140,6 @@
     </div>
     <nav class="index-grid" aria-label="All projects"></nav>
   </dialog>
-  <script src="intro.js" defer></script>
   <script src="project-index.js" defer></script>
 </body>
 

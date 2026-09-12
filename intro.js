@@ -12,6 +12,10 @@ function initIntro(onComplete) {
   const playButton = document.getElementById('intro-play');
   const retryButton = document.getElementById('intro-retry');
   const continueButton = document.getElementById('intro-continue');
+  const playbackControls = document.getElementById('intro-playback-controls');
+  const playbackStatus = document.getElementById('intro-playback-status');
+  const resumeButton = document.getElementById('intro-resume');
+  const finishButton = document.getElementById('intro-finish');
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const previousScrollRestoration = history.scrollRestoration;
   let finished = false;
@@ -20,6 +24,9 @@ function initIntro(onComplete) {
   let slowTimer;
   let frameRequest;
   let playAttempt = 0;
+  let download;
+  let assetUrl;
+  let wantPlayback = !reducedMotion;
 
   history.scrollRestoration = 'manual';
   main.inert = true;
@@ -34,7 +41,8 @@ function initIntro(onComplete) {
   }
 
   function showLoader(nextState, title, message) {
-    if (finished) return;
+    // This is a one-way reveal: the full-screen loader can never return.
+    if (finished || hasPlayed) return;
     cancelFrame();
     clearTimeout(slowTimer);
     state = nextState;
@@ -65,6 +73,7 @@ function initIntro(onComplete) {
     hero.dataset.introState = state;
     loader.hidden = true;
     loader.setAttribute('aria-busy', 'false');
+    playbackControls.hidden = true;
   }
 
   function handlePlaying() {
@@ -84,18 +93,49 @@ function initIntro(onComplete) {
     }
   }
 
+  function showPlaybackControls(failed = false) {
+    if (finished) return;
+    clearTimeout(slowTimer);
+    state = failed ? 'error' : 'blocked';
+    playbackStatus.textContent = failed ? 'The intro couldn’t finish playing.' : 'Press play to continue the intro.';
+    finishButton.hidden = !failed;
+    playbackControls.hidden = false;
+  }
+
   function showError() {
-    showLoader('error', 'The intro couldn’t load.', 'Try again, or head straight to the projects.');
+    if (hasPlayed) showPlaybackControls(true);
+    else showLoader('error', 'The intro couldn’t load.', 'Try again, or head straight to the projects.');
+  }
+
+  async function prepareVideo(nextDownload) {
+    download?.controller.abort();
+    download = nextDownload;
+    const result = await nextDownload.promise;
+    if (finished || download !== nextDownload) return;
+    if (result.error) {
+      showError();
+      return;
+    }
+    if (assetUrl) URL.revokeObjectURL(assetUrl);
+    // All bytes are local before play(): no partial-download flash or rebuffering.
+    assetUrl = URL.createObjectURL(result.blob);
+    video.src = assetUrl;
+    window.introDownload = null;
+    if (wantPlayback) tryPlay();
   }
 
   function tryPlay() {
     if (finished || document.hidden) return;
+    wantPlayback = true;
+    if (!hasPlayed) showLoader('loading', 'Loading the intro.', 'A little motion before the projects.');
+    if (!assetUrl) return;
     const attempt = ++playAttempt;
-    showLoader('loading', hasPlayed ? 'Resuming the intro.' : 'Loading the intro.', 'A little motion before the projects.');
+    playbackControls.hidden = true;
     video.play().catch(error => {
       if (finished || attempt !== playAttempt || document.hidden) return;
       if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
-        showLoader('blocked', 'Your intro is ready.', 'Press play to begin.');
+        if (hasPlayed) showPlaybackControls();
+        else showLoader('blocked', 'Your intro is ready.', 'Press play to begin.');
       } else {
         showError();
       }
@@ -144,8 +184,9 @@ function initIntro(onComplete) {
     video.pause();
     video.classList.add('frozen');
     hero.dataset.introState = playedIntro ? 'complete' : 'unavailable';
-    const loaderHadFocus = loader.contains(document.activeElement);
+    const loaderHadFocus = loader.contains(document.activeElement) || playbackControls.contains(document.activeElement);
     loader.hidden = true;
+    playbackControls.hidden = true;
     main.inert = false;
     main.removeAttribute('aria-hidden');
     mobileNav.inert = false;
@@ -172,8 +213,12 @@ function initIntro(onComplete) {
 
   video.addEventListener('playing', handlePlaying);
   video.addEventListener('waiting', () => {
-    if (state === 'playing' || state === 'loading') {
-      showLoader('loading', hasPlayed ? 'Buffering the intro.' : 'Loading the intro.', 'We’ll continue as soon as it’s ready.');
+    if (finished || !hasPlayed) return;
+    // Retain the last frame if the decoder stalls; never cover it with loading UI.
+    if (state === 'playing') {
+      state = 'buffering';
+      clearTimeout(slowTimer);
+      slowTimer = setTimeout(() => showPlaybackControls(), 12000);
     }
   });
   video.addEventListener('error', showError);
@@ -181,8 +226,8 @@ function initIntro(onComplete) {
     if (hasPlayed && !document.hidden) finish(true);
   });
   video.addEventListener('pause', () => {
-    if (!finished && !video.ended && !document.hidden && state === 'playing') {
-      showLoader('blocked', 'Continue the intro.', 'Press play to pick up where you left off.');
+    if (!finished && !video.ended && !document.hidden && hasPlayed && state !== 'error') {
+      showPlaybackControls();
     }
   });
   document.addEventListener('visibilitychange', () => {
@@ -200,17 +245,26 @@ function initIntro(onComplete) {
   playButton.addEventListener('click', tryPlay);
   retryButton.addEventListener('click', () => {
     ++playAttempt;
-    video.load();
+    wantPlayback = true;
+    if (assetUrl) {
+      video.load();
+    } else {
+      prepareVideo(downloadIntroVideo());
+    }
     tryPlay();
   });
+  resumeButton.addEventListener('click', () => {
+    if (video.error) video.load();
+    tryPlay();
+  });
+  finishButton.addEventListener('click', () => finish(false));
   // Only an actual media/playback error exposes this explicit escape hatch.
   continueButton.addEventListener('click', () => finish(false));
 
   if (reducedMotion) {
     showLoader('blocked', 'Start with a little motion.', 'Press play when you’re ready for the intro.');
-  } else if (video.error) {
-    showError();
   } else {
-    tryPlay();
+    showLoader('loading', 'Loading the intro.', 'A little motion before the projects.');
   }
+  prepareVideo(window.introDownload || downloadIntroVideo());
 }

@@ -10,6 +10,7 @@ const root = path.resolve(__dirname, '..');
 let server;
 let browser;
 let origin;
+let introStreamGate;
 
 before(async () => {
   server = http.createServer((request, response) => {
@@ -27,6 +28,13 @@ before(async () => {
     const end = range && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
     if (range) headers['Content-Range'] = `bytes ${start}-${end}/${size}`;
     response.writeHead(range ? 206 : 200, { ...headers, 'Content-Length': end - start + 1 });
+    if (pathname === '/intro-video.mp4' && introStreamGate) {
+      const bytes = fs.readFileSync(file);
+      const split = Math.floor(bytes.length * 0.65);
+      response.write(bytes.subarray(0, split));
+      introStreamGate.then(() => response.end(bytes.subarray(split)));
+      return;
+    }
     const stream = fs.createReadStream(file, { start, end });
     stream.pipe(response);
     response.on('close', () => stream.destroy());
@@ -52,7 +60,7 @@ async function openPage(options = {}) {
   await page.route('**/*', route => {
     const url = new URL(route.request().url());
     if (url.origin !== origin) return route.fulfill({ body: '' });
-    if (/\.(mp4|mov)$/i.test(url.pathname) && url.pathname !== '/vid.mp4') {
+    if (/\.(mp4|mov)$/i.test(url.pathname) && url.pathname !== '/intro-video.mp4') {
       projectRequests.push(url.pathname);
       return route.abort();
     }
@@ -82,7 +90,7 @@ test('slow media keeps the themed gate; only the full intro unlocks the portfoli
   const { page, context, errors, projectRequests } = await openPage();
   let release;
   const held = new Promise(resolve => { release = resolve; });
-  await page.route('**/vid.mp4', async route => { await held; await route.continue(); });
+  await page.route('**/intro-video.mp4', async route => { await held; await route.continue(); });
   try {
     await page.goto(origin, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(3000); // Regression: the former 2.5-second timeout skipped the intro.
@@ -137,7 +145,7 @@ test('blocked autoplay requires Play intro and never skips the video', async () 
 test('media failures offer a working retry without revealing the page', async () => {
   const { page, context, errors } = await openPage();
   let fail = true;
-  await page.route('**/vid.mp4', route => fail ? route.abort('failed') : route.continue());
+  await page.route('**/intro-video.mp4', route => fail ? route.abort('failed') : route.continue());
   try {
     await page.goto(origin, { waitUntil: 'domcontentloaded' });
     await page.locator('#intro-retry').waitFor({ state: 'visible' });
@@ -151,7 +159,7 @@ test('media failures offer a working retry without revealing the page', async ()
 
 test('an unrecoverable media error has an explicit way into the portfolio', async () => {
   const { page, context, errors } = await openPage();
-  await page.route('**/vid.mp4', route => route.abort('failed'));
+  await page.route('**/intro-video.mp4', route => route.abort('failed'));
   try {
     await page.goto(origin, { waitUntil: 'domcontentloaded' });
     await page.locator('#intro-continue').click();
@@ -204,7 +212,7 @@ test('without JavaScript the static portfolio remains available', async () => {
   } finally { await context.close(); }
 });
 
-test('buffering restores the loading screen and resumes without opening the portfolio', async () => {
+test('waiting and pauses never restore the loader after the first visible frame', async () => {
   const { page, context, errors } = await openPage();
   try {
     await page.goto(origin, { waitUntil: 'domcontentloaded' });
@@ -214,9 +222,8 @@ test('buffering restores the loading screen and resumes without opening the port
       video.pause();
     });
     await expectGate(page);
-    assert.equal(await page.locator('#intro-loader').isVisible(), true);
-    assert.equal(await page.locator('#intro-status').textContent(), 'Buffering the intro.');
-    await page.locator('#hero-video').evaluate(video => video.play());
+    assert.equal(await page.locator('#intro-loader').isVisible(), false);
+    await page.locator('#intro-resume').click();
     await expectComplete(page);
     assert.deepEqual(errors, []);
   } finally { await context.close(); }
@@ -235,6 +242,7 @@ test('backgrounding the tab pauses the intro and returning resumes it before rev
     const pausedAt = await page.locator('#hero-video').evaluate(video => video.currentTime);
     await page.waitForTimeout(1500);
     await expectGate(page);
+    assert.equal(await page.locator('#intro-loader').isVisible(), false);
     assert.equal(await page.locator('#hero-video').evaluate(video => video.currentTime), pausedAt);
     await page.evaluate(() => {
       delete document.hidden;
@@ -243,4 +251,67 @@ test('backgrounding the tab pauses the intro and returning resumes it before rev
     await expectComplete(page);
     assert.deepEqual(errors, []);
   } finally { await context.close(); }
+});
+
+test('a partial download cannot flash the video; the completed download plays entirely offline', async () => {
+  const { page, context, errors } = await openPage();
+  let release;
+  introStreamGate = new Promise(resolve => { release = resolve; });
+  const requests = [];
+  page.on('request', request => {
+    if (request.url().endsWith('/intro-video.mp4')) requests.push(request);
+  });
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await page.evaluate(() => {
+      const loader = document.getElementById('intro-loader');
+      window.loaderStates = [loader.hidden];
+      new MutationObserver(() => window.loaderStates.push(loader.hidden))
+        .observe(loader, { attributes: true, attributeFilter: ['hidden'] });
+    });
+    await page.waitForTimeout(1500);
+    await expectGate(page);
+    assert.equal(await page.locator('#intro-loader').isVisible(), true);
+    assert.equal(await page.locator('#hero-video').evaluate(video => video.currentTime), 0);
+    assert.equal(await page.locator('#hero-video').getAttribute('src'), null);
+    release();
+    await page.waitForFunction(() => document.getElementById('hero').dataset.introState === 'playing');
+    assert.match(await page.locator('#hero-video').getAttribute('src'), /^blob:/);
+    await context.setOffline(true);
+    await expectComplete(page);
+    const states = await page.evaluate(() => window.loaderStates);
+    const reveal = states.indexOf(true);
+    assert.ok(reveal >= 0);
+    assert.ok(states.slice(reveal).every(Boolean), JSON.stringify(states));
+    assert.equal(requests.length, 1);
+    assert.equal(requests[0].resourceType(), 'fetch');
+    assert.deepEqual(errors, []);
+  } finally {
+    release();
+    introStreamGate = null;
+    await context.close();
+  }
+});
+
+test('slow fonts do not delay playback or move the loading screen', async () => {
+  const { page, context, errors } = await openPage();
+  let release;
+  let releaseFonts;
+  const held = new Promise(resolve => { release = resolve; });
+  const heldFonts = new Promise(resolve => { releaseFonts = resolve; });
+  await page.route('**/intro-video.mp4', async route => { await held; await route.continue(); });
+  await page.route('https://fonts.googleapis.com/**', async route => { await heldFonts; await route.fulfill({ body: '' }); });
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    const before = await page.locator('.intro-monogram').boundingBox();
+    // The slow-download hint adds a retry button without shifting the content.
+    await page.clock.install();
+    await page.clock.fastForward(13000);
+    await page.locator('#intro-retry').waitFor({ state: 'visible' });
+    assert.deepEqual(await page.locator('.intro-monogram').boundingBox(), before);
+    assert.equal(await page.locator('#intro-loader').isVisible(), true);
+    release();
+    await expectComplete(page);
+    assert.deepEqual(errors, []);
+  } finally { release(); releaseFonts(); await context.close(); }
 });
