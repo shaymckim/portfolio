@@ -1956,8 +1956,8 @@
         <p>I'm always interested in new opportunities and connections. Whether you have a project in mind or just want
           to say hello, I'd greatly appreciate hearing from you.</p>
         <div class="contact-links">
-          <a href="mailto:smckim@uwaterloo.ca" class="contact-link primary">Email Me</a>
-          <a href="https://linkedin.com/in/shaymckim" target="_blank" rel="noopener" class="contact-link">LinkedIn</a>
+          <a href="mailto:smckim@uwaterloo.ca" class="contact-link primary" data-goatcounter-click="click-email">Email Me</a>
+          <a href="https://linkedin.com/in/shaymckim" target="_blank" rel="noopener" class="contact-link" data-goatcounter-click="click-linkedin">LinkedIn</a>
         </div>
       </div>
     </section>
@@ -2102,6 +2102,18 @@
         });
       });
 
+      /* Analytics: count each section once per visit when a reader reaches it */
+      const reachObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (!e.isIntersecting || !window.goatcounter?.count) return;
+          reachObs.unobserve(e.target);
+          const name = document.querySelector(`.toc-dot[data-target="${e.target.id}"]`)?.title || e.target.id;
+          window.goatcounter.count({ path: `viewed-${e.target.id}`, title: name, event: true });
+        });
+      }, { rootMargin: '-45% 0px -45% 0px' }); // a band across mid-screen, so tall sections still count
+
+      document.querySelectorAll('.scroll-section:not(#hero)').forEach(el => reachObs.observe(el));
+
       /* Lightbox */
       const lb = document.getElementById('lightbox');
       const lbImg = document.getElementById('lightbox-img');
@@ -2146,6 +2158,7 @@
     <nav class="index-grid" aria-label="All projects"></nav>
   </dialog>
   <script src="project-index.js" defer></script>
+  <script data-goatcounter="https://shaymckim.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 
 </html>
