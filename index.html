@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shay McKim — Portfolio</title>
+  <!-- The intro's first frame paints before the clip finishes downloading. -->
+  <link rel="preload" as="image" href="media/intro-poster.webp" fetchpriority="high">
   <script>
     // Gate the first paint, including reloads and visits to project links.
     document.documentElement.classList.add('intro-pending');
@@ -140,7 +142,7 @@
       place-items: center;
       padding: 32px 24px;
       color: #f4f1ea;
-      background: radial-gradient(ellipse at 50% 42%, #202019 0%, var(--bg-dark) 65%);
+      background: radial-gradient(ellipse at 50% 42%, rgba(32, 32, 25, 0.8) 0%, rgba(12, 12, 11, 0.92) 65%);
       text-align: center;
       font-family: system-ui, sans-serif;
       --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
@@ -148,6 +150,16 @@
 
     .intro-pending #intro-loader:not([hidden]) {
       display: grid;
+    }
+
+    /* The intro's first frame is the loading screen. Status only fades in over it if the download is slow. */
+    #intro-loader[data-state="loading"] {
+      opacity: 0;
+      animation: introStatusReveal 0.5s ease-out 1.8s forwards;
+    }
+
+    @keyframes introStatusReveal {
+      to { opacity: 1; }
     }
 
     .intro-loading-content {
@@ -278,6 +290,8 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      /* A 32px copy of the first frame, inline, so even the first paint shows the scene. */
+      background: #7d8794 url("data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAQBQCdASogABIAPqVAmkmmI6KhN/qoAMAUiWcAxNghxsxY7zT4AFAKW4jv0Y/weIdQAP3Oso7/BSOz4j/dUbPgwgUbCk6Wx2IcZ/SP39K1pz43fdSY8y8fMx2KE24Ch14ZB5lIgPsvLMtYyN5pZXOSYeN/PMm/+9JiUQAA") center / cover no-repeat;
       transition: filter 1s var(--ease-out);
     }
 
@@ -935,6 +949,15 @@
       background: rgba(255, 255, 255, 0.48);
     }
 
+    .img-container.buffering .video-progress-track {
+      animation: videoBuffering 0.9s ease-in-out infinite alternate;
+    }
+
+    @keyframes videoBuffering {
+      from { opacity: 0.35; }
+      to { opacity: 1; }
+    }
+
     .video-progress-fill {
       display: block;
       width: 100%;
@@ -972,25 +995,24 @@
     /* Phone-shot (tall) video and photos. The default .project-image-* rules
        set width:100% + object-fit:contain, which on a portrait asset stretches
        the container to the full column width and letterboxes the content with
-       empty bars either side. Here height drives the size and the container
-       shrinks to match. */
+       empty bars either side. Here height drives the size: the container is
+       sized from the media's proportions (--ar, set inline) rather than its
+       loaded size, so the box is final before a single byte arrives. --w keeps
+       small originals from upscaling; 2px covers the container's border. */
     .img-container.portrait {
-      max-width: fit-content;
+      width: min(100%, 68vh * var(--ar) + 2px, var(--w) + 2px);
       margin-left: auto;
       margin-right: auto;
     }
 
     .img-container.portrait .project-image-hero,
     .img-container.portrait .project-image-secondary {
-      width: auto;
-      max-width: 100%;
-      max-height: 68vh;
+      max-height: none;
     }
 
     @media (max-width: 860px) {
-      .img-container.portrait .project-image-hero,
-      .img-container.portrait .project-image-secondary {
-        max-height: 74vh;
+      .img-container.portrait {
+        width: min(100%, 74vh * var(--ar) + 2px, var(--w) + 2px);
       }
     }
 
@@ -1134,6 +1156,12 @@
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
     }
 
+    /* Sized from the original's proportions, so sharpening to full resolution never resizes it. */
+    #lightbox-img {
+      width: min(90vw, 88vh * var(--lb-ratio, 1), var(--lb-max, 90vw));
+      height: auto;
+    }
+
     .close-lightbox {
       position: absolute;
       top: 24px;
@@ -1258,6 +1286,7 @@
       #hero[data-intro-state] .hero-projects { animation: none; }
       #hero-video, #video-overlay { transition: none; }
       .intro-loading-track::after { animation: none; width: 100%; opacity: 0.6; }
+      .img-container.buffering .video-progress-track { animation: none; }
     }
   </style>
   <link rel="stylesheet" href="project-index.css">
@@ -1333,7 +1362,7 @@
 
     <!-- HERO -->
     <section id="hero" class="scroll-section">
-      <video id="hero-video" poster="hero-poster.jpg" muted playsinline preload="auto" aria-hidden="true"></video>
+      <video id="hero-video" poster="media/intro-poster.webp" muted playsinline preload="auto" aria-hidden="true"></video>
       <div id="video-overlay"></div>
       <div id="titles-container">
         <p class="hero-eyebrow">Shay McKim · Engineering Portfolio</p>
@@ -1378,14 +1407,14 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="tissue.jpeg" alt="Robotic tissue stimulator test frame" loading="lazy" decoding="async" width="4284" height="5712">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 4284px">
+                <img class="project-image-secondary" src="media/img/tissue-1024.webp" srcset="media/img/tissue-480.webp 480w, media/img/tissue-1024.webp 1024w, media/img/tissue-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/tissue-2400.webp" alt="Robotic tissue stimulator test frame" width="4284" height="5712" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <video class="project-image-secondary" loop muted playsinline preload="none">
-                  <source src="tissue.mp4" type="video/mp4">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.5625; --w: 720px">
+                <video class="project-image-secondary" loop muted playsinline preload="none" width="720" height="1280" data-poster="media/video/tissue-poster.webp">
+                  <source src="media/video/tissue.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
@@ -1434,8 +1463,8 @@
         <div class="bg-title">02</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <video class="project-image-hero" loop muted playsinline preload="none">
-              <source src="QuickStep.mp4" type="video/mp4">
+            <video class="project-image-hero" loop muted playsinline preload="none" width="1280" height="800" data-poster="media/video/quickstep-poster.webp">
+              <source src="media/video/quickstep.mp4" type="video/mp4">
             </video>
           </div>
         </div>
@@ -1472,18 +1501,18 @@
         <div class="bg-title">03</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <img class="project-image-hero" src="16ft.jpeg" alt="16-foot whipper trebuchet launch preparation" loading="lazy">
+            <img class="project-image-hero" src="media/img/16ft-1024.webp" srcset="media/img/16ft-480.webp 480w, media/img/16ft-1024.webp 1024w, media/img/16ft-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), (max-width: 1480px) 58vw, 840px" data-full="media/img/16ft-2400.webp" alt="16-foot whipper trebuchet launch preparation" width="4032" height="3024" loading="lazy" decoding="async">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="16ft_1.jpeg" alt="16-foot whipper trebuchet" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 4284px">
+                <img class="project-image-secondary" src="media/img/16ft-1-1024.webp" srcset="media/img/16ft-1-480.webp 480w, media/img/16ft-1-1024.webp 1024w, media/img/16ft-1-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/16ft-1-2400.webp" alt="16-foot whipper trebuchet" width="4284" height="5712" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <video class="project-image-secondary" loop muted playsinline preload="none">
-                  <source src="16ft.mov" type="video/mp4">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.5625; --w: 720px">
+                <video class="project-image-secondary" loop muted playsinline preload="none" width="720" height="1280" data-poster="media/video/16ft-poster.webp">
+                  <source src="media/video/16ft.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
@@ -1529,15 +1558,15 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <video class="project-image-hero" loop muted playsinline preload="none">
-                  <source src="OptiTrack.mp4" type="video/mp4">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.5625; --w: 720px">
+                <video class="project-image-hero" loop muted playsinline preload="none" width="720" height="1280" data-poster="media/video/optitrack-poster.webp">
+                  <source src="media/video/optitrack.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="OptiTrackMount.jpg" alt="OptiTrack marker mount" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7467; --w: 4142px">
+                <img class="project-image-secondary" src="media/img/optitrackmount-1024.webp" srcset="media/img/optitrackmount-480.webp 480w, media/img/optitrackmount-1024.webp 1024w, media/img/optitrackmount-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/optitrackmount-2400.webp" alt="OptiTrack marker mount" width="4142" height="5547" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1580,12 +1609,12 @@
           <div class="project-images-row">
             <div class="img-col img-col-1">
               <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="Tik.jpg" alt="Tic Tac Toe Robot" loading="lazy">
+                <img class="project-image-secondary" src="media/img/tik-971.webp" srcset="media/img/tik-480.webp 480w, media/img/tik-971.webp 971w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/tik-971.webp" alt="Tic Tac Toe Robot" width="971" height="925" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="ArmCAD.png" alt="Robot Arm CAD" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7978; --w: 592px">
+                <img class="project-image-secondary" src="media/img/armcad-592.webp" srcset="media/img/armcad-480.webp 480w, media/img/armcad-592.webp 592w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/armcad-592.webp" alt="Robot Arm CAD" width="592" height="742" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1628,13 +1657,13 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="gripper1.png" alt="Gripper CAD 1" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.8082; --w: 514px">
+                <img class="project-image-secondary" src="media/img/gripper1-514.webp" srcset="media/img/gripper1-480.webp 480w, media/img/gripper1-514.webp 514w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/gripper1-514.webp" alt="Gripper CAD 1" width="514" height="636" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="gripper3.png" alt="Gripper CAD 2" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.9805; --w: 703px">
+                <img class="project-image-secondary" src="media/img/gripper3-703.webp" srcset="media/img/gripper3-480.webp 480w, media/img/gripper3-703.webp 703w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/gripper3-703.webp" alt="Gripper CAD 2" width="703" height="717" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1676,8 +1705,8 @@
         <div class="bg-title">07</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <video class="project-image-hero" loop muted playsinline preload="none">
-              <source src="Trebuchet.mp4" type="video/mp4">
+            <video class="project-image-hero" loop muted playsinline preload="none" width="1280" height="720" data-poster="media/video/trebuchet-poster.webp">
+              <source src="media/video/trebuchet.mp4" type="video/mp4">
             </video>
           </div>
         </div>
@@ -1718,13 +1747,13 @@
         <div class="project-images">
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="knife2.JPG" alt="Forged Knife 1" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.6676; --w: 2008px">
+                <img class="project-image-secondary" src="media/img/knife2-1024.webp" srcset="media/img/knife2-480.webp 480w, media/img/knife2-1024.webp 1024w, media/img/knife2-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/knife2-2008.webp" alt="Forged Knife 1" width="2008" height="3008" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="knife1.JPG" alt="Forged Knife 2" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.6676; --w: 2008px">
+                <img class="project-image-secondary" src="media/img/knife1-1024.webp" srcset="media/img/knife1-480.webp 480w, media/img/knife1-1024.webp 1024w, media/img/knife1-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/knife1-2008.webp" alt="Forged Knife 2" width="2008" height="3008" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1766,17 +1795,17 @@
         <div class="bg-title">09</div>
         <div class="project-images">
           <div class="img-container zoom-target blueprint-target">
-            <img class="project-image-hero" src="AddEventView.png" alt="Add Event View" loading="lazy">
+            <img class="project-image-hero" src="media/img/addeventview-1024.webp" srcset="media/img/addeventview-480.webp 480w, media/img/addeventview-1024.webp 1024w, media/img/addeventview-1314.webp 1314w" sizes="(max-width: 860px) calc(100vw - 56px), (max-width: 1480px) 58vw, 840px" data-full="media/img/addeventview-1314.webp" alt="Add Event View" width="1314" height="804" loading="lazy" decoding="async">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
               <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="CalendarView.png" alt="Calendar View 1" loading="lazy">
+                <img class="project-image-secondary" src="media/img/calendarview-1024.webp" srcset="media/img/calendarview-480.webp 480w, media/img/calendarview-1024.webp 1024w, media/img/calendarview-1333.webp 1333w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/calendarview-1333.webp" alt="Calendar View 1" width="1333" height="812" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
               <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="CalendarView2.png" alt="Calendar View 2" loading="lazy">
+                <img class="project-image-secondary" src="media/img/calendarview2-1024.webp" srcset="media/img/calendarview2-480.webp 480w, media/img/calendarview2-1024.webp 1024w, media/img/calendarview2-1358.webp 1358w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/calendarview2-1358.webp" alt="Calendar View 2" width="1358" height="803" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1817,18 +1846,18 @@
       <div class="section-right">
         <div class="bg-title">10</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target portrait">
-            <img class="project-image-hero" src="elec.jpeg" alt="Electronics" loading="lazy">
+          <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.8451; --w: 3553px">
+            <img class="project-image-hero" src="media/img/elec-1024.webp" srcset="media/img/elec-480.webp 480w, media/img/elec-1024.webp 1024w, media/img/elec-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 56vh" data-full="media/img/elec-2400.webp" alt="Electronics" width="3553" height="4204" loading="lazy" decoding="async">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
               <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="tower.jpeg" alt="Filtration Tower" loading="lazy">
+                <img class="project-image-secondary" src="media/img/tower-988.webp" srcset="media/img/tower-480.webp 480w, media/img/tower-988.webp 988w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/tower-988.webp" alt="Filtration Tower" width="988" height="902" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="test.jpeg" alt="Water Test" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 3024px">
+                <img class="project-image-secondary" src="media/img/test-1024.webp" srcset="media/img/test-480.webp 480w, media/img/test-1024.webp 1024w, media/img/test-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/test-2400.webp" alt="Water Test" width="3024" height="4032" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1869,18 +1898,18 @@
       <div class="section-right">
         <div class="bg-title">11</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target portrait">
-            <img class="project-image-hero" src="Net1.jpg" alt="Net Gun 1" loading="lazy">
+          <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 4284px">
+            <img class="project-image-hero" src="media/img/net1-1024.webp" srcset="media/img/net1-480.webp 480w, media/img/net1-1024.webp 1024w, media/img/net1-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 50vh" data-full="media/img/net1-2400.webp" alt="Net Gun 1" width="4284" height="5712" loading="lazy" decoding="async">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="Net3.jpg" alt="Net Gun 2" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 3024px">
+                <img class="project-image-secondary" src="media/img/net3-1024.webp" srcset="media/img/net3-480.webp 480w, media/img/net3-1024.webp 1024w, media/img/net3-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/net3-2400.webp" alt="Net Gun 2" width="3024" height="4032" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="Net2.jpg" alt="Net Gun 3" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 3024px">
+                <img class="project-image-secondary" src="media/img/net2-1024.webp" srcset="media/img/net2-480.webp 480w, media/img/net2-1024.webp 1024w, media/img/net2-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/net2-2400.webp" alt="Net Gun 3" width="3024" height="4032" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1920,18 +1949,18 @@
       <div class="section-right">
         <div class="bg-title">12</div>
         <div class="project-images">
-          <div class="img-container zoom-target blueprint-target portrait">
-            <img class="project-image-hero" src="PuddingBack.jpg" alt="Pudding Robot Back" loading="lazy">
+          <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 3024px">
+            <img class="project-image-hero" src="media/img/puddingback-1024.webp" srcset="media/img/puddingback-480.webp 480w, media/img/puddingback-1024.webp 1024w, media/img/puddingback-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 50vh" data-full="media/img/puddingback-2400.webp" alt="Pudding Robot Back" width="3024" height="4032" loading="lazy" decoding="async">
           </div>
           <div class="project-images-row">
             <div class="img-col img-col-1">
               <div class="img-container zoom-target blueprint-target">
-                <img class="project-image-secondary" src="Slider.png" alt="Pudding Robot Slider" loading="lazy">
+                <img class="project-image-secondary" src="media/img/slider-988.webp" srcset="media/img/slider-480.webp 480w, media/img/slider-988.webp 988w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/slider-988.webp" alt="Pudding Robot Slider" width="988" height="743" loading="lazy" decoding="async">
               </div>
             </div>
             <div class="img-col img-col-2">
-              <div class="img-container zoom-target blueprint-target portrait">
-                <img class="project-image-secondary" src="pudbot.jpg" alt="Pudding Robot" loading="lazy">
+              <div class="img-container zoom-target blueprint-target portrait" style="--ar: 0.7500; --w: 3024px">
+                <img class="project-image-secondary" src="media/img/pudbot-1024.webp" srcset="media/img/pudbot-480.webp 480w, media/img/pudbot-1024.webp 1024w, media/img/pudbot-1600.webp 1600w" sizes="(max-width: 860px) calc(100vw - 56px), 412px" data-full="media/img/pudbot-2400.webp" alt="Pudding Robot" width="3024" height="4032" loading="lazy" decoding="async">
               </div>
             </div>
           </div>
@@ -1966,8 +1995,20 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // The intro plays from memory, so its runtime is free bandwidth for the first project.
+      document.getElementById('hero-video').addEventListener('playing', warmFirstProject, { once: true });
       initIntro(initPortfolio);
     });
+
+    function warmFirstProject() {
+      const first = document.getElementById('project-1');
+      first?.querySelectorAll('img[srcset]').forEach(img => {
+        const warm = new Image();
+        warm.sizes = img.sizes;
+        warm.srcset = img.srcset;
+      });
+      first?.querySelectorAll('video[data-poster]').forEach(video => { new Image().src = video.dataset.poster; });
+    }
 
     /* ─── PORTFOLIO INTERACTIONS ─────────────────────────────────── */
     function initPortfolio() {
@@ -1978,7 +2019,10 @@
       /* Smooth scroll helpers */
       const scrollTo = id => {
         const el = document.getElementById(id);
-        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        if (!el) return;
+        // Buffer the destination's videos during the smooth scroll, not after it.
+        el.querySelectorAll('.section-right video').forEach(primeVideo);
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
 
       document.getElementById('logo-btn')?.addEventListener('click', () => scrollTo('hero'));
@@ -2022,11 +2066,53 @@
 
       document.querySelectorAll('.zoom-target').forEach(el => zoomObs.observe(el));
 
-      /* Autoplay video progress */
+      /* Project videos: once scrolling settles, videos within a screen get their poster and start
+         buffering, and those on screen play. Smooth jumps across the page download nothing on the way. */
+      const saveData = navigator.connection?.saveData === true;
+      const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const nearVideos = new Set();
+      const visibleVideos = new Set();
+      const primeVideo = video => {
+        if (video.dataset.poster) {
+          video.poster = video.dataset.poster;
+          delete video.dataset.poster;
+        }
+        if (!saveData && video.preload === 'none') video.preload = 'auto';
+      };
+      let settleTimer;
+      const whenScrollSettles = () => {
+        clearTimeout(settleTimer);
+        settleTimer = setTimeout(() => {
+          nearVideos.forEach(primeVideo);
+          if (!reduceMotion) visibleVideos.forEach(video => video.play().catch(() => { /* Browsers may require a gesture. */ }));
+        }, 150);
+      };
+      window.addEventListener('scroll', whenScrollSettles, { passive: true });
+      const nearObs = new IntersectionObserver(entries => {
+        entries.forEach(e => e.isIntersecting ? nearVideos.add(e.target) : nearVideos.delete(e.target));
+        whenScrollSettles();
+      }, { rootMargin: '100% 0px' });
+      const playObs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            visibleVideos.add(e.target);
+          } else {
+            visibleVideos.delete(e.target);
+            e.target.pause();
+          }
+        });
+        whenScrollSettles();
+      }, { threshold: 0.15 });
+
+      // Jumps from the project overview also buffer their destination's videos during the scroll.
+      document.getElementById('project-index').addEventListener('click', e => {
+        const card = e.target.closest('.index-card');
+        if (card) document.querySelectorAll(`${card.hash} .section-right video`).forEach(primeVideo);
+      });
+
       document.querySelectorAll('.section-right video').forEach(video => {
-        // Let the intro have the connection before starting project media.
-        video.autoplay = true;
-        video.play().catch(() => { /* Browsers may require a gesture. */ });
+        nearObs.observe(video);
+        playObs.observe(video);
         const container = video.closest('.img-container');
         if (!container) return;
 
@@ -2052,14 +2138,21 @@
             ? Math.min(video.currentTime / duration, 1)
             : 0;
           fill.style.transform = `scaleX(${progress})`;
-          label.textContent = Number.isFinite(duration) && duration > 0
+          if (container.classList.contains('buffering')) label.textContent = 'VIDEO · LOADING';
+          else label.textContent = Number.isFinite(duration) && duration > 0
             ? `VIDEO · ${Math.round(progress * 100)}%`
             : 'VIDEO';
+        };
+        const setBuffering = buffering => {
+          container.classList.toggle('buffering', buffering);
+          updateProgress();
         };
 
         video.addEventListener('loadedmetadata', updateProgress);
         video.addEventListener('timeupdate', updateProgress);
         video.addEventListener('durationchange', updateProgress);
+        video.addEventListener('waiting', () => setBuffering(true));
+        video.addEventListener('playing', () => setBuffering(false));
         updateProgress();
       });
 
@@ -2134,10 +2227,20 @@
         el.addEventListener('click', () => {
           lb.style.display = 'flex';
           if (el.tagName.toLowerCase() === 'img') {
-            lbImg.src = el.src; lbImg.alt = el.alt;
+            // Open instantly with the size already on screen, then sharpen to full resolution.
+            const shown = el.currentSrc || el.src;
+            lbImg.style.setProperty('--lb-ratio', el.getAttribute('width') / el.getAttribute('height'));
+            lbImg.style.setProperty('--lb-max', `${el.getAttribute('width')}px`);
+            lbImg.src = shown; lbImg.alt = el.alt;
+            if (el.dataset.full && !shown.endsWith(el.dataset.full)) {
+              const full = new Image();
+              full.src = el.dataset.full;
+              full.decode().then(() => { if (lbImg.src === shown) lbImg.src = full.src; }, () => { /* Keep the smaller copy. */ });
+            }
             lbImg.style.display = 'block'; lbVid.style.display = 'none'; lbVid.pause();
           } else {
             const src = el.querySelector('source')?.src || el.src;
+            lbVid.poster = el.poster || el.dataset.poster || '';
             lbSrc.src = src; lbVid.load();
             lbVid.style.display = 'block'; lbVid.play();
             lbImg.style.display = 'none';

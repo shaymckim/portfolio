@@ -22,7 +22,7 @@ before(async () => {
       return;
     }
     const size = fs.statSync(file).size;
-    const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4', '.jpg': 'image/jpeg' };
+    const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.mp4': 'video/mp4', '.jpg': 'image/jpeg', '.webp': 'image/webp' };
     const headers = { 'Content-Type': types[path.extname(file)] || 'application/octet-stream', 'Accept-Ranges': 'bytes' };
     const range = /bytes=(\d+)-(\d*)/.exec(request.headers.range || '');
     const start = range ? Number(range[1]) : 0;
@@ -65,7 +65,7 @@ async function openPage(options = {}) {
       projectRequests.push(url.pathname);
       return route.abort();
     }
-    if (/\.(jpeg|jpg|png)$/i.test(url.pathname) && url.pathname !== '/hero-poster.jpg') return route.abort();
+    if (/\.(jpeg|jpg|png|webp)$/i.test(url.pathname) && url.pathname !== '/media/intro-poster.webp') return route.abort();
     return route.continue();
   });
   return { page, context, errors, projectRequests };
@@ -391,6 +391,69 @@ test('retry discards a failed media source and downloads a fresh copy', async ()
     await page.locator('#intro-retry').click();
     await expectComplete(page);
     assert.equal(fetches, 2);
+    assert.deepEqual(errors, []);
+  } finally { await context.close(); }
+});
+
+test('the first frame is the loading screen; status fades in only when the download is slow', async () => {
+  const { page, context, errors } = await openPage();
+  let release;
+  const held = new Promise(resolve => { release = resolve; });
+  const order = [];
+  page.on('request', request => {
+    const { pathname } = new URL(request.url());
+    if (pathname === '/media/intro-poster.webp' || pathname === '/intro-video.mp4') order.push(pathname);
+  });
+  await page.route('**/intro-video.mp4', async route => { await held; await route.continue(); });
+  try {
+    const poster = page.waitForResponse(response => response.url().endsWith('/media/intro-poster.webp'));
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await poster;
+    // The small poster is requested ahead of the clip, so the frame paints first.
+    assert.deepEqual(order, ['/media/intro-poster.webp', '/intro-video.mp4']);
+    assert.match(await page.locator('#hero-video').evaluate(video => video.poster), /\/media\/intro-poster\.webp$/);
+    assert.equal(await page.locator('#intro-loader').evaluate(el => getComputedStyle(el).opacity), '0');
+    await page.waitForFunction(() => getComputedStyle(document.getElementById('intro-loader')).opacity === '1', null, { timeout: 4000 });
+    await expectGate(page);
+    release();
+    await expectComplete(page);
+    assert.deepEqual(errors, []);
+  } finally { release(); await context.close(); }
+});
+
+test('project media keeps its final shape before loading, and videos buffer ahead and play only on screen', async () => {
+  const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  const page = await context.newPage();
+  const errors = [];
+  const videos = [];
+  page.on('pageerror', error => errors.push(error.message));
+  page.on('request', request => {
+    const { pathname } = new URL(request.url());
+    if (pathname.startsWith('/media/video/') && pathname.endsWith('.mp4')) videos.push(pathname);
+  });
+  await page.route('**/*', route => new URL(route.request().url()).origin === origin ? route.continue() : route.fulfill({ body: '' }));
+  try {
+    await page.goto(origin, { waitUntil: 'domcontentloaded' });
+    await expectComplete(page);
+    await page.keyboard.press('Tab'); // Cancel the optional project scroll.
+    await page.waitForFunction(() => document.querySelector('#project-1 video').preload === 'auto');
+    assert.ok(!videos.some(name => /trebuchet|optitrack|16ft/.test(name)), JSON.stringify(videos));
+    // Nothing below the fold has loaded, yet every box already has its media's proportions.
+    const shapes = await page.evaluate(() => [...document.querySelectorAll('.section img, .section video')]
+      .filter(el => el.tagName === 'VIDEO' ? el.readyState === 0 : !el.complete)
+      .map(el => {
+        const { width, height } = el.getBoundingClientRect();
+        return { src: el.currentSrc || el.querySelector('source')?.getAttribute('src'), width, height,
+          expected: width * el.getAttribute('height') / el.getAttribute('width') };
+      }));
+    assert.ok(shapes.length > 10, `only ${shapes.length} unloaded media elements`);
+    for (const shape of shapes) assert.ok(shape.width > 200 && Math.abs(shape.height - shape.expected) < 2, JSON.stringify(shape));
+    // Jumping to project 7 smooth-scrolls past three videos; none of them may start downloading.
+    await page.locator('.toc-dot[data-target="project-7"]').evaluate(dot => dot.click());
+    await page.waitForFunction(() => { const v = document.querySelector('#project-7 video'); return !v.paused && v.currentTime > 0.2; });
+    assert.match(await page.locator('#project-7 video').evaluate(video => video.poster), /trebuchet-poster\.webp$/);
+    assert.equal(await page.locator('#project-1 video').evaluate(video => video.paused), true);
+    assert.ok(!videos.some(name => /quickstep|optitrack|16ft/.test(name)), JSON.stringify(videos));
     assert.deepEqual(errors, []);
   } finally { await context.close(); }
 });

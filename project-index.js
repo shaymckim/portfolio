@@ -4,7 +4,8 @@
   const dialog = document.getElementById('project-index');
   const grid = dialog.querySelector('.index-grid');
   const projects = [...document.querySelectorAll('.section')];
-  const posters = { 'project-2': 'QuickStep.png', 'project-7': 'Treb.png' };
+  const posters = { 'project-2': 'quickstep', 'project-7': 'treb' };
+  const thumbSizes = '(max-width: 600px) 45vw, (max-width: 1050px) 30vw, 290px';
   document.getElementById('index-count').textContent = projects.length;
   document.getElementById('hero-project-count').textContent = projects.length;
 
@@ -18,9 +19,13 @@
     preview.className = 'index-image';
     const photo = project.querySelector('.section-right img');
     const image = document.createElement('img');
-    image.src = photo ? photo.getAttribute('src') : posters[project.id];
-    image.alt = '';
+    const poster = posters[project.id];
     image.loading = 'lazy';
+    image.decoding = 'async';
+    image.sizes = thumbSizes;
+    image.srcset = photo ? photo.srcset : `media/img/${poster}-480.webp 480w, media/img/${poster}-1024.webp 1024w`;
+    image.src = photo ? photo.getAttribute('src') : `media/img/${poster}-480.webp`;
+    image.alt = '';
     preview.append(image);
     const label = document.createElement('div');
     label.className = 'index-card-title';
