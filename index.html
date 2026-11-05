@@ -1390,15 +1390,15 @@
         <div class="project-description">
           <div class="desc-block">
             <span class="desc-label fade-line">What?</span>
-            <p class="desc-text fade-line">A 3-axis test frame I designed and built to measure how soft materials respond under compression and shear. It is aimed at soft tissues and biomaterials, with a focus on cartilage, where how the material behaves over time matters just as much as stiffness. The system controls position on all three axes and the load applied to the sample while recording the force response throughout each test.</p>
+            <p class="desc-text fade-line">I designed and built a 3-axis cartilage test frame solo, in 4 months and for under $10K. It’s a proof of concept toward draft ASTM/ISO standards for characterizing regenerative cartilage implants.</p>
           </div>
           <div class="desc-block">
             <span class="desc-label fade-line">How?</span>
-            <p class="desc-text fade-line">I built the system from scratch across mechanical, electrical, and software layers. I modeled custom probe mounts, load-cell mount, platen, and other parts in SolidWorks around a ball-screw motion frame. I sourced and hand-assembled the load cell, motion hardware, controller, wiring, and power components into three-axis force sensing on one controller, with correctly gauged and fused wiring, proper power distribution, and a hardware e-stop that cuts motion independently of the software. I also built the Python/Qt Windows control app with Claude Code for calibration, homing, surface finding, safety limits, live plots, test setup, and data recording.</p>
+            <p class="desc-text fade-line">I started by reviewing published test methods, then selected all the components: motion hardware, load cell and electronics. I designed the fixtures and custom parts in SolidWorks, and wired the fused power and hardware e-stop. Analysis and testing then drove the design. A drivetrain thrust analysis showed the stage could apply about 45× the load cell’s overload limit, so I added per-axis force limits with automatic lift-off. I also fixed a coil-kick fault that was shutting down both converters. On the software side, I wrote the C firmware plugin that streams force and a Python app to run the tests.</p>
           </div>
           <div class="desc-block">
             <span class="desc-label fade-line">Results?</span>
-            <p class="desc-text fade-line">It now works as a complete test instrument, not just a motion system. I have used it for compression, stress-relaxation, stiffness mapping, height mapping, friction, and wear tests. The wear test traces a path across a sample while holding a set normal load, and the mapping tools compare a surface, its stiffness, or its height and volume before and after a test. Results appear clearly in the app as tables and are saved to CSV for later analysis. The next step is testing on living tissue samples.</p>
+            <p class="desc-text fade-line">Homing, surface finding, and displacement, strain and load control all run on the real machine. Pulley-and-mass testing caught a 25% calibration error, which I corrected. It isn’t validated on tissue yet: machine compliance still needs measuring, and some future tests may require a smaller load cell.</p>
           </div>
         </div>
       </div>
@@ -1437,25 +1437,22 @@
         <div class="project-description">
           <div class="desc-block">
             <span class="desc-label fade-line">What?</span>
-            <p class="desc-text fade-line">A STEP file viewer and trimmer for stripping large CAD assemblies down to
-              just the parts you need. Open a full vehicle model, box-select the bodies you don't want, and export a
-              clean STEP. I built it for myself, tired of waiting on CAD to load an entire assembly just to pull out a
-              handful of bodies.</p>
+            <p class="desc-text fade-line">Pulling a few bodies out of a full large STEP assembly meant waiting minutes
+              for CAD to load the whole model, then hunting through hundreds of parts to delete the rest. QuickStep
+              skips that. Open the file, box-select what you don't need, export a clean STEP.</p>
           </div>
           <div class="desc-block">
             <span class="desc-label fade-line">How?</span>
             <p class="desc-text fade-line">Fully vibe coded with Claude Code. I didn't write the code by hand, but I
-              drove the architecture and product decisions and tested it against real assemblies. Python backend using
-              pythonocc (OpenCASCADE), a FastAPI server streaming binary geometry frames, and a single-file WebGL
-              frontend with no libraries. Most of the work went into speed: a custom STEP text parser to skip
-              OpenCASCADE's slow import, subprocess workers to dodge Python's GIL, and four layers of caching.</p>
+              drove the architecture and tested it against real assemblies. Python with pythonocc (OpenCASCADE) behind a
+              WebGL viewer in the browser. Nearly all the work went into load speed, since that was the whole
+              problem.</p>
           </div>
           <div class="desc-block">
             <span class="desc-label fade-line">Results?</span>
-            <p class="desc-text fade-line">Handles a 295 MB truck assembly with 561 parts, cutting cold load from
-              about three minutes to under one. A tool that deletes everything not visible from outside turns a long
-              manual cleanup into a couple of clicks. Packaged it as a standalone Windows app. Easily the most complex
-              thing I've built, and I didn't write a line of it by hand.</p>
+            <p class="desc-text fade-line">A 295 MB truck assembly with 561 parts now opens in under a minute instead of
+              three. Stripping out everything not visible from the outside is one click instead of a long manual pass.
+              Packaged as a standalone Windows app.</p>
           </div>
         </div>
       </div>
